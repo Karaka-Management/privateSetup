@@ -70,6 +70,7 @@ foreach ($departments as $department) {
     $request->setData('status', Status::ACTIVE);
     $request->setData('unit', 2);
     $request->setData('parent', $departmentIds[$department['parent']] ?? null);
+    $request->setData('description', \file_get_contents(__DIR__ . '/lorem_ipsum/' . \mt_rand(0, 999) . '_3-6'));
 
     $module->apiDepartmentCreate($request, $response);
     $departmentIds[$department['name']] = $response->get('')['response']->getId();
@@ -144,6 +145,7 @@ foreach ($positions as $position) {
     $request->setData('name', $position['name']);
     $request->setData('status', Status::ACTIVE);
     $request->setData('parent', $positionIds[$position['parent']] ?? null);
+    $request->setData('description', \file_get_contents(__DIR__ . '/lorem_ipsum/' . \mt_rand(0, 999) . '_3-6'));
 
     foreach ($departments as $d) {
         if (!isset($position['department']) || $d->getName() === $position['department']) {

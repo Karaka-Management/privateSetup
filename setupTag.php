@@ -16,6 +16,7 @@ use phpOMS\Localization\ISO639x1Enum;
 use phpOMS\Message\Http\HttpRequest;
 use phpOMS\Message\Http\HttpResponse;
 use phpOMS\Uri\HttpUri;
+use phpOMS\Utils\RnG\Text;
 use phpOMS\Utils\TestUtils;
 
 /**
@@ -28,25 +29,37 @@ use phpOMS\Utils\TestUtils;
 $module = $app->moduleManager->get('Tag');
 TestUtils::setMember($module, 'app', $app);
 
-$response = new HttpResponse();
-$request  = new HttpRequest(new HttpUri(''));
+$LOREM_COUNT = count(Text::LOREM_IPSUM) - 1;
+$COLOR_COUNT = count($variables['colors']) - 1;
 
-$request->getHeader()->setAccount(2);
+foreach (Text::LOREM_IPSUM as $word) {
+    $response = new HttpResponse();
+    $request  = new HttpRequest(new HttpUri(''));
 
-$request->setData('tag', 1);
-$request->setData('language', ISO639x1Enum::_DE);
-$request->setData('title', 'Beta');
-$module->apiTagL11nCreate($request, $response);
+    $request->getHeader()->setAccount(\mt_rand(2, 5));
 
-$request->setData('tag', 2, true);
-$request->setData('title', 'Intranet', true);
-$module->apiTagL11nCreate($request, $response);
+    $request->setData('language', ISO639x1Enum::_EN);
+    $request->setData('title', 'EN:' . $word);
+    $request->setData('color', $variables['colors'][\mt_rand(0, $COLOR_COUNT)]);
 
-$request->setData('tag', 3, true);
-$request->setData('title', 'Software', true);
-$module->apiTagL11nCreate($request, $response);
+    $module->apiTagCreate($request, $response);
 
-$request->setData('tag', 4, true);
-$request->setData('title', 'FiBu', true);
-$module->apiTagL11nCreate($request, $response);
+    $id = $response->get('')['response']->getId();
+    foreach ($variables['languages'] as $language) {
+        if ($language === ISO639x1Enum::_EN) {
+            continue;
+        }
+
+        $response = new HttpResponse();
+        $request  = new HttpRequest(new HttpUri(''));
+
+        $request->getHeader()->setAccount(\mt_rand(2, 5));
+
+        $request->setData('tag', $id);
+        $request->setData('language', $language);
+        $request->setData('title', \strtoupper($language) . ':' . Text::LOREM_IPSUM[\mt_rand(0, $LOREM_COUNT)]);
+
+        $module->apiTagL11nCreate($request, $response);
+    }
+}
 //endregion

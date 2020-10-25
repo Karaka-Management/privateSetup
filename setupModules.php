@@ -15,6 +15,7 @@ declare(strict_types=1);
 use Modules\Admin\Models\ModuleStatusUpdateType;
 use phpOMS\Message\Http\HttpRequest;
 use phpOMS\Message\Http\HttpResponse;
+use phpOMS\System\File\Local\Directory;
 use phpOMS\Uri\HttpUri;
 use phpOMS\Utils\TestUtils;
 
@@ -39,6 +40,12 @@ $toInstall = [
     'Support', 'Sales', 'ClientManagement', 'Accounting', 'Purchase', 'SupplierManagement', 'ItemManagement', 'Billing', 'InvoiceManagement',
     'WarehouseManagement', 'StockTaking', 'QualityManagement', 'AssetManagement', 'Marketing', 'Knowledgebase', 'Exchange',
 ];
+
+if (\is_dir(__DIR__ . '/../Modules/Media/Files')) {
+    Directory::delete(__DIR__ . '/../Modules/Media/Files');
+
+    \mkdir(__DIR__ . '/../Modules/Media/Files');
+}
 
 foreach ($toInstall as $install) {
     $request->setData('module', $install, true);

@@ -44,6 +44,7 @@ use phpOMS\Utils\TestUtils;
 
 //region Setup
 $config = require_once __DIR__ . '/config.php';
+$variables = require_once __DIR__ . '/variables.php';
 
 // Reset database
 $db = new \PDO($config['db']['core']['masters']['admin']['db'] . ':host=' .
@@ -171,6 +172,7 @@ $request->getHeader()->setAccount(1);
 $request->setData('name', 'Lima');
 $request->setData('parent', 1);
 $request->setData('status', 1);
+$request->setData('description', \file_get_contents(__DIR__ . '/lorem_ipsum/' . \mt_rand(0, 999) . '_3-6'));
 $module->apiUnitCreate($request, $response);
 //endregion
 
@@ -208,8 +210,8 @@ include __DIR__ . '/setupModules.php';
 include __DIR__ . '/setupGroups.php';
 include __DIR__ . '/setupOrganization.php';
 include __DIR__ . '/setupAccounts.php';
+include __DIR__ . '/setupTag.php';
 include __DIR__ . '/setupDashboard.php';
 include __DIR__ . '/setupNews.php';
 include __DIR__ . '/setupHumanResourceManagement.php';
 include __DIR__ . '/setupKnowledgebase.php';
-include __DIR__ . '/setupTag.php';
