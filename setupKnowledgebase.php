@@ -12,15 +12,17 @@
  */
 declare(strict_types=1);
 
+use Modules\Knowledgebase\Models\WikiAppMapper;
 use Modules\Knowledgebase\Models\WikiStatus;
 use phpOMS\Localization\ISO639x1Enum;
 use phpOMS\Message\Http\HttpRequest;
 use phpOMS\Message\Http\HttpResponse;
 use phpOMS\Uri\HttpUri;
+use phpOMS\Utils\RnG\Text;
 use phpOMS\Utils\TestUtils;
 
 /**
- * Setup knowledgebase module
+ * Setup news module
  *
  * @var \Modules\Knowledgebase\Controller\ApiController $module
  */
@@ -29,37 +31,94 @@ use phpOMS\Utils\TestUtils;
 $module = $app->moduleManager->get('Knowledgebase');
 TestUtils::setMember($module, 'app', $app);
 
-$response = new HttpResponse();
-$request  = new HttpRequest(new HttpUri(''));
+$WIKI_ARTICLES = 500;
+$APPS          = WikiAppMapper::count();
+$LOREM_COUNT   = \count(Text::LOREM_IPSUM) - 1;
 
-$request->getHeader()->setAccount(2);
-$request->setData('title', 'Finance');
-$request->setData('status', WikiStatus::ACTIVE);
-$request->setData('lang', ISO639x1Enum::_DE);
-$request->setData('path', '/Finance');
-$request->setData('parent', 1);
-$module->apiWikiCategoryCreate($request, $response);
+for ($i = 0; $i < 1; ++$i) {
+    $response = new HttpResponse();
+    $request  = new HttpRequest(new HttpUri(''));
 
-$request->getHeader()->setAccount(2);
-$request->setData('title', 'Monatsabschluss: Monatsfortschreibung', true);
-$request->setData('plain', \file_get_contents(__DIR__ . '/knowledgebase/wiki_fibu_closing_month.md'));
-$request->setData('status', WikiStatus::ACTIVE);
-$request->setData('category', 2);
-$request->setData('language', ISO639x1Enum::_DE);
+    $request->getHeader()->setAccount(1);
+    $request->setData('name', \mt_rand(0, $LOREM_COUNT));
 
-$tags = [
-    [
-        'title'    => 'Software',
-        'language' => ISO639x1Enum::_EN,
-        'color'    => '#ff0000ff',
-    ],
-    [
-        'title'    => 'FiBu',
-        'language' => ISO639x1Enum::_EN,
-        'color'    => '#ff0000ff',
-    ],
-];
+    $module->apiWikiAppCreate($request, $response);
+}
 
-$request->setData('tags', \json_encode($tags));
-$module->apiWikiDocCreate($request, $response);
+for ($i = 0; $i < $APPS + 1; ++$i) {
+    $categories = [];
+    $j          = 0;
+
+    foreach (Text::LOREM_IPSUM as $word) {
+        $response = new HttpResponse();
+        $request  = new HttpRequest(new HttpUri(''));
+
+        $request->getHeader()->setAccount(\mt_rand(1, 5));
+        $request->setData('name', 'EN:' . $word);
+        $request->setData('app', \mt_rand(1, $APPS));
+
+        if ($j > 0 && \mt_rand(1, 100) < 50) {
+            $request->setData('parent', $categories[\mt_rand(0, $j - 1)]->getId());
+        }
+
+        $module->apiWikiCategoryCreate($request, $response);
+        $category     = $response->get('')['response'];
+        $categories[] = $category;
+
+        foreach ($variables['languages'] as $language) {
+            if ($language === ISO639x1Enum::_EN) {
+                continue;
+            }
+
+            $response = new HttpResponse();
+            $request  = new HttpRequest(new HttpUri(''));
+
+            $request->getHeader()->setAccount(\mt_rand(2, 5));
+
+            $request->setData('category', $category->getId());
+            $request->setData('language', $language);
+            $request->setData('name', \strtoupper($language) . ':' . Text::LOREM_IPSUM[\mt_rand(0, $LOREM_COUNT)]);
+
+            $module->apiWikiCategoryL11nCreate($request, $response);
+        }
+
+        ++$j;
+    }
+}
+
+foreach ($variables['languages'] as $language) {
+    for ($i = 0; $i < $WIKI_ARTICLES; ++$i) {
+        $response = new HttpResponse();
+        $request  = new HttpRequest(new HttpUri(''));
+
+        $MARKDOWN = \file_get_contents(__DIR__ . '/lorem_ipsum/' . \mt_rand(0, 999) . '_5-12');
+
+        $request->getHeader()->setAccount(\mt_rand(1, 5));
+        $request->setData('title', \trim(\strtok($MARKDOWN, "\n"), ' #'));
+        $request->setData('plain', \preg_replace('/^.+\n/', '', $MARKDOWN));
+        $request->setData('language', $language);
+        $request->setData('status', WikiStatus::ACTIVE);
+        $request->setData('app', \mt_rand(1, $APPS));
+
+        // tags
+        $tags      = [];
+        $TAG_COUNT = \mt_rand(0, 4);
+        $added     = [];
+
+        for ($j = 0; $j < $TAG_COUNT; ++$j) {
+            $tagId = \mt_rand(1, $LOREM_COUNT - 1);
+
+            if (!\in_array($tagId, $added)) {
+                $added[] = $tagId;
+                $tags[]  = ['id' => $tagId];
+            }
+        }
+
+        if (!empty($tags)) {
+            $request->setData('tags', \json_encode($tags));
+        }
+
+        $module->apiWikiDocCreate($request, $response);
+    }
+}
 //endregion

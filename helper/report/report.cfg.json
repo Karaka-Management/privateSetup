@@ -1,0 +1,24 @@
+[
+    {
+        "type": "label",
+        "attributes": {
+            "for": "date"
+        },
+        "default": {
+            "value": "Date"
+        }
+    },
+    {
+        "type": "input",
+        "subtype": "datetime",
+        "attributes": {
+            "id": "date",
+            "name": "date",
+            "type": "datetime"
+        },
+        "default": {
+            "value": "Y-m-01",
+            "format": "Y-m-d"
+        }
+    }
+]

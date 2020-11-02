@@ -29,8 +29,8 @@ use phpOMS\Utils\TestUtils;
 $module = $app->moduleManager->get('Tag');
 TestUtils::setMember($module, 'app', $app);
 
-$LOREM_COUNT = count(Text::LOREM_IPSUM) - 1;
-$COLOR_COUNT = count($variables['colors']) - 1;
+$LOREM_COUNT = \count(Text::LOREM_IPSUM) - 1;
+$COLOR_COUNT = \count($variables['colors']) - 1;
 
 foreach (Text::LOREM_IPSUM as $word) {
     $response = new HttpResponse();

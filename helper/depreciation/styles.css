@@ -1,0 +1,163 @@
+:root {
+    --color-main: rgba(54, 151, 219, 1);
+    --color-main-font: #fff;
+    --color-transparent: rgba(54, 151, 219, .25);
+    --color-subtotal: rgba(54, 151, 219, .5);
+    --color-border: #d6d6d6;
+    --font-family: 'Roboto', sans-serif;
+}
+
+body {
+    width: 100%;
+    height: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    font-family: var(--font-family);
+    color: #000;
+    font-size: .8rem;
+}
+
+.clear {
+    clear: both;
+}
+
+pre {
+    background: #fff;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -ms-border-radius: 3px;
+    border-radius: 3px;
+    background-clip: padding-box;
+    border: 1px solid var(--color-border);
+    padding: 5px;
+    overflow-x: scroll;
+    counter-reset: line;
+    width: 100%;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    white-space:pre-wrap;
+}
+
+pre span {
+    display: block;
+}
+
+pre span:before {
+    counter-increment: line;
+    content: counter(line);
+    display: inline-block;
+    border-right: 1px solid var(--color-border);
+    padding: 0 .5em;
+    margin-right: .5em;
+    color: #888;
+    width: 30px;
+}
+
+iframe {
+    padding: 0;
+    margin: 0;
+    border: none;
+    width: 100%;
+    height: 100%;
+}
+
+h1, h2 {
+    font-weight: normal;
+    padding: 0;
+    margin: 0 auto;
+    text-align: center;
+}
+
+h1 {
+    font-size: 1.5em;
+}
+
+h2 {
+    font-size: 1.3em;
+}
+
+h1+table, h2+table {
+    margin-top: 1em;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    background: #fff;
+}
+
+table caption {
+    background: var(--color-main);
+    color: var(--color-main-font);
+    padding: 10px;
+}
+
+tbody tr:not(.subtotal):nth-child(n+1) td {
+    border-top: 1px solid #ddd;
+}
+
+tbody tr:not(.subtotal):last-child td {
+    border-bottom: 1px solid #ddd;
+}
+
+tbody tr.subtotal+tr td, tbody tr.total td {
+    border-top: none !important;
+    border-bottom: none !important;
+}
+
+tbody tr.total {
+    background: var(--color-main);
+    color: var(--color-main-font);
+}
+
+tr.subtotal {
+    background: var(--color-subtotal);
+}
+
+td {
+    padding: .6em;
+}
+
+tfoot {
+    font-size: 0.7em;
+}
+
+blockquote {
+    background: #fff;
+    border: 1px solid #d5d5d5;
+    padding: 10px;
+}
+
+blockquote i {
+    color: #d5d5d5;
+    margin-right: 5px;
+}
+
+#header {
+    display: none;
+}
+
+@media print {
+    :root {
+        --color-main: rgba(255, 210, 4, 1);
+        --color-main-font: #000;
+        --color-transparent: rgba(255, 210, 4, .25);
+        --color-subtotal: rgba(255, 210, 4, .5);
+    }
+
+    body {
+        font-size: 0.6rem;
+    }
+
+    #header {
+        display: block;
+        text-align: center;
+        margin-bottom: 1em;
+    }
+
+    #header img {
+        height: 50px;
+    }
+}

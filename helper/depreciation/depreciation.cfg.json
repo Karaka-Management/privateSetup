@@ -1,0 +1,44 @@
+[
+    {
+        "type": "label",
+        "attributes": {
+            "for": "amount"
+        },
+        "default": {
+            "value": "Amount"
+        }
+    },
+    {
+        "type": "input",
+        "subtype": "text",
+        "attributes": {
+            "id": "amount",
+            "name": "amount",
+            "type": "text"
+        },
+        "default": {
+            "value": "10000"
+        }
+    },
+    {
+        "type": "label",
+        "attributes": {
+            "for": "duration"
+        },
+        "default": {
+            "value": "Duration"
+        }
+    },
+    {
+        "type": "input",
+        "subtype": "text",
+        "attributes": {
+            "id": "duration",
+            "name": "duration",
+            "type": "text"
+        },
+        "default": {
+            "value": "10"
+        }
+    }
+]

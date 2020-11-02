@@ -33,7 +33,7 @@ TestUtils::setMember($module, 'app', $app);
 
 $NEWS_ARTICLES = 100;
 $FEATURED_PROB = 10;
-$LOREM_COUNT   = count(Text::LOREM_IPSUM) - 1;
+$LOREM_COUNT   = \count(Text::LOREM_IPSUM) - 1;
 
 foreach ($variables['languages'] as $language) {
     for ($i = 0; $i < $NEWS_ARTICLES; ++$i) {
@@ -68,7 +68,7 @@ foreach ($variables['languages'] as $language) {
         }
 
         if (!empty($tags)) {
-            $request->setData('tags', \json_encode($tags), true);
+            $request->setData('tags', \json_encode($tags));
         }
 
         $module->apiNewsCreate($request, $response);
