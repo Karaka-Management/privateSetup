@@ -40,7 +40,7 @@ for ($i = 0; $i < 1; ++$i) {
     $request  = new HttpRequest(new HttpUri(''));
 
     $request->getHeader()->setAccount(1);
-    $request->setData('name', \mt_rand(0, $LOREM_COUNT));
+    $request->setData('name', Text::LOREM_IPSUM[\mt_rand(0, $LOREM_COUNT)]);
 
     $module->apiWikiAppCreate($request, $response);
 }
