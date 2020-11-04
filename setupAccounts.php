@@ -46,7 +46,7 @@ $accounts = [
         'image'  => 't_guest.png',
         'status' => AccountStatus::ACTIVE,
         'email'  => 't.guest@orange-management.email',
-        'groups' => ['user', 'Executive', 'Finance', 'Controlling', 'Employee', 'VKL'],
+        'groups' => [],
     ],
     [
         'login'  => 'user',
@@ -56,7 +56,7 @@ $accounts = [
         'image'  => 't_user.png',
         'status' => AccountStatus::ACTIVE,
         'email'  => 't.user@orange-management.email',
-        'groups' => ['user', 'Executive', 'Finance', 'Controlling', 'Employee', 'VKL'],
+        'groups' => ['user'],
     ],
     [
         'login'  => 'supplier',
@@ -66,7 +66,7 @@ $accounts = [
         'image'  => 't_supplier.png',
         'status' => AccountStatus::ACTIVE,
         'email'  => 't.supplier@orange-management.email',
-        'groups' => ['user', 'Executive', 'Finance', 'Controlling', 'Employee', 'VKL'],
+        'groups' => ['user'],
     ],
     [
         'login'  => 'client',
@@ -76,7 +76,7 @@ $accounts = [
         'image'  => 't_client.png',
         'status' => AccountStatus::ACTIVE,
         'email'  => 't.client@orange-management.email',
-        'groups' => ['user', 'Executive', 'Finance', 'Controlling', 'Employee', 'VKL'],
+        'groups' => ['user'],
     ],
     [
         'login'  => 'support',
@@ -86,7 +86,27 @@ $accounts = [
         'image'  => 't_support.png',
         'status' => AccountStatus::ACTIVE,
         'email'  => 't.support@orange-management.email',
-        'groups' => ['user', 'Executive', 'Finance', 'Controlling', 'Employee', 'VKL'],
+        'groups' => ['user', 'Suppoer', 'Employee', 'VKL'],
+    ],
+    [
+        'login'  => 'secretary',
+        'pass'   => 'secretary',
+        'name1'  => 'Test',
+        'name2'  => 'Secretary',
+        'image'  => 't_secretary.png',
+        'status' => AccountStatus::ACTIVE,
+        'email'  => 't.secretary@orange-management.email',
+        'groups' => ['user', 'Secretariat', 'Employee'],
+    ],
+    [
+        'login'  => 'service',
+        'pass'   => 'service',
+        'name1'  => 'Test',
+        'name2'  => 'Service',
+        'image'  => 't_service.png',
+        'status' => AccountStatus::ACTIVE,
+        'email'  => 't.service@orange-management.email',
+        'groups' => ['user', 'Service', 'Employee', 'VKL'],
     ],
     [
         'login'  => 'finance',
@@ -106,7 +126,7 @@ $accounts = [
         'image'  => 't_sales.png',
         'status' => AccountStatus::ACTIVE,
         'email'  => 't.sales@orange-management.email',
-        'groups' => ['user', 'Executive', 'Finance', 'Controlling', 'Employee', 'VKL'],
+        'groups' => ['user', 'Executive', 'Sales', 'Employee', 'VKL'],
     ],
     [
         'login'  => 'purchase',
@@ -116,7 +136,7 @@ $accounts = [
         'image'  => 't_purchase.png',
         'status' => AccountStatus::ACTIVE,
         'email'  => 't.purchase@orange-management.email',
-        'groups' => ['user', 'Executive', 'Finance', 'Controlling', 'Employee', 'VKL'],
+        'groups' => ['user', 'Executive', 'Purchasing', 'Employee'],
     ],
     [
         'login'  => 'warehouse',
@@ -126,7 +146,7 @@ $accounts = [
         'image'  => 't_warehouse.png',
         'status' => AccountStatus::ACTIVE,
         'email'  => 't.warehouse@orange-management.email',
-        'groups' => ['user', 'Executive', 'Finance', 'Controlling', 'Employee', 'VKL'],
+        'groups' => ['user', 'Warehouse', 'Employee'],
     ],
     [
         'login'  => 'marketing',
@@ -136,7 +156,7 @@ $accounts = [
         'image'  => 't_marketing.png',
         'status' => AccountStatus::ACTIVE,
         'email'  => 't.marketing@orange-management.email',
-        'groups' => ['user', 'Executive', 'Finance', 'Controlling', 'Employee', 'VKL'],
+        'groups' => ['user', 'Executive', 'Marketing', 'Employee', 'VKL'],
     ],
     [
         'login'  => 'production',
@@ -146,7 +166,7 @@ $accounts = [
         'image'  => 't_production.png',
         'status' => AccountStatus::ACTIVE,
         'email'  => 't.production@orange-management.email',
-        'groups' => ['user', 'Executive', 'Finance', 'Controlling', 'Employee', 'VKL'],
+        'groups' => ['user', 'Executive', 'Production', 'Employee'],
     ],
     [
         'login'  => 'salesrep',
@@ -156,7 +176,7 @@ $accounts = [
         'image'  => 't_salesrep.png',
         'status' => AccountStatus::ACTIVE,
         'email'  => 't.salesrep@orange-management.email',
-        'groups' => ['user', 'Executive', 'Finance', 'Controlling', 'Employee', 'VKL'],
+        'groups' => ['user', 'Sales', 'Employee'],
     ],
 ];
 
