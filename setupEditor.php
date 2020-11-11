@@ -12,7 +12,6 @@
  */
 declare(strict_types=1);
 
-use phpOMS\Localization\ISO639Enum;
 use phpOMS\Message\Http\HttpRequest;
 use phpOMS\Message\Http\HttpResponse;
 use phpOMS\Uri\HttpUri;

@@ -13,7 +13,6 @@
 declare(strict_types=1);
 
 use Modules\Admin\Models\GroupMapper;
-use Modules\Profile\Models\ContactElement;
 use Modules\Profile\Models\ContactType;
 use phpOMS\Account\AccountStatus;
 use phpOMS\Account\AccountType;
@@ -26,6 +25,7 @@ use phpOMS\Uri\HttpUri;
 use phpOMS\Utils\RnG\Phone;
 use phpOMS\Utils\RnG\Text;
 use phpOMS\Utils\TestUtils;
+use phpOMS\Utils\RnG\Email;
 
 /**
  * Setup accounts
@@ -37,148 +37,7 @@ use phpOMS\Utils\TestUtils;
 $module = $app->moduleManager->get('Admin');
 TestUtils::setMember($module, 'app', $app);
 
-$accounts = [
-    [
-        'login'  => 'guest',
-        'pass'   => 'guest',
-        'name1'  => 'Test',
-        'name2'  => 'Guest',
-        'image'  => 't_guest.png',
-        'status' => AccountStatus::ACTIVE,
-        'email'  => 't.guest@orange-management.email',
-        'groups' => [],
-    ],
-    [
-        'login'  => 'user',
-        'pass'   => 'user',
-        'name1'  => 'Test',
-        'name2'  => 'User',
-        'image'  => 't_user.png',
-        'status' => AccountStatus::ACTIVE,
-        'email'  => 't.user@orange-management.email',
-        'groups' => ['user'],
-    ],
-    [
-        'login'  => 'supplier',
-        'pass'   => 'supplier',
-        'name1'  => 'Test',
-        'name2'  => 'Supplier',
-        'image'  => 't_supplier.png',
-        'status' => AccountStatus::ACTIVE,
-        'email'  => 't.supplier@orange-management.email',
-        'groups' => ['user'],
-    ],
-    [
-        'login'  => 'client',
-        'pass'   => 'client',
-        'name1'  => 'Test',
-        'name2'  => 'Client',
-        'image'  => 't_client.png',
-        'status' => AccountStatus::ACTIVE,
-        'email'  => 't.client@orange-management.email',
-        'groups' => ['user'],
-    ],
-    [
-        'login'  => 'support',
-        'pass'   => 'support',
-        'name1'  => 'Test',
-        'name2'  => 'Support',
-        'image'  => 't_support.png',
-        'status' => AccountStatus::ACTIVE,
-        'email'  => 't.support@orange-management.email',
-        'groups' => ['user', 'Suppoer', 'Employee', 'VKL'],
-    ],
-    [
-        'login'  => 'secretary',
-        'pass'   => 'secretary',
-        'name1'  => 'Test',
-        'name2'  => 'Secretary',
-        'image'  => 't_secretary.png',
-        'status' => AccountStatus::ACTIVE,
-        'email'  => 't.secretary@orange-management.email',
-        'groups' => ['user', 'Secretariat', 'Employee'],
-    ],
-    [
-        'login'  => 'service',
-        'pass'   => 'service',
-        'name1'  => 'Test',
-        'name2'  => 'Service',
-        'image'  => 't_service.png',
-        'status' => AccountStatus::ACTIVE,
-        'email'  => 't.service@orange-management.email',
-        'groups' => ['user', 'Service', 'Employee', 'VKL'],
-    ],
-    [
-        'login'  => 'finance',
-        'pass'   => 'finance',
-        'name1'  => 'Test',
-        'name2'  => 'Finance',
-        'image'  => 't_finance.png',
-        'status' => AccountStatus::ACTIVE,
-        'email'  => 't.finance@orange-management.email',
-        'groups' => ['user', 'Executive', 'Finance', 'Controlling', 'Employee', 'VKL'],
-    ],
-    [
-        'login'  => 'sales',
-        'pass'   => 'sales',
-        'name1'  => 'Test',
-        'name2'  => 'Sales',
-        'image'  => 't_sales.png',
-        'status' => AccountStatus::ACTIVE,
-        'email'  => 't.sales@orange-management.email',
-        'groups' => ['user', 'Executive', 'Sales', 'Employee', 'VKL'],
-    ],
-    [
-        'login'  => 'purchase',
-        'pass'   => 'purchase',
-        'name1'  => 'Test',
-        'name2'  => 'Purchase',
-        'image'  => 't_purchase.png',
-        'status' => AccountStatus::ACTIVE,
-        'email'  => 't.purchase@orange-management.email',
-        'groups' => ['user', 'Executive', 'Purchasing', 'Employee'],
-    ],
-    [
-        'login'  => 'warehouse',
-        'pass'   => 'warehouse',
-        'name1'  => 'Test',
-        'name2'  => 'Warehouse',
-        'image'  => 't_warehouse.png',
-        'status' => AccountStatus::ACTIVE,
-        'email'  => 't.warehouse@orange-management.email',
-        'groups' => ['user', 'Warehouse', 'Employee'],
-    ],
-    [
-        'login'  => 'marketing',
-        'pass'   => 'marketing',
-        'name1'  => 'Test',
-        'name2'  => 'Marketing',
-        'image'  => 't_marketing.png',
-        'status' => AccountStatus::ACTIVE,
-        'email'  => 't.marketing@orange-management.email',
-        'groups' => ['user', 'Executive', 'Marketing', 'Employee', 'VKL'],
-    ],
-    [
-        'login'  => 'production',
-        'pass'   => 'production',
-        'name1'  => 'Test',
-        'name2'  => 'Production',
-        'image'  => 't_production.png',
-        'status' => AccountStatus::ACTIVE,
-        'email'  => 't.production@orange-management.email',
-        'groups' => ['user', 'Executive', 'Production', 'Employee'],
-    ],
-    [
-        'login'  => 'salesrep',
-        'pass'   => 'salesrep',
-        'name1'  => 'Test',
-        'name2'  => 'Salesrep',
-        'image'  => 't_salesrep.png',
-        'status' => AccountStatus::ACTIVE,
-        'email'  => 't.salesrep@orange-management.email',
-        'groups' => ['user', 'Sales', 'Employee'],
-    ],
-];
+$accounts = $variables['accounts'];
 
 /** @var \Modules\Profile\Controller\ApiController $profileModule */
 $profileModule = $app->moduleManager->get('Profile');
@@ -187,7 +46,7 @@ TestUtils::setMember($profileModule, 'app', $app);
 $LOREM_COUNT = count(Text::LOREM_IPSUM) - 1;
 
 $groups = GroupMapper::getAll();
-foreach ($accounts as $account) {
+foreach ($accounts as $key=> $account) {
     $response = new HttpResponse();
     $request  = new HttpRequest(new HttpUri(''));
 
@@ -204,7 +63,10 @@ foreach ($accounts as $account) {
     $module->apiAccountCreate($request, $response);
 
     //region groups
-    $a = $response->get('')['response'];
+    $a                                      = $response->get('')['response'];
+    $variables['accounts'][$key]['id']      = $a->getId();
+    $variables['accounts'][$key]['profile'] = \Modules\Profile\Models\ProfileMapper::getFor($a->getId(), 'account')->getId();
+
     foreach ($groups as $g) {
         if (\in_array($g->getName(), $account['groups'])) {
             $response = new HttpResponse();
@@ -228,14 +90,19 @@ foreach ($accounts as $account) {
             \mkdir(__DIR__ . '/temp');
         }
 
-        $image = imagecreate(256, 256);
-        $image_backgroundColor = imagecolorallocate($image, 54, 151, 219);
-        $image_textColor       = imagecolorallocate($image, 52, 58, 64);
+        $image = \imagecreate(256, 256);
+        $image_backgroundColor = \imagecolorallocate($image, 54, 151, 219);
+        $image_textColor       = \imagecolorallocate($image, 52, 58, 64);
 
-        imagefill($image, 0, 0, $image_backgroundColor);
-        imagettftext($image, 100, 0, 128 - 83, 128 + 50, $image_textColor, __DIR__ . '/files/SpaceMono-Bold.ttf', \strtoupper($account['name1'][0] . $account['name2'][0]));
-        imagepng($image, __DIR__ . '/temp/' . $account['image']);
-        imagedestroy($image);
+        \imagefill($image, 0, 0, $image_backgroundColor);
+        \imagettftext(
+            $image, 100, 0, 128 - 83, 128 + 50,
+            $image_textColor,
+            __DIR__ . '/files/SpaceMono-Bold.ttf',
+            \strtoupper($account['name1'][0] . $account['name2'][0])
+        );
+        \imagepng($image, __DIR__ . '/temp/' . $account['image']);
+        \imagedestroy($image);
 
         $request->getHeader()->setAccount($a->getId());
         $request->setData('name', 'Profile Image');
@@ -289,7 +156,7 @@ foreach ($accounts as $account) {
         if ($type === ContactType::PHONE) {
             $request->setData('content', Phone::generatePhone());
         } elseif ($type === ContactType::EMAIL) {
-            $request->setData('content', Text::LOREM_IPSUM[\mt_rand(0, $LOREM_COUNT)] . '@' . Text::LOREM_IPSUM[\mt_rand(0, $LOREM_COUNT)] . '.com');
+            $request->setData('content', Email::generateEmail());
         } elseif ($type === ContactType::FAX) {
             $request->setData('content', Phone::generatePhone());
         } elseif ($type === ContactType::WEBSITE) {

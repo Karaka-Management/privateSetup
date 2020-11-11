@@ -15,6 +15,7 @@ declare(strict_types=1);
 use phpOMS\Message\Http\HttpRequest;
 use phpOMS\Message\Http\HttpResponse;
 use phpOMS\Uri\HttpUri;
+use phpOMS\Utils\RnG\DateTime;
 use phpOMS\Utils\TestUtils;
 
 /**
@@ -27,54 +28,53 @@ use phpOMS\Utils\TestUtils;
 $module = $app->moduleManager->get('HumanResourceManagement');
 TestUtils::setMember($module, 'app', $app);
 
-$response = new HttpResponse();
-$request  = new HttpRequest(new HttpUri(''));
+$POSITIONS   = \count($variables['positions']);
+$DEPARTMENTS = \count($variables['departments']);
 
-$request->getHeader()->setAccount(2);
+foreach ($variables['accounts'] as $account) {
+    if (!\in_array('Employee', $account['groups'])) {
+        continue;
+    }
 
-$i = 0;
-/** @var array $account */
-foreach ($accounts as $account) {
-    ++$i;
+    $response = new HttpResponse();
+    $request  = new HttpRequest(new HttpUri(''));
 
-    $request->setData('profiles', $i, true);
+    $request->getHeader()->setAccount(2);
+
+    $request->setData('profiles', (string) $account['profile']);
     $module->apiEmployeeCreate($request, $response);
+
+    $id      = $response->get('')['response'][0]->getId();
+    $history = \mt_rand(-2, 3);
+
+    $start = DateTime::generateDateTime(
+        (new \DateTime())->setTimestamp(\time() - \mt_rand(31622400*5, 31622400*10)),
+        (new \DateTime())->setTimestamp(\time() - \mt_rand(31622400*1, 31622400*4))
+    );
+
+    $end = DateTime::generateDateTime(
+        $start,
+        (new \DateTime())->setTimestamp($start->getTimestamp() + \mt_rand(1, 31622400))
+    );
+
+    for ($i = 0; $i < $history; ++$i) {
+        $response = new HttpResponse();
+        $request  = new HttpRequest(new HttpUri(''));
+
+        $request->getHeader()->setAccount(1);
+        $request->setData('employee', $id);
+        $request->setData('start', $start->format('Y-m-d'));
+        $request->setData('end', $i + 1 < $history ? $end->format('Y-m-d') : null);
+        $request->setData('unit', 2);
+        $request->setData('department', $variables['departments'][\mt_rand(0, $DEPARTMENTS - 1)]['id']);
+        $request->setData('position', $variables['positions'][\mt_rand(0, $POSITIONS - 1)]['id']);
+        $module->apiEmployeeHistoryCreate($request, $response);
+
+        $start = clone $end;
+        $end   = DateTime::generateDateTime(
+            $start,
+            (new \DateTime())->setTimestamp($start->getTimestamp() + \mt_rand(1, 31622400))
+        );
+    }
 }
-
-$response = new HttpResponse();
-$request  = new HttpRequest(new HttpUri(''));
-
-$request->getHeader()->setAccount(2);
-
-$request->setData('employee', 1, true);
-$request->setData('start', '2015-07-01', true);
-$request->setData('end', '2017-01-15', true);
-$request->setData('unit', 2, true);
-$request->setData('department', 13, true);
-$request->setData('position', 31, true);
-$module->apiEmployeeHistoryCreate($request, $response);
-
-$request->setData('employee', 1, true);
-$request->setData('start', '2017-01-15', true);
-$request->setData('end', '2019-08-31', true);
-$request->setData('unit', 2, true);
-$request->setData('department', 13, true);
-$request->setData('position', 9, true);
-$module->apiEmployeeHistoryCreate($request, $response);
-
-$request->setData('employee', 1, true);
-$request->setData('start', '2017-09-01', true);
-$request->setData('end', '2019-01-01', true);
-$request->setData('unit', 2, true);
-$request->setData('department', 13, true);
-$request->setData('position', 8, true);
-$module->apiEmployeeHistoryCreate($request, $response);
-
-$request->setData('employee', 1, true);
-$request->setData('start', '2019-01-01', true);
-$request->setData('end', '', true);
-$request->setData('unit', 2, true);
-$request->setData('department', 13, true);
-$request->setData('position', 7, true);
-$module->apiEmployeeHistoryCreate($request, $response);
 //endregion

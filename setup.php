@@ -43,7 +43,7 @@ use phpOMS\Uri\HttpUri;
 use phpOMS\Utils\TestUtils;
 
 //region Setup
-$config = require_once __DIR__ . '/config.php';
+$config    = require_once __DIR__ . '/config.php';
 $variables = require_once __DIR__ . '/variables.php';
 
 // Reset database
@@ -206,15 +206,26 @@ $config = include __DIR__ . '/../Install/Templates/config.tpl.php';
 \file_put_contents(__DIR__ . '/../config.php', $config);
 //endregion
 
+include __DIR__ . '/setupDemoTemplates.php';
+
 include __DIR__ . '/setupModules.php';
 include __DIR__ . '/setupGroups.php';
 include __DIR__ . '/setupOrganization.php';
 include __DIR__ . '/setupAccounts.php';
 include __DIR__ . '/setupTag.php';
-include __DIR__ . '/setupKnowledgebase.php';
+include __DIR__ . '/setupItemManagement.php';
 include __DIR__ . '/setupHelper.php';
 include __DIR__ . '/setupEditor.php';
 include __DIR__ . '/setupTask.php';
 include __DIR__ . '/setupDashboard.php';
 include __DIR__ . '/setupNews.php';
+include __DIR__ . '/setupClientManagement.php';
+include __DIR__ . '/setupSupplierManagement.php';
 include __DIR__ . '/setupHumanResourceManagement.php';
+include __DIR__ . '/setupKnowledgebase.php';
+
+include __DIR__ . '/setupCMS.php';
+include __DIR__ . '/setupKanban.php';
+include __DIR__ . '/setupQA.php';
+include __DIR__ . '/setupSupport.php';
+include __DIR__ . '/setupCalendar.php';
