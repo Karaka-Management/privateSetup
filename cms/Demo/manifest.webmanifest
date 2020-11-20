@@ -1,0 +1,24 @@
+{
+    "lang": "en",
+    "dir": "ltr",
+    "start_url": "../../{APPNAME}",
+    "type": "privileged",
+    "name": "Schütz Dental CAD/CAM",
+    "description": "Schütz Dental CAD/CAM",
+    "short_name": "SD CAD/CAM",
+    "icons": [
+        {
+            "src": "/Web/{APPNAME}/img/icon.png",
+            "sizes": "64x64 128x128 256x256 512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "scope": "/",
+    "display": "standalone",
+    "orientation": "any",
+    "theme_color": "#262626",
+    "background_color": "white",
+    "permissions": {
+    }
+}
