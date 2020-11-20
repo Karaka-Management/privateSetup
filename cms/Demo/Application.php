@@ -387,7 +387,7 @@ final class Application
 
         $css = \preg_replace('!\s+!', ' ', $css);
         $head->setStyle('core', $css ?? '');
-        $head->setTitle('CAD/CAM');
+        $head->setTitle('Demo Application');
     }
 
     /**
