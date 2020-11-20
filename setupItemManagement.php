@@ -120,7 +120,9 @@ foreach ($LOREM as $word) {
 // item l11n types (e.g. article names)
 $L11N_TYPES = 30;
 $i          = $L11N_TYPES;
-foreach ($LOREM as $word) {
+$LOREM2     = \array_merge(['name1', 'name2', 'info'], $LOREM);
+
+foreach ($LOREM2 as $word) {
     if (--$i < 0) {
         break;
     }

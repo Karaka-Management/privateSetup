@@ -49,8 +49,8 @@ for ($i = 0; $i < $CUSTOMERS; ++$i) {
     $numbers[] = $number;
 
     $request->setData('number', (string) $number);
-    $request->setData('name1', Text::LOREM_IPSUM[\mt_rand(0, $LOREM_COUNT - 1)]);
-    $request->setData('name2', Text::LOREM_IPSUM[\mt_rand(0, $LOREM_COUNT - 1)]);
+    $request->setData('name1', \ucfirst(Text::LOREM_IPSUM[\mt_rand(0, $LOREM_COUNT - 1)]));
+    $request->setData('name2', \ucfirst(Text::LOREM_IPSUM[\mt_rand(0, $LOREM_COUNT - 1)]));
 
     $request->setData('type', AddressType::getRandom());
     $request->setData('address',
