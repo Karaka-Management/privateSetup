@@ -6,7 +6,7 @@ return [
         ':language'             => 'English',
         'Depreciation'          => 'Depreciation',
         'Period'                => 'Period',
-        'StraightLine'          => 'StraightLine',
+        'StraightLine'          => 'Straight Line',
         'ArithmeticDegressive'  => 'Arithmetic Degressive',
         'ArithmeticProgressive' => 'Arithmetic Progressive',
         'GeometricDegressive'   => 'Geometric Degressive',
