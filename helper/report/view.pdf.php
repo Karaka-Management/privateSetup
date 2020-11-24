@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 use Mpdf\Mpdf;
 use phpOMS\Uri\UriFactory;
@@ -20,15 +20,15 @@ $lang           = $reportLanguage[$cLang];
 $date = new \phpOMS\Stdlib\Base\SmartDateTime($this->request->getData('date') ?? 'Y-m-d');
 
 $mpdf = new Mpdf([
-    'mode' => 'utf-8',
-    'format' => 'A4-L',
+    'mode'        => 'utf-8',
+    'format'      => 'A4-L',
     'orientation' => 'L',
     'margin_left' => 0,
-	'margin_right' => 0,
-	'margin_top' => 0,
-	'margin_bottom' => 0,
-	'margin_header' => 0,
-	'margin_footer' => 0
+	'margin_right'   => 0,
+	'margin_top'     => 0,
+	'margin_bottom'  => 0,
+	'margin_header'  => 0,
+	'margin_footer'  => 0,
 ]);
 
 $mpdf->SetDisplayMode('fullpage');

@@ -22,10 +22,10 @@ use phpOMS\Message\Http\HttpResponse;
 use phpOMS\Stdlib\Base\AddressType;
 use phpOMS\System\MimeType;
 use phpOMS\Uri\HttpUri;
+use phpOMS\Utils\RnG\Email;
 use phpOMS\Utils\RnG\Phone;
 use phpOMS\Utils\RnG\Text;
 use phpOMS\Utils\TestUtils;
-use phpOMS\Utils\RnG\Email;
 
 /**
  * Setup accounts
@@ -43,7 +43,7 @@ $accounts = $variables['accounts'];
 $profileModule = $app->moduleManager->get('Profile');
 TestUtils::setMember($profileModule, 'app', $app);
 
-$LOREM_COUNT = count(Text::LOREM_IPSUM) - 1;
+$LOREM_COUNT = \count(Text::LOREM_IPSUM) - 1;
 
 $groups = GroupMapper::getAll();
 foreach ($accounts as $key=> $account) {
@@ -90,7 +90,7 @@ foreach ($accounts as $key=> $account) {
             \mkdir(__DIR__ . '/temp');
         }
 
-        $image = \imagecreate(256, 256);
+        $image                 = \imagecreate(256, 256);
         $image_backgroundColor = \imagecolorallocate($image, 54, 151, 219);
         $image_textColor       = \imagecolorallocate($image, 52, 58, 64);
 
@@ -164,7 +164,6 @@ foreach ($accounts as $key=> $account) {
         }
 
         $profileModule->apiContactElementCreate($request, $response);
-
     }
     //endregion
 }

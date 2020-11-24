@@ -29,8 +29,8 @@ use phpOMS\Utils\TestUtils;
 $module = $app->moduleManager->get('Admin');
 TestUtils::setMember($module, 'app', $app);
 
-$response = new HttpResponse();
-$request  = new HttpRequest(new HttpUri(''));
+$response                 = new HttpResponse();
+$request                  = new HttpRequest(new HttpUri(''));
 $request->header->account = 1;
 $request->setData('status', ModuleStatusUpdateType::INSTALL);
 

@@ -48,8 +48,8 @@ foreach ($variables['accounts'] as $account) {
     $history = \mt_rand(-2, 3);
 
     $start = DateTime::generateDateTime(
-        (new \DateTime())->setTimestamp(\time() - \mt_rand(31622400*5, 31622400*10)),
-        (new \DateTime())->setTimestamp(\time() - \mt_rand(31622400*1, 31622400*4))
+        (new \DateTime())->setTimestamp(\time() - \mt_rand(31622400 * 5, 31622400 * 10)),
+        (new \DateTime())->setTimestamp(\time() - \mt_rand(31622400 * 1, 31622400 * 4))
     );
 
     $end = DateTime::generateDateTime(

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 use phpOMS\Business\Finance\Depreciation;
 
@@ -27,7 +27,7 @@ $depreciation = [
         $lang['ArithmeticProgressive'],
         $lang['GeometricDegressive'],
         $lang['GeometricProgressive'],
-    ]
+    ],
 ];
 
 for ($i = 1; $i <= $duration; ++$i) {

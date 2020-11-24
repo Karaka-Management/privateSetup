@@ -1,6 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
 use phpOMS\Uri\UriFactory;
+
 ?>
 <footer>
     <div class="floater">

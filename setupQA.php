@@ -14,12 +14,12 @@ declare(strict_types=1);
 
 use Modules\QA\Models\QAAnswerStatus;
 use Modules\QA\Models\QAQuestionStatus;
+use phpOMS\Localization\ISO639x1Enum;
 use phpOMS\Message\Http\HttpRequest;
 use phpOMS\Message\Http\HttpResponse;
 use phpOMS\Uri\HttpUri;
 use phpOMS\Utils\RnG\Text;
 use phpOMS\Utils\TestUtils;
-use phpOMS\Localization\ISO639x1Enum;
 
 /**
  * Create tasks

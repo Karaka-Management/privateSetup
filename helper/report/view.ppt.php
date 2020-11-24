@@ -1,13 +1,13 @@
-<?php
+<?php declare(strict_types=1);
 
-use PhpOffice\PhpPresentation\PhpPresentation;
 use PhpOffice\PhpPresentation\IOFactory;
-use PhpOffice\PhpPresentation\Style\Alignment;
-use PhpOffice\PhpPresentation\Style\Color as StyleColor;
+use PhpOffice\PhpPresentation\PhpPresentation;
 use PhpOffice\PhpPresentation\Shape\Drawing\File;
 use PhpOffice\PhpPresentation\Shape\Line;
 use PhpOffice\PhpPresentation\Slide\Background\Color;
+use PhpOffice\PhpPresentation\Style\Alignment;
 use PhpOffice\PhpPresentation\Style\Bullet;
+use PhpOffice\PhpPresentation\Style\Color as StyleColor;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 
 /**
@@ -41,7 +41,7 @@ $colorBlue  = new StyleColor('FF3697db');
 $colorDark  = new StyleColor('FF434a51');
 
 // start screen
-$oSlide1 = $objPHPPresentation->getActiveSlide();
+$oSlide1   = $objPHPPresentation->getActiveSlide();
 $oBkgColor = new Color();
 $oBkgColor->setColor($colorDark);
 $oSlide1->setBackground($oBkgColor);

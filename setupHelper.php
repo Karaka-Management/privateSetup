@@ -55,11 +55,11 @@ foreach ($helpers as $helper) {
         \copy(__DIR__ . '/helper/' . $helper . '/' . $filePath, __DIR__ . '/temp/' . $filePath);
 
         $files[] = [
-            'error' => \UPLOAD_ERR_OK,
-            'type' => \substr($filePath, \strrpos($filePath, '.') + 1),
-            'name' => $filePath,
+            'error'    => \UPLOAD_ERR_OK,
+            'type'     => \substr($filePath, \strrpos($filePath, '.') + 1),
+            'name'     => $filePath,
             'tmp_name' => __DIR__ . '/temp/' . $filePath,
-            'size' => \filesize(__DIR__ . '/temp/' . $filePath),
+            'size'     => \filesize(__DIR__ . '/temp/' . $filePath),
         ];
     }
 

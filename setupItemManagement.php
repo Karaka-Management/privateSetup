@@ -12,15 +12,15 @@
  */
 declare(strict_types=1);
 
+use Modules\ItemManagement\Models\AttributeValueType;
 use phpOMS\Localization\ISO3166TwoEnum;
+use phpOMS\Localization\ISO639x1Enum;
 use phpOMS\Message\Http\HttpRequest;
 use phpOMS\Message\Http\HttpResponse;
 use phpOMS\System\MimeType;
 use phpOMS\Uri\HttpUri;
 use phpOMS\Utils\RnG\Text;
 use phpOMS\Utils\TestUtils;
-use phpOMS\Localization\ISO639x1Enum;
-use Modules\ItemManagement\Models\AttributeValueType;
 
 /**
  * Setup accounts
@@ -197,7 +197,7 @@ for ($i = 0; $i < $ITEMS; ++$i) {
         \mkdir(__DIR__ . '/temp');
     }
 
-    $image = \imagecreate(256, 256);
+    $image                 = \imagecreate(256, 256);
     $image_backgroundColor = \imagecolorallocate($image, 54, 151, 219);
     $image_textColor       = \imagecolorallocate($image, 52, 58, 64);
 

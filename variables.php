@@ -1,7 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
-use phpOMS\Localization\ISO639x1Enum;
 use phpOMS\Account\AccountStatus;
+use phpOMS\Localization\ISO639x1Enum;
 
 return [
     'languages' => [
@@ -253,5 +253,5 @@ return [
         ['name' => 'Head of Marketing',       'department' => 'Marketing',             'parent' => 'CEO'],
         ['name' => 'Marketing Employee',      'department' => 'Marketing',             'parent' => 'Head of Marketing'],
         ['name' => 'Trainee',                 'department' => 'HR',                    'parent' => 'Head of HR'],
-    ]
+    ],
 ];
