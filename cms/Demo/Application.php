@@ -120,7 +120,7 @@ final class Application
             function() use ($request, $response) {
                 $view = new View($this->app->l11nManager, $request, $response);
                 $view->setTemplate('/Web/{APPNAME}/Error/403_inline');
-                $response->header->setStatusCode(RequestStatusCode::R_403);
+                $response->header->status = RequestStatusCode::R_403;
 
 
                 return $view;
@@ -132,7 +132,7 @@ final class Application
         if ($request->getData('CSRF') !== null
             && !\hash_equals($this->app->sessionManager->get('CSRF'), $request->getData('CSRF'))
         ) {
-            $response->header->setStatusCode(RequestStatusCode::R_403);
+            $response->header->status = RequestStatusCode::R_403;
 
             return;
         }
@@ -149,13 +149,13 @@ final class Application
         $this->app->orgId          = $this->getApplicationOrganization($request, $this->config['app']);
 
         $aid = Auth::authenticate($this->app->sessionManager);
-        $request->header->setAccount($aid);
-        $response->header->setAccount($aid);
+        $request->header->account = $aid;
+        $response->header->account = $aid;
 
         $account = $this->loadAccount($request);
 
         if (!($account instanceof NullAccount)) {
-            $response->header->setL11n($account->l11n);
+            $response->header->l11n = $account->l11n;
         } elseif ($this->app->sessionManager->get('language') !== null) {
             $response->header->l11n
                 ->loadFromLanguage(
@@ -240,7 +240,7 @@ final class Application
     {
         return (int) (
             $request->getData('u') ?? (
-                $config['domains'][$request->uri->getHost()]['org'] ?? $config['default']['org']
+                $config['domains'][$request->uri->host]['org'] ?? $config['default']['org']
             )
         );
     }
@@ -257,7 +257,7 @@ final class Application
      */
     private function create406Response(HttpResponse $response, View $pageView) : void
     {
-        $response->header->setStatusCode(RequestStatusCode::R_406);
+        $response->header->status = RequestStatusCode::R_406;
         $pageView->setTemplate('/Web/{APPNAME}/Error/406');
         $this->loadLanguageFromPath(
             $response->getLanguage(),
@@ -277,7 +277,7 @@ final class Application
      */
     private function create503Response(HttpResponse $response, View $pageView) : void
     {
-        $response->header->setStatusCode(RequestStatusCode::R_503);
+        $response->header->status = RequestStatusCode::R_503;
         $pageView->setTemplate('/Web/{APPNAME}/Error/503');
         $this->loadLanguageFromPath(
             $response->getLanguage(),
@@ -318,7 +318,7 @@ final class Application
      */
     private function loadAccount(HttpRequest $request) : Account
     {
-        $account = AccountMapper::getWithPermissions($request->header->getAccount());
+        $account = AccountMapper::getWithPermissions($request->header->account);
         $this->app->accountManager->add($account);
 
         return $account;
@@ -336,7 +336,7 @@ final class Application
      */
     private function create403Response(HttpResponse $response, View $pageView) : void
     {
-        $response->header->setStatusCode(RequestStatusCode::R_403);
+        $response->header->status = RequestStatusCode::R_403;
         $pageView->setTemplate('/Web/{APPNAME}/Error/403');
         $this->loadLanguageFromPath(
             $response->getLanguage(),
