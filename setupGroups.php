@@ -423,7 +423,7 @@ foreach ($groups as $group) {
     $response = new HttpResponse();
     $request  = new HttpRequest(new HttpUri(''));
 
-    $request->getHeader()->setAccount(1);
+    $request->header->account = 1;
     $request->setData('name', $group['name']);
     $request->setData('status', GroupStatus::ACTIVE);
     $module->apiGroupCreate($request, $response);
@@ -434,7 +434,7 @@ foreach ($groups as $group) {
             $response = new HttpResponse();
             $request  = new HttpRequest(new HttpUri(''));
 
-            $request->getHeader()->setAccount(1);
+            $request->header->account = 1;
             $request->setData('permissionowner', $p['permissionowner']);
             $request->setData('permissionref', $g->getId());
             $request->setData('permissionunit', $p['permissionunit']);

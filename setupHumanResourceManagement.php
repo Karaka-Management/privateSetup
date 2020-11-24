@@ -39,7 +39,7 @@ foreach ($variables['accounts'] as $account) {
     $response = new HttpResponse();
     $request  = new HttpRequest(new HttpUri(''));
 
-    $request->getHeader()->setAccount(2);
+    $request->header->account = 2;
 
     $request->setData('profiles', (string) $account['profile']);
     $module->apiEmployeeCreate($request, $response);
@@ -61,7 +61,7 @@ foreach ($variables['accounts'] as $account) {
         $response = new HttpResponse();
         $request  = new HttpRequest(new HttpUri(''));
 
-        $request->getHeader()->setAccount(1);
+        $request->header->account = 1;
         $request->setData('employee', $id);
         $request->setData('start', $start->format('Y-m-d'));
         $request->setData('end', $i + 1 < $history ? $end->format('Y-m-d') : null);

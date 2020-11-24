@@ -39,7 +39,7 @@ $dispatch = $this->getData('dispatch') ?? [];
     <link rel="manifest" href="<?= UriFactory::build('Web/{APPNAME}/manifest.json'); ?>">
     <link rel="shortcut icon" href="<?= UriFactory::build('Web/{APPNAME}/img/favicon.ico'); ?>" type="image/x-icon">
 
-    <title><?= $this->printHtml($head->getTitle()); ?></title>
+    <title><?= $this->printHtml($head->title)); ?></title>
 
     <?= $head->renderAssets(); ?>
 

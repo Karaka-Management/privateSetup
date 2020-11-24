@@ -43,7 +43,7 @@ foreach ($LOREM as $word) {
     $response = new HttpResponse();
     $request  = new HttpRequest(new HttpUri(''));
 
-    $request->getHeader()->setAccount(\mt_rand(2, 5));
+    $request->header->account = \mt_rand(2, 5);
 
     $request->setData('name', '_' . $word); // identifier of the attribute
     $request->setData('language', ISO639x1Enum::_EN);
@@ -60,7 +60,7 @@ foreach ($LOREM as $word) {
         $response = new HttpResponse();
         $request  = new HttpRequest(new HttpUri(''));
 
-        $request->getHeader()->setAccount(\mt_rand(2, 5));
+        $request->header->account = \mt_rand(2, 5);
 
         $request->setData('type', $attrTypeId);
         $request->setData('language', $language);
@@ -76,7 +76,7 @@ foreach ($LOREM as $word) {
         $response = new HttpResponse();
         $request  = new HttpRequest(new HttpUri(''));
 
-        $request->getHeader()->setAccount(\mt_rand(2, 5));
+        $request->header->account = \mt_rand(2, 5);
 
         $request->setData('attributetype', $attrTypeId);
         $request->setData('type', $type);
@@ -130,7 +130,7 @@ foreach ($LOREM2 as $word) {
     $response = new HttpResponse();
     $request  = new HttpRequest(new HttpUri(''));
 
-    $request->getHeader()->setAccount(\mt_rand(2, 5));
+    $request->header->account = \mt_rand(2, 5);
 
     $request->setData('title', $word);
 
@@ -143,7 +143,7 @@ for ($i = 0; $i < $ITEMS; ++$i) {
     $response = new HttpResponse();
     $request  = new HttpRequest(new HttpUri(''));
 
-    $request->getHeader()->setAccount(\mt_rand(2, 5));
+    $request->header->account = \mt_rand(2, 5);
 
     do {
         $number = \mt_rand(100000, 999999);
@@ -162,7 +162,7 @@ for ($i = 0; $i < $ITEMS; ++$i) {
             $response = new HttpResponse();
             $request  = new HttpRequest(new HttpUri(''));
 
-            $request->getHeader()->setAccount(\mt_rand(2, 5));
+            $request->header->account = \mt_rand(2, 5);
 
             $request->setData('item', $itemId);
             $request->setData('type', $j + 1);
@@ -179,7 +179,7 @@ for ($i = 0; $i < $ITEMS; ++$i) {
         $response = new HttpResponse();
         $request  = new HttpRequest(new HttpUri(''));
 
-        $request->getHeader()->setAccount(\mt_rand(2, 5));
+        $request->header->account = \mt_rand(2, 5);
 
         $request->setData('item', $itemId);
         $request->setData('type', $j);
@@ -211,7 +211,7 @@ for ($i = 0; $i < $ITEMS; ++$i) {
     \imagepng($image, __DIR__ . '/temp/' . $number . '.png');
     \imagedestroy($image);
 
-    $request->getHeader()->setAccount(\mt_rand(2, 5));
+    $request->header->account = \mt_rand(2, 5);
     $request->setData('name', $number . ' backend');
     $request->setData('item', $itemId);
     $request->setData('type', 'backend_image');

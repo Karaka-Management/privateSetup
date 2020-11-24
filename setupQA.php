@@ -43,7 +43,7 @@ foreach ($LOREM as $j => $word) {
     $response = new HttpResponse();
     $request  = new HttpRequest(new HttpUri(''));
 
-    $request->getHeader()->setAccount(\mt_rand(2, 5));
+    $request->header->account = \mt_rand(2, 5);
     $request->setData('language', ISO639x1Enum::_EN);
     $request->setData('name', 'EN:' . $word);
 
@@ -63,7 +63,7 @@ foreach ($LOREM as $j => $word) {
         $response = new HttpResponse();
         $request  = new HttpRequest(new HttpUri(''));
 
-        $request->getHeader()->setAccount(\mt_rand(2, 5));
+        $request->header->account = \mt_rand(2, 5);
         $request->setData('category', $category->getId());
         $request->setData('language', $language);
         $request->setData('name', \strtoupper($language) . ':' . Text::LOREM_IPSUM[\mt_rand(0, $LOREM_COUNT)]);
@@ -78,7 +78,7 @@ for ($i = 0; $i < $QUESTION_COUNT; ++$i) {
 
     $MARKDOWN = \file_get_contents(__DIR__ . '/lorem_ipsum/' . \mt_rand(0, 999) . '_3-6');
 
-    $request->getHeader()->setAccount(\mt_rand(1, 5));
+    $request->header->account = \mt_rand(1, 5);
     $request->setData('title', \trim(\strtok($MARKDOWN, "\n"), ' #'));
     $request->setData('plain', \preg_replace('/^.+\n/', '', $MARKDOWN));
     $request->setData('language', $variables['languages'][\mt_rand(0, $LANGUAGES - 1)]);
@@ -115,7 +115,7 @@ for ($i = 0; $i < $QUESTION_COUNT; ++$i) {
 
         $MARKDOWN = \file_get_contents(__DIR__ . '/lorem_ipsum/' . \mt_rand(0, 999) . '_3-6');
 
-        $request->getHeader()->setAccount(\mt_rand(1, 5));
+        $request->header->account = \mt_rand(1, 5);
         $request->setData('plain', \preg_replace('/^.+\n/', '', $MARKDOWN));
         $request->setData('status', QAAnswerStatus::getRandom());
         $request->setData('question', $id);

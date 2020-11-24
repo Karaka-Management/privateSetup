@@ -40,7 +40,7 @@ for ($i = 0; $i < $KANBAN_COUNT; ++$i) {
 
     $MARKDOWN = \file_get_contents(__DIR__ . '/lorem_ipsum/' . \mt_rand(0, 999) . '_3-6');
 
-    $request->getHeader()->setAccount(\mt_rand(1, 5));
+    $request->header->account = \mt_rand(1, 5);
     $request->setData('title', \trim(\strtok($MARKDOWN, "\n"), ' #'));
     $request->setData('status', BoardStatus::getRandom());
 
@@ -54,7 +54,7 @@ for ($i = 0; $i < $KANBAN_COUNT; ++$i) {
         $response = new HttpResponse();
         $request  = new HttpRequest(new HttpUri(''));
 
-        $request->getHeader()->setAccount(\mt_rand(2, 5));
+        $request->header->account = \mt_rand(2, 5);
         $request->setData('title', Text::LOREM_IPSUM[\mt_rand(0, $LOREM_COUNT)]);
         $request->setData('order', $j + 1);
         $request->setData('board', $boardId);
@@ -71,7 +71,7 @@ for ($i = 0; $i < $KANBAN_COUNT; ++$i) {
 
             $MARKDOWN = \file_get_contents(__DIR__ . '/lorem_ipsum/' . \mt_rand(0, 999) . '_3-6');
 
-            $request->getHeader()->setAccount(\mt_rand(2, 5));
+            $request->header->account = \mt_rand(2, 5);
             $request->setData('title', \trim(\strtok($MARKDOWN, "\n"), ' #'));
             $request->setData('plain', \preg_replace('/^.+\n/', '', $MARKDOWN));
             $request->setData('type', CardType::getRandom());
@@ -90,7 +90,7 @@ for ($i = 0; $i < $KANBAN_COUNT; ++$i) {
 
                 $MARKDOWN = \file_get_contents(__DIR__ . '/lorem_ipsum/' . \mt_rand(0, 999) . '_3-6');
 
-                $request->getHeader()->setAccount(\mt_rand(2, 5));
+                $request->header->account = \mt_rand(2, 5);
                 $request->setData('plain', \preg_replace('/^.+\n/', '', $MARKDOWN));
                 $request->setData('card', $cardId);
 

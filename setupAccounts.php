@@ -50,7 +50,7 @@ foreach ($accounts as $key=> $account) {
     $response = new HttpResponse();
     $request  = new HttpRequest(new HttpUri(''));
 
-    $request->getHeader()->setAccount(1);
+    $request->header->account = 1;
     $request->setData('login', $account['login']);
     $request->setData('password', $account['pass']);
     $request->setData('name1', $account['name1']);
@@ -68,11 +68,11 @@ foreach ($accounts as $key=> $account) {
     $variables['accounts'][$key]['profile'] = \Modules\Profile\Models\ProfileMapper::getFor($a->getId(), 'account')->getId();
 
     foreach ($groups as $g) {
-        if (\in_array($g->getName(), $account['groups'])) {
+        if (\in_array($g->name, $account['groups'])) {
             $response = new HttpResponse();
             $request  = new HttpRequest(new HttpUri(''));
 
-            $request->getHeader()->setAccount($a->getId());
+            $request->header->account = $a->getId();
             $request->setData('account', $a->getId());
             $request->setData('igroup-idlist', (string) $g->getId());
 
@@ -104,7 +104,7 @@ foreach ($accounts as $key=> $account) {
         \imagepng($image, __DIR__ . '/temp/' . $account['image']);
         \imagedestroy($image);
 
-        $request->getHeader()->setAccount($a->getId());
+        $request->header->account = $a->getId();
         $request->setData('name', 'Profile Image');
 
         TestUtils::setMember($request, 'files', [
@@ -127,7 +127,7 @@ foreach ($accounts as $key=> $account) {
         $response = new HttpResponse();
         $request  = new HttpRequest(new HttpUri(''));
 
-        $request->getHeader()->setAccount($a->getId());
+        $request->header->account = $a->getId();
         $request->setData('account', $a->getId());
         $request->setData('type', AddressType::getRandom());
         $request->setData('name', '');
@@ -148,7 +148,7 @@ foreach ($accounts as $key=> $account) {
         $response = new HttpResponse();
         $request  = new HttpRequest(new HttpUri(''));
 
-        $request->getHeader()->setAccount($a->getId());
+        $request->header->account = $a->getId();
         $request->setData('account', $a->getId());
         $request->setData('type', $type = ContactType::getRandom());
         $request->setData('subtype', 0);

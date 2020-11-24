@@ -43,7 +43,7 @@ foreach ($variables['languages'] as $language) {
         ($PUBLISH_DATE = new \DateTime())->setTimestamp(\time() + \mt_rand(-100000000, 100000000));
         $MARKDOWN      = \file_get_contents(__DIR__ . '/lorem_ipsum/' . \mt_rand(0, 999) . '_5-12');
 
-        $request->getHeader()->setAccount(\mt_rand(2, 5));
+        $request->header->account = \mt_rand(2, 5);
         $request->setData('publish', $PUBLISH_DATE->format('Y-m-d H:i:s'));
         $request->setData('title', ISO639Enum::getByName('_' . \strtoupper($language)) . ': ' . \trim(\strtok($MARKDOWN, "\n"), ' #'));
         $request->setData('plain', \preg_replace('/^.+\n/', '', $MARKDOWN));
@@ -84,7 +84,7 @@ foreach ($variables['languages'] as $language) {
 
             $MARKDOWN = \file_get_contents(__DIR__ . '/lorem_ipsum/' . \mt_rand(0, 999) . '_3-6');
 
-            $request->getHeader()->setAccount(\mt_rand(2, 5));
+            $request->header->account = \mt_rand(2, 5);
             $request->setData('list', $commentList);
             $request->setData('title', \trim(\strtok($MARKDOWN, "\n"), ' #'));
             $request->setData('plain', \preg_replace('/^.+\n/', '', $MARKDOWN));

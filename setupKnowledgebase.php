@@ -39,7 +39,7 @@ for ($i = 0; $i < 1; ++$i) {
     $response = new HttpResponse();
     $request  = new HttpRequest(new HttpUri(''));
 
-    $request->getHeader()->setAccount(1);
+    $request->header->account = 1;
     $request->setData('name', Text::LOREM_IPSUM[\mt_rand(0, $LOREM_COUNT)]);
 
     $module->apiWikiAppCreate($request, $response);
@@ -53,7 +53,7 @@ for ($i = 0; $i < $APPS + 1; ++$i) {
         $response = new HttpResponse();
         $request  = new HttpRequest(new HttpUri(''));
 
-        $request->getHeader()->setAccount(\mt_rand(1, 5));
+        $request->header->account = \mt_rand(1, 5);
         $request->setData('name', 'EN:' . $word);
         $request->setData('app', \mt_rand(1, $APPS));
 
@@ -73,7 +73,7 @@ for ($i = 0; $i < $APPS + 1; ++$i) {
             $response = new HttpResponse();
             $request  = new HttpRequest(new HttpUri(''));
 
-            $request->getHeader()->setAccount(\mt_rand(2, 5));
+            $request->header->account = \mt_rand(2, 5);
 
             $request->setData('category', $category->getId());
             $request->setData('language', $language);
@@ -93,7 +93,7 @@ foreach ($variables['languages'] as $language) {
 
         $MARKDOWN = \file_get_contents(__DIR__ . '/lorem_ipsum/' . \mt_rand(0, 999) . '_5-12');
 
-        $request->getHeader()->setAccount(\mt_rand(1, 5));
+        $request->header->account = \mt_rand(1, 5);
         $request->setData('title', \trim(\strtok($MARKDOWN, "\n"), ' #'));
         $request->setData('plain', \preg_replace('/^.+\n/', '', $MARKDOWN));
         $request->setData('language', $language);

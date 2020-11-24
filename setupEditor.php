@@ -37,7 +37,7 @@ for ($i = 0; $i < $EDITOR_DOCS; ++$i) {
 
     $MARKDOWN = \file_get_contents(__DIR__ . '/lorem_ipsum/' . \mt_rand(0, 999) . '_5-12');
 
-    $request->getHeader()->setAccount(\mt_rand(1, 5));
+    $request->header->account = \mt_rand(1, 5);
     $request->setData('title', \trim(\strtok($MARKDOWN, "\n"), ' #'));
     $request->setData('plain', \preg_replace('/^.+\n/', '', $MARKDOWN));
 

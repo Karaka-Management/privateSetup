@@ -36,7 +36,7 @@ foreach ($variables['departments'] as $key => $department) {
     $response = new HttpResponse();
     $request  = new HttpRequest(new HttpUri(''));
 
-    $request->getHeader()->setAccount(1);
+    $request->header->account = 1;
     $request->setData('name', $department['name']);
     $request->setData('status', Status::ACTIVE);
     $request->setData('unit', 2);
@@ -64,14 +64,14 @@ foreach ($variables['positions'] as $key => $position) {
     $response = new HttpResponse();
     $request  = new HttpRequest(new HttpUri(''));
 
-    $request->getHeader()->setAccount(1);
+    $request->header->account = 1;
     $request->setData('name', $position['name']);
     $request->setData('status', Status::ACTIVE);
     $request->setData('parent', $positionIds[$position['parent']] ?? null);
     $request->setData('description', \file_get_contents(__DIR__ . '/lorem_ipsum/' . \mt_rand(0, 999) . '_3-6'));
 
     foreach ($departments as $d) {
-        if (!isset($position['department']) || $d->getName() === $position['department']) {
+        if (!isset($position['department']) || $d->name === $position['department']) {
             $request->setData('department', $d->getId());
             $module->apiPositionCreate($request, $response);
 
@@ -97,7 +97,7 @@ TestUtils::setMember($module, 'app', $app);
 $response = new HttpResponse();
 $request  = new HttpRequest(new HttpUri(''));
 
-$request->getHeader()->setAccount(1);
+$request->header->account = 1;
 $request->setData('name', 'Orange Management Logo');
 $request->setData('id', 1);
 
@@ -118,7 +118,7 @@ $module->apiUnitImageSet($request, $response);
 $response = new HttpResponse();
 $request  = new HttpRequest(new HttpUri(''));
 
-$request->getHeader()->setAccount(1);
+$request->header->account = 1;
 $request->setData('name', 'Lima Logo');
 $request->setData('id', 2);
 

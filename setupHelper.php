@@ -40,7 +40,7 @@ foreach ($helpers as $helper) {
     $response = new HttpResponse();
     $request  = new HttpRequest(new HttpUri(''));
 
-    $request->getHeader()->setAccount(2);
+    $request->header->account = 2;
     $request->setData('name', \ucfirst($helper));
     $request->setData('standalone', true);
 

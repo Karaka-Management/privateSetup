@@ -30,7 +30,7 @@ TestUtils::setMember($module, 'app', $app);
 $response = new HttpResponse();
 $request  = new HttpRequest(new HttpUri(''));
 
-$request->getHeader()->setAccount(1);
+$request->header->account = 1;
 $request->setData('title', 'TestBoard');
 $module->apiBoardCreate($request, $response);
 

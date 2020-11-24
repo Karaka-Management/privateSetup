@@ -36,7 +36,7 @@ foreach (Text::LOREM_IPSUM as $word) {
     $response = new HttpResponse();
     $request  = new HttpRequest(new HttpUri(''));
 
-    $request->getHeader()->setAccount(\mt_rand(2, 5));
+    $request->header->account = \mt_rand(2, 5);
 
     $request->setData('language', ISO639x1Enum::_EN);
     $request->setData('title', 'EN:' . $word);
@@ -53,7 +53,7 @@ foreach (Text::LOREM_IPSUM as $word) {
         $response = new HttpResponse();
         $request  = new HttpRequest(new HttpUri(''));
 
-        $request->getHeader()->setAccount(\mt_rand(2, 5));
+        $request->header->account = \mt_rand(2, 5);
 
         $request->setData('tag', $id);
         $request->setData('language', $language);

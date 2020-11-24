@@ -168,7 +168,7 @@ TestUtils::setMember($module, 'app', $app);
 $response = new HttpResponse();
 $request  = new HttpRequest(new HttpUri(''));
 
-$request->getHeader()->setAccount(1);
+$request->header->account = 1;
 $request->setData('name', 'Lima');
 $request->setData('parent', 1);
 $request->setData('status', 1);

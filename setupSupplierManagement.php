@@ -41,7 +41,7 @@ for ($i = 0; $i < $SUPPLIERS; ++$i) {
     $response = new HttpResponse();
     $request  = new HttpRequest(new HttpUri(''));
 
-    $request->getHeader()->setAccount(2);
+    $request->header->account = 2;
 
     do {
         $number = \mt_rand(100000, 999999);
@@ -72,7 +72,7 @@ for ($i = 0; $i < $SUPPLIERS; ++$i) {
         $response = new HttpResponse();
         $request  = new HttpRequest(new HttpUri(''));
 
-        $request->getHeader()->setAccount(2);
+        $request->header->account = 2;
         $request->setData('supplier', $sId);
         $request->setData('type', $type = ContactType::getRandom());
         $request->setData('subtype', 0);
