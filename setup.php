@@ -31,9 +31,11 @@ use phpOMS\Account\AccountManager;
 use phpOMS\Account\PermissionType;
 use phpOMS\Application\ApplicationAbstract;
 use phpOMS\DataStorage\Database\DatabasePool;
+use phpOMS\DataStorage\Database\DataMapperAbstract;
 use phpOMS\DataStorage\Session\HttpSession;
 use phpOMS\Dispatcher\Dispatcher;
 use phpOMS\Event\EventManager;
+use phpOMS\Log\FileLogger;
 use phpOMS\Message\Http\HttpRequest;
 use phpOMS\Message\Http\HttpResponse;
 use phpOMS\Message\Http\RequestMethod;
@@ -113,7 +115,7 @@ $app->appName        = 'Backend';
 $app->accountManager = new AccountManager(new HttpSession());
 $app->l11nServer     = LocalizationMapper::get(1);
 $app->appSettings    = new CoreSettings($app->dbPool->get());
-$app->moduleManager  = new ModuleManager($app, __DIR__ . '/../Modules');
+$app->moduleManager  = new ModuleManager($app, __DIR__ . '/../Modules/');
 $app->dispatcher     = new Dispatcher($app);
 $app->eventManager   = new EventManager($app->dispatcher);
 $app->eventManager->importFromFile(__DIR__ . '/../Web/Api/Hooks.php');
@@ -206,29 +208,135 @@ $config = include __DIR__ . '/../Install/Templates/config.tpl.php';
 \file_put_contents(__DIR__ . '/../config.php', $config);
 //endregion
 
+echo "\n";
+FileLogger::startTimeLog('total');
+
+echo "Template setup:\n";
+FileLogger::startTimeLog('section');
 include __DIR__ . '/setupDemoTemplates.php';
+echo "Time: " . \round(FileLogger::endTimeLog('section'), 2) . "s\n\n";
 
+echo "Module setup:\n";
+FileLogger::startTimeLog('section');
 include __DIR__ . '/setupModules.php';
-include __DIR__ . '/setupGroups.php';
-include __DIR__ . '/setupOrganization.php';
-include __DIR__ . '/setupAccounts.php';
-include __DIR__ . '/setupTag.php';
-include __DIR__ . '/setupDashboard.php';
-include __DIR__ . '/setupKanban.php';
-include __DIR__ . '/setupQA.php';
-include __DIR__ . '/setupEditor.php';
-include __DIR__ . '/setupTask.php';
-include __DIR__ . '/setupNews.php';
-include __DIR__ . '/setupHelper.php';
-include __DIR__ . '/setupCMS.php';
-include __DIR__ . '/setupItemManagement.php';
-include __DIR__ . '/setupClientManagement.php';
-include __DIR__ . '/setupSupplierManagement.php';
-include __DIR__ . '/setupHumanResourceManagement.php';
-include __DIR__ . '/setupKnowledgebase.php';
+DataMapperAbstract::clearCache();
+echo "Time: " . \round(FileLogger::endTimeLog('section'), 2) . "s\n\n";
 
+echo "Group setup:\n";
+FileLogger::startTimeLog('section');
+include __DIR__ . '/setupGroups.php';
+DataMapperAbstract::clearCache();
+echo "Time: " . \round(FileLogger::endTimeLog('section'), 2) . "s\n\n";
+
+echo "Organization setup:\n";
+FileLogger::startTimeLog('section');
+include __DIR__ . '/setupOrganization.php';
+DataMapperAbstract::clearCache();
+echo "Time: " . \round(FileLogger::endTimeLog('section'), 2) . "s\n\n";
+
+echo "Account setup:\n";
+FileLogger::startTimeLog('section');
+include __DIR__ . '/setupAccounts.php';
+DataMapperAbstract::clearCache();
+echo "Time: " . \round(FileLogger::endTimeLog('section'), 2) . "s\n\n";
+
+echo "Tag setup:\n";
+FileLogger::startTimeLog('section');
+include __DIR__ . '/setupTag.php';
+DataMapperAbstract::clearCache();
+echo "Time: " . \round(FileLogger::endTimeLog('section'), 2) . "s\n\n";
+
+echo "Dashboard setup:\n";
+FileLogger::startTimeLog('section');
+include __DIR__ . '/setupDashboard.php';
+DataMapperAbstract::clearCache();
+echo "Time: " . \round(FileLogger::endTimeLog('section'), 2) . "s\n\n";
+
+echo "Kanban setup:\n";
+FileLogger::startTimeLog('section');
+include __DIR__ . '/setupKanban.php';
+DataMapperAbstract::clearCache();
+echo "Time: " . \round(FileLogger::endTimeLog('section'), 2) . "s\n\n";
+
+echo "QA setup:\n";
+FileLogger::startTimeLog('section');
+include __DIR__ . '/setupQA.php';
+DataMapperAbstract::clearCache();
+echo "Time: " . \round(FileLogger::endTimeLog('section'), 2) . "s\n\n";
+
+echo "Editor setup:\n";
+FileLogger::startTimeLog('section');
+include __DIR__ . '/setupEditor.php';
+DataMapperAbstract::clearCache();
+echo "Time: " . \round(FileLogger::endTimeLog('section'), 2) . "s\n\n";
+
+echo "Task setup:\n";
+FileLogger::startTimeLog('section');
+include __DIR__ . '/setupTask.php';
+DataMapperAbstract::clearCache();
+echo "Time: " . \round(FileLogger::endTimeLog('section'), 2) . "s\n\n";
+
+echo "News setup:\n";
+FileLogger::startTimeLog('section');
+include __DIR__ . '/setupNews.php';
+DataMapperAbstract::clearCache();
+echo "Time: " . \round(FileLogger::endTimeLog('section'), 2) . "s\n\n";
+
+echo "Helper setup:\n";
+FileLogger::startTimeLog('section');
+include __DIR__ . '/setupHelper.php';
+DataMapperAbstract::clearCache();
+echo "Time: " . \round(FileLogger::endTimeLog('section'), 2) . "s\n\n";
+
+echo "CMS setup:\n";
+FileLogger::startTimeLog('section');
+include __DIR__ . '/setupCMS.php';
+DataMapperAbstract::clearCache();
+echo "Time: " . \round(FileLogger::endTimeLog('section'), 2) . "s\n\n";
+
+echo "ItemManagement setup:\n";
+FileLogger::startTimeLog('section');
+include __DIR__ . '/setupItemManagement.php';
+DataMapperAbstract::clearCache();
+echo "Time: " . \round(FileLogger::endTimeLog('section'), 2) . "s\n\n";
+
+echo "ClientManagement setup:\n";
+FileLogger::startTimeLog('section');
+include __DIR__ . '/setupClientManagement.php';
+DataMapperAbstract::clearCache();
+echo "Time: " . \round(FileLogger::endTimeLog('section'), 2) . "s\n\n";
+
+echo "SupplierManagement setup:\n";
+FileLogger::startTimeLog('section');
+include __DIR__ . '/setupSupplierManagement.php';
+DataMapperAbstract::clearCache();
+echo "Time: " . \round(FileLogger::endTimeLog('section'), 2) . "s\n\n";
+
+echo "HumanResourceManagement setup:\n";
+FileLogger::startTimeLog('section');
+include __DIR__ . '/setupHumanResourceManagement.php';
+DataMapperAbstract::clearCache();
+echo "Time: " . \round(FileLogger::endTimeLog('section'), 2) . "s\n\n";
+
+echo "Knowledgebase setup:\n";
+FileLogger::startTimeLog('section');
+include __DIR__ . '/setupKnowledgebase.php';
+DataMapperAbstract::clearCache();
+echo "Time: " . \round(FileLogger::endTimeLog('section'), 2) . "s\n\n";
+
+echo "Support setup:\n";
+FileLogger::startTimeLog('section');
 include __DIR__ . '/setupSupport.php';
+DataMapperAbstract::clearCache();
+echo "Time: " . \round(FileLogger::endTimeLog('section'), 2) . "s\n\n";
+
+echo "Calendar setup:\n";
+FileLogger::startTimeLog('section');
 include __DIR__ . '/setupCalendar.php';
+DataMapperAbstract::clearCache();
+echo "Time: " . \round(FileLogger::endTimeLog('section'), 2) . "s\n\n";
 // include __DIR__ . '/setupMessenges.php';
 // include __DIR__ . '/setupWarehouseing.php';
 // include __DIR__ . '/setupBilling.php';
+
+echo "Total: " . \round(FileLogger::endTimeLog('total') / 60, 2) . "m\n";

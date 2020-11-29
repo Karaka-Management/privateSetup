@@ -76,7 +76,7 @@ foreach ($variables['languages'] as $language) {
         //region comments
         $COMMENT_COUNT = \mt_rand(0, 20);
         $commentModule = $app->moduleManager->get('Comments');
-        $commentList   = $response->get('')['response']->getComments()->getId();
+        $commentList   = $response->get('')['response']->comments->getId();
 
         for ($j = 0; $j < $COMMENT_COUNT; ++$j) {
             $response = new HttpResponse();
