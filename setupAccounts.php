@@ -86,7 +86,7 @@ foreach ($accounts as $key=> $account) {
         $response = new HttpResponse();
         $request  = new HttpRequest(new HttpUri(''));
 
-        if (!\file_exists(__DIR__ . '/temp')) {
+        if (!\is_dir(__DIR__ . '/temp')) {
             \mkdir(__DIR__ . '/temp');
         }
 

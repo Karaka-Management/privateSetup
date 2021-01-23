@@ -81,7 +81,7 @@ for ($i = 0; $i < $TASK_COUNT; ++$i) {
 
         $content = \mt_rand(1, 100);
         if ($content <= 80) {
-            $MARKDOWN = \file_get_contents(__DIR__ . '/lorem_ipsum/' . \mt_rand(0, 999) . '_3-6');
+            $MARKDOWN = \file_get_contents(__DIR__ . '/lorem_ipsum/' . \mt_rand(0, 999) . '_1-1');
             $request->setData('plain', \preg_replace('/^.+\n/', '', $MARKDOWN));
         }
 

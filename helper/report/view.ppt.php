@@ -194,7 +194,7 @@ $shape->getActiveParagraph()
 $shape->getActiveParagraph()->getFont()->setSize(21)->setColor($colorBlack);
 $shape->getActiveParagraph()->getBulletStyle()->setBulletType(Bullet::TYPE_BULLET)->setBulletChar('•');
 
-$shape->createTextRun('Reports (e.g. sales, finance marketing');
+$shape->createTextRun('Reports (e.g. sales, finance marketing)');
 $shape->createParagraph()
     ->getAlignment()
     ->setLevel(1)

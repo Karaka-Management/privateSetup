@@ -29,8 +29,13 @@ use phpOMS\Utils\TestUtils;
 $module = $app->moduleManager->get('Tag');
 TestUtils::setMember($module, 'app', $app);
 
+$tagIcons = [
+    'fa fa-cogs', 'fa fa-address-book-o', 'fa fa-archive', 'fa fa-balance-scale', 'fa fa-bank', 'fa fa-car', 'fa fa-bell-o', 'fa fa-bolt', 'fa fa-book', 'fa fa-briefcase', 'fa fa-bullseye', 'fa fa-calendar', 'fa fa-bug', 'fa fa-bullhorn', 'fa fa-code', 'fa fa-comment-o', 'fa fa-credit-card', 'fa fa-envelope-o', 'fa fa-desktop', 'fa fa-flask', 'fa fa-heart-o', 'fa fa-home', 'fa fa-photo', 'fa fa-plane', 'fa fa-quote-right', 'fa fa-question-circle-o', 'fa fa-tag', 'fa fa-star-o', 'fa fa-wrench', 'fa fa-user-o', 'fa fa-file-o', 'fa fa-pencil', 'fa fa-paw', 'fa fa-shopping-cart', 'fa fa-sitemap', 'fa fa-info-circle', 'fa fa-life-ring', 'fa fa-gift', 'fa fa-glass', 'fa fa-bed', 'fa fa-cloud', 'fa fa-clock-o', 'fa fa-diamond'
+];
+
 $LOREM_COUNT = \count(Text::LOREM_IPSUM) - 1;
 $COLOR_COUNT = \count($variables['colors']) - 1;
+$ICON_COUNT  = \count($tagIcons) - 1;
 
 foreach (Text::LOREM_IPSUM as $word) {
     $response = new HttpResponse();
@@ -41,6 +46,10 @@ foreach (Text::LOREM_IPSUM as $word) {
     $request->setData('language', ISO639x1Enum::_EN);
     $request->setData('title', 'EN:' . $word);
     $request->setData('color', $variables['colors'][\mt_rand(0, $COLOR_COUNT)]);
+
+    if (\mt_rand(1, 100) < 51) {
+        $request->setData('icon', $tagIcons[\mt_rand(0, $ICON_COUNT)]);
+    }
 
     $module->apiTagCreate($request, $response);
 

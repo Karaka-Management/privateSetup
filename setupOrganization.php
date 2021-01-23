@@ -84,7 +84,7 @@ foreach ($variables['positions'] as $key => $position) {
 //endregion
 
 //region Organization image
-if (!\file_exists(__DIR__ . '/temp')) {
+if (!\is_dir(__DIR__ . '/temp')) {
     \mkdir(__DIR__ . '/temp');
 }
 

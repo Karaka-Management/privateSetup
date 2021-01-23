@@ -131,7 +131,6 @@ foreach ($LOREM2 as $word) {
     $request  = new HttpRequest(new HttpUri(''));
 
     $request->header->account = \mt_rand(2, 5);
-
     $request->setData('title', $word);
 
     $module->apiItemL11nTypeCreate($request, $response);
@@ -157,6 +156,7 @@ for ($i = 0; $i < $ITEMS; ++$i) {
     //endregion
 
     //region item l11n
+    // @todo: shouldn't this be limited by LOREM2???? maybe not, attributes != l11n types
     for ($j = 0; $j < $L11N_TYPES; ++$j) {
         foreach ($variables['languages'] as $language) {
             $response = new HttpResponse();
@@ -193,7 +193,7 @@ for ($i = 0; $i < $ITEMS; ++$i) {
     $response = new HttpResponse();
     $request  = new HttpRequest(new HttpUri(''));
 
-    if (!\file_exists(__DIR__ . '/temp')) {
+    if (!\is_dir(__DIR__ . '/temp')) {
         \mkdir(__DIR__ . '/temp');
     }
 

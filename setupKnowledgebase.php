@@ -31,7 +31,7 @@ use phpOMS\Utils\TestUtils;
 $module = $app->moduleManager->get('Knowledgebase');
 TestUtils::setMember($module, 'app', $app);
 
-$WIKI_ARTICLES = 500;
+$WIKI_ARTICLES = 100;
 $APPS          = WikiAppMapper::count();
 $LOREM_COUNT   = \count(Text::LOREM_IPSUM) - 1;
 

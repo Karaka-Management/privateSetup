@@ -31,18 +31,37 @@ use phpOMS\Utils\TestUtils;
 $module = $app->moduleManager->get('Kanban');
 TestUtils::setMember($module, 'app', $app);
 
-$KANBAN_COUNT = 100;
+$KANBAN_COUNT = 50;
 $LOREM_COUNT  = \count(Text::LOREM_IPSUM) - 1;
 
 for ($i = 0; $i < $KANBAN_COUNT; ++$i) {
     $response = new HttpResponse();
     $request  = new HttpRequest(new HttpUri(''));
 
-    $MARKDOWN = \file_get_contents(__DIR__ . '/lorem_ipsum/' . \mt_rand(0, 999) . '_3-6');
+    $MARKDOWN = \file_get_contents(__DIR__ . '/lorem_ipsum/' . \mt_rand(0, 999) . '_1-1');
 
     $request->header->account = \mt_rand(1, 5);
     $request->setData('title', \trim(\strtok($MARKDOWN, "\n"), ' #'));
+    $request->setData('plain', \preg_replace('/^.+\n/', '', $MARKDOWN));
     $request->setData('status', BoardStatus::getRandom());
+
+    // tags
+    $tags      = [];
+    $TAG_COUNT = \mt_rand(0, 3);
+    $added     = [];
+
+    for ($c = 0; $c < $TAG_COUNT; ++$c) {
+        $tagId = \mt_rand(1, $LOREM_COUNT - 1);
+
+        if (!\in_array($tagId, $added)) {
+            $added[] = $tagId;
+            $tags[]  = ['id' => $tagId];
+        }
+    }
+
+    if (!empty($tags)) {
+        $request->setData('tags', \json_encode($tags));
+    }
 
     $module->apiKanbanBoardCreate($request, $response);
 
@@ -69,7 +88,7 @@ for ($i = 0; $i < $KANBAN_COUNT; ++$i) {
             $response = new HttpResponse();
             $request  = new HttpRequest(new HttpUri(''));
 
-            $MARKDOWN = \file_get_contents(__DIR__ . '/lorem_ipsum/' . \mt_rand(0, 999) . '_3-6');
+            $MARKDOWN = \file_get_contents(__DIR__ . '/lorem_ipsum/' . \mt_rand(0, 999) . '_1-1');
 
             $request->header->account = \mt_rand(2, 5);
             $request->setData('title', \trim(\strtok($MARKDOWN, "\n"), ' #'));
@@ -78,6 +97,24 @@ for ($i = 0; $i < $KANBAN_COUNT; ++$i) {
             $request->setData('status', CardStatus::getRandom());
             $request->setData('order', $k + 1);
             $request->setData('column', $columnId);
+
+            // tags
+            $tags      = [];
+            $TAG_COUNT = \mt_rand(0, 3);
+            $added     = [];
+
+            for ($c = 0; $c < $TAG_COUNT; ++$c) {
+                $tagId = \mt_rand(1, $LOREM_COUNT - 1);
+
+                if (!\in_array($tagId, $added)) {
+                    $added[] = $tagId;
+                    $tags[]  = ['id' => $tagId];
+                }
+            }
+
+            if (!empty($tags)) {
+                $request->setData('tags', \json_encode($tags));
+            }
 
             $module->apiKanbanCardCreate($request, $response);
 
@@ -88,7 +125,7 @@ for ($i = 0; $i < $KANBAN_COUNT; ++$i) {
                 $response = new HttpResponse();
                 $request  = new HttpRequest(new HttpUri(''));
 
-                $MARKDOWN = \file_get_contents(__DIR__ . '/lorem_ipsum/' . \mt_rand(0, 999) . '_3-6');
+                $MARKDOWN = \file_get_contents(__DIR__ . '/lorem_ipsum/' . \mt_rand(0, 999) . '_1-1');
 
                 $request->header->account = \mt_rand(2, 5);
                 $request->setData('plain', \preg_replace('/^.+\n/', '', $MARKDOWN));

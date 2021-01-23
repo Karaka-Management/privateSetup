@@ -5,10 +5,8 @@
  * PHP Version 8.0
  *
  * @package   Web\{APPNAME}
- *
  * @copyright Dennis Eichhorn
  * @license   OMS License 1.0
- *
  * @version   1.0.0
  *
  * @link      https://orange-management.org
@@ -32,7 +30,7 @@ $dispatch = $this->getData('dispatch') ?? [];
     <meta name="msapplication-navbutton-color" content="#262626">
     <meta name="apple-mobile-web-app-status-bar-style" content="#262626">
     <meta name="description" content="<?= $this->getHtml(':meta', '0', '0'); ?>">
-    <?= $head->head->render(); ?>
+    <?= $head->render(); ?>
 
     <base href="<?= UriFactory::build('{/base}'); ?>/">
 

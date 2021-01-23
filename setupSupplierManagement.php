@@ -17,6 +17,7 @@ use phpOMS\Localization\ISO3166TwoEnum;
 use phpOMS\Message\Http\HttpRequest;
 use phpOMS\Message\Http\HttpResponse;
 use phpOMS\Stdlib\Base\AddressType;
+use phpOMS\System\MimeType;
 use phpOMS\Uri\HttpUri;
 use phpOMS\Utils\RnG\Email;
 use phpOMS\Utils\RnG\Phone;
@@ -34,7 +35,7 @@ $module = $app->moduleManager->get('SupplierManagement');
 TestUtils::setMember($module, 'app', $app);
 
 $LOREM_COUNT = \count(Text::LOREM_IPSUM) - 1;
-$SUPPLIERS   = 1000;
+$SUPPLIERS   = 100;
 $numbers     = [];
 
 for ($i = 0; $i < $SUPPLIERS; ++$i) {
@@ -49,8 +50,8 @@ for ($i = 0; $i < $SUPPLIERS; ++$i) {
     $numbers[] = $number;
 
     $request->setData('number', (string) $number);
-    $request->setData('name1', Text::LOREM_IPSUM[\mt_rand(0, $LOREM_COUNT - 1)]);
-    $request->setData('name2', Text::LOREM_IPSUM[\mt_rand(0, $LOREM_COUNT - 1)]);
+    $request->setData('name1', \ucfirst(Text::LOREM_IPSUM[\mt_rand(0, $LOREM_COUNT - 1)]));
+    $request->setData('name2', \ucfirst(Text::LOREM_IPSUM[\mt_rand(0, $LOREM_COUNT - 1)]));
 
     $request->setData('type', AddressType::getRandom());
     $request->setData('address',
@@ -89,4 +90,44 @@ for ($i = 0; $i < $SUPPLIERS; ++$i) {
 
         $module->apiContactElementCreate($request, $response);
     }
+
+    //region profile image
+    $response = new HttpResponse();
+    $request  = new HttpRequest(new HttpUri(''));
+
+    if (!\is_dir(__DIR__ . '/temp')) {
+        \mkdir(__DIR__ . '/temp');
+    }
+
+    $image                 = \imagecreate(256, 256);
+    $image_backgroundColor = \imagecolorallocate($image, 54, 151, 219);
+    $image_textColor       = \imagecolorallocate($image, 52, 58, 64);
+
+    \imagefill($image, 0, 0, $image_backgroundColor);
+    \imagettftext(
+        $image, 35, 0, 128 - 83, 128 + 15,
+        $image_textColor,
+        __DIR__ . '/files/SpaceMono-Bold.ttf',
+        (string) $number
+    );
+    \imagepng($image, __DIR__ . '/temp/' . $number . '.png');
+    \imagedestroy($image);
+
+    $request->header->account = \mt_rand(2, 5);
+    $request->setData('name', $number . ' backend');
+    $request->setData('supplier', $sId);
+    $request->setData('type', 'backend_image');
+
+    TestUtils::setMember($request, 'files', [
+        'file1' => [
+            'name'     => $number . '_backend.png',
+            'type'     => MimeType::M_PNG,
+            'tmp_name' => __DIR__ . '/temp/' . $number . '.png',
+            'error'    => \UPLOAD_ERR_OK,
+            'size'     => \filesize(__DIR__ . '/temp/' . $number . '.png'),
+        ],
+    ]);
+
+    $module->apiFileCreate($request, $response);
+    //endregion
 }

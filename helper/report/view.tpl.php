@@ -58,7 +58,7 @@ $date = new \phpOMS\Stdlib\Base\SmartDateTime($this->request->getData('date') ??
 <h1>Ideas for helpers</h1>
 
 <ul>
-    <li>Reports (e.g. sales, finance, marketing</li>
+    <li>Reports (e.g. sales, finance, marketing)</li>
     <li>Mailing generator based on pre-defined layouts</li>
     <li>Document generator based on pre-defined layouts</li>
     <li>Calculators (e.g. margin and price calculators)</li>

@@ -35,7 +35,7 @@ $request->header->account = 1;
 $request->setData('status', ModuleStatusUpdateType::INSTALL);
 
 $toInstall = [
-    'Helper', 'Search', 'Dashboard', 'Media', 'Tasks', 'Messages', 'Calendar', 'Editor', 'CMS', 'Checklist', 'News', 'Comments',
+    'Helper', 'Search', 'Dashboard', 'Media', 'Tasks', 'Messages', 'Calendar', 'Editor', 'DatabaseEditor', 'CMS', 'Checklist', 'News', 'Comments',
     'Profile', 'Kanban', 'QA', 'Workflow', 'HumanResourceManagement', 'HumanResourceTimeRecording', 'MyPrivate',
     'Support', 'Sales', 'ClientManagement', 'Accounting', 'Purchase', 'SupplierManagement', 'ItemManagement', 'Billing', 'InvoiceManagement',
     'WarehouseManagement', 'StockTaking', 'QualityManagement', 'AssetManagement', 'Marketing', 'Knowledgebase', 'Exchange',

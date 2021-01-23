@@ -164,7 +164,7 @@ $section->addShape('line', [
 
 $section->addTextBreak(1);
 
-$section->addListItem('Reports (e.g. sales, finance, marketing', 0, $listFontStyleName, null, $listParagraphStyleName);
+$section->addListItem('Reports (e.g. sales, finance, marketing)', 0, $listFontStyleName, null, $listParagraphStyleName);
 $section->addListItem('Mailing generator based on pre-defined layouts', 0, $listFontStyleName, null, $listParagraphStyleName);
 $section->addListItem('Document generator based on pre-defined layouts', 0, $listFontStyleName, null, $listParagraphStyleName);
 $section->addListItem('Calculators (e.g. margin and price calculators)', 0, $listFontStyleName, null, $listParagraphStyleName);

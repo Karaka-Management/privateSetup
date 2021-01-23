@@ -31,7 +31,7 @@ use phpOMS\Utils\TestUtils;
 $module = $app->moduleManager->get('News');
 TestUtils::setMember($module, 'app', $app);
 
-$NEWS_ARTICLES = 100;
+$NEWS_ARTICLES = 50;
 $FEATURED_PROB = 10;
 $LOREM_COUNT   = \count(Text::LOREM_IPSUM) - 1;
 
@@ -82,7 +82,7 @@ foreach ($variables['languages'] as $language) {
             $response = new HttpResponse();
             $request  = new HttpRequest(new HttpUri(''));
 
-            $MARKDOWN = \file_get_contents(__DIR__ . '/lorem_ipsum/' . \mt_rand(0, 999) . '_3-6');
+            $MARKDOWN = \file_get_contents(__DIR__ . '/lorem_ipsum/' . \mt_rand(0, 999) . '_1-1');
 
             $request->header->account = \mt_rand(2, 5);
             $request->setData('list', $commentList);

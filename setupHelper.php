@@ -27,7 +27,7 @@ use phpOMS\Utils\TestUtils;
 $module = $app->moduleManager->get('Helper');
 TestUtils::setMember($module, 'app', $app);
 
-if (!\file_exists(__DIR__ . '/temp')) {
+if (!\is_dir(__DIR__ . '/temp')) {
     \mkdir(__DIR__ . '/temp');
 }
 
