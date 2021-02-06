@@ -150,6 +150,8 @@ for ($i = 0; $i < $ITEMS; ++$i) {
     $numbers[] = $number;
 
     $request->setData('number', (string) $number);
+    $request->setData('purchaseprice', $purchaseprice = ((int) \round(\mt_rand(1000, 100000000), -3)));
+    $request->setData('salesprice', (int) \round($purchaseprice * \mt_rand(110, 250) / 100, -3));
 
     $module->apiItemCreate($request, $response);
     $itemId = $response->get('')['response']->getId();

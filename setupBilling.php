@@ -56,7 +56,7 @@ for ($i = 0; $i < $INVOICES; ++$i) {
     $request->setData('address', null);
     $request->setData('type', $type = \mt_rand(1, $BILL_TYPES_COUNT));
     $request->setData('status', null); // null = system settings, value = individual input
-    $request->setData('date', DateTime::generateDateTime(new \DateTime('2015-01-01'), new \DateTime('now')));
+    $request->setData('performancedate', DateTime::generateDateTime(new \DateTime('2015-01-01'), new \DateTime('now'))->format('Y-m-d H:i:s'));
     $request->setData('sales_referral', null); // who these sales belong to
     $request->setData('shipping_terms', 1); // e.g. incoterms
     $request->setData('shipping_type', 1); // @todo consider to create general cost type for many different costs (e.g. banking fees etc.)
@@ -93,8 +93,7 @@ for ($i = 0; $i < $INVOICES; ++$i) {
 
         $request->setData('bill', $bId);
         $request->setData('item', $iId === 0 ? null : $iId);
-        $request->setData('quantity', \mt_rand(1, 4));
-        $request->setData('price', null);
+        $request->setData('quantity', \mt_rand(1, 11));
         $request->setData('discount_type', null);
         $request->setData('discount', null);
         $request->setData('tax', null);
