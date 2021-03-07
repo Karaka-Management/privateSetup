@@ -23,12 +23,12 @@ $date = new \phpOMS\Stdlib\Base\SmartDateTime($this->request->getData('date') ??
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="<?= UriFactory::build('{/base}/' . \ltrim($tcoll['css']['styles']->getPath(), '/')); ?>">
+    <link rel="stylesheet" type="text/css" href="<?= UriFactory::build('{/base}/' . \ltrim($tcoll['css']['styles.css']->getPath(), '/')); ?>">
 </head>
 <body>
 <?php if ($this->request->getData('type') === 'html') : ?>
 <div class="splash">
-<img alt="Company Logo" src="<?= UriFactory::build('{/base}/' . \ltrim($tcoll['other']['logo']->getPath(), '/')); ?>">
+<img alt="Company Logo" src="<?= UriFactory::build('{/base}/' . \ltrim($tcoll['other']['logo.png']->getPath(), '/')); ?>">
 <h1>Demo Report</h1>
 </div>
 <?php endif; ?>
@@ -51,7 +51,7 @@ $date = new \phpOMS\Stdlib\Base\SmartDateTime($this->request->getData('date') ??
     </li>
 </ul>
 
-<div class="footer"><img alt="Company Logo" src="<?= UriFactory::build('{/base}/' . \ltrim($tcoll['other']['logo']->getPath(), '/')); ?>"></div>
+<div class="footer"><img alt="Company Logo" src="<?= UriFactory::build('{/base}/' . \ltrim($tcoll['other']['logo.png']->getPath(), '/')); ?>"></div>
 </div>
 
 <div class="slide">
@@ -64,7 +64,7 @@ $date = new \phpOMS\Stdlib\Base\SmartDateTime($this->request->getData('date') ??
     <li>Calculators (e.g. margin and price calculators)</li>
 </ul>
 
-<div class="footer"><img alt="Company Logo" src="<?= UriFactory::build('{/base}/' . \ltrim($tcoll['other']['logo']->getPath(), '/')); ?>"></div>
+<div class="footer"><img alt="Company Logo" src="<?= UriFactory::build('{/base}/' . \ltrim($tcoll['other']['logo.png']->getPath(), '/')); ?>"></div>
 </div>
 
 <div class="slide">
@@ -83,12 +83,12 @@ $date = new \phpOMS\Stdlib\Base\SmartDateTime($this->request->getData('date') ??
     </li>
 </ul>
 
-<div class="footer"><img alt="Company Logo" src="<?= UriFactory::build('{/base}/' . \ltrim($tcoll['other']['logo']->getPath(), '/')); ?>"></div>
+<div class="footer"><img alt="Company Logo" src="<?= UriFactory::build('{/base}/' . \ltrim($tcoll['other']['logo.png']->getPath(), '/')); ?>"></div>
 </div>
 
 <?php if ($this->request->getData('type') === 'html') : ?>
 <div class="splash">
-<img alt="Company Logo" src="<?= UriFactory::build('{/base}/' . \ltrim($tcoll['other']['logo']->getPath(), '/')); ?>">
+<img alt="Company Logo" src="<?= UriFactory::build('{/base}/' . \ltrim($tcoll['other']['logo.png']->getPath(), '/')); ?>">
 <h1>Thank you!</h1>
 </div>
 <?php endif; ?>

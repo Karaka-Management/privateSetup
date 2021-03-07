@@ -109,7 +109,7 @@ foreach ($accounts as $key=> $account) {
 
         TestUtils::setMember($request, 'files', [
             'file1' => [
-                'name'     => 'Profie Image.png',
+                'name'     => 'Profile Image.png',
                 'type'     => MimeType::M_PNG,
                 'tmp_name' => __DIR__ . '/temp/' . $account['image'],
                 'error'    => \UPLOAD_ERR_OK,

@@ -101,7 +101,7 @@ function dirCount() : int
 }
 
 Directory::delete(__DIR__ . '/../Modules/Media/Files');
-\mkdir(__DIR__ . '/../Modules/Media/Files', 0777);
+\mkdir(__DIR__ . '/../Modules/Media/Files', 0755);
 
 // Reset database
 $con = new \PDO($config['db']['core']['masters']['admin']['db'] . ':host=' .
@@ -345,6 +345,20 @@ $dirCount = ($dirCountNew = dirCount()) - $dirCountOld;
 echo \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', $dbSize) . '| ' . \sprintf('%-9s', $dbRow) . '| ' . \sprintf('%-11s', $dirSize) . '| ' . \sprintf('%-9s', $dirCount) . "|\n";
 echo '|--------------------------|----------|----------|----------|------------|----------|' . "\n";
 
+echo '| ' . \sprintf('%-25s', 'Exchange') . '| ';
+FileLogger::startTimeLog('section');
+include __DIR__ . '/setupExchange.php';
+DataMapperAbstract::clearCache();
+$time = \round(FileLogger::endTimeLog('section'), 2) . 's';
+$sizeOld = $sizeNew; $rowOld = $rowNew; $dirOld = $dirNew; $dirCountOld = $dirCountNew;
+$dbSize = \round(($sizeNew = (float) $con->query($dbSizeQuery)->fetch()['size']) - $sizeOld, 2) . 'MB';
+$dbRow = ($rowNew = (int) $con->query($dbRowQuery)->fetch()['rows']) - $rowOld;
+$dirSize = \round(($dirNew = dirSize()) - $dirOld, 2) . 'MB';
+$dirCount = ($dirCountNew = dirCount()) - $dirCountOld;
+echo \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', $dbSize) . '| ' . \sprintf('%-9s', $dbRow) . '| ' . \sprintf('%-11s', $dirSize) . '| ' . \sprintf('%-9s', $dirCount) . "|\n";
+echo '|--------------------------|----------|----------|----------|------------|----------|' . "\n";
+
+
 echo '| ' . \sprintf('%-25s', 'Tag') . '| ';
 FileLogger::startTimeLog('section');
 include __DIR__ . '/setupTag.php';
@@ -423,9 +437,35 @@ $dirCount = ($dirCountNew = dirCount()) - $dirCountOld;
 echo \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', $dbSize) . '| ' . \sprintf('%-9s', $dbRow) . '| ' . \sprintf('%-11s', $dirSize) . '| ' . \sprintf('%-9s', $dirCount) . "|\n";
 echo '|--------------------------|----------|----------|----------|------------|----------|' . "\n";
 
-echo '| ' . \sprintf('%-25s', 'Billing') . '| ';
+echo '| ' . \sprintf('%-25s', 'WarehouseManagement') . '| ';
 FileLogger::startTimeLog('section');
-include __DIR__ . '/setupBilling.php';
+include __DIR__ . '/setupWarehouseManagement.php';
+DataMapperAbstract::clearCache();
+$time = \round(FileLogger::endTimeLog('section'), 2) . 's';
+$sizeOld = $sizeNew; $rowOld = $rowNew; $dirOld = $dirNew; $dirCountOld = $dirCountNew;
+$dbSize = \round(($sizeNew = (float) $con->query($dbSizeQuery)->fetch()['size']) - $sizeOld, 2) . 'MB';
+$dbRow = ($rowNew = (int) $con->query($dbRowQuery)->fetch()['rows']) - $rowOld;
+$dirSize = \round(($dirNew = dirSize()) - $dirOld, 2) . 'MB';
+$dirCount = ($dirCountNew = dirCount()) - $dirCountOld;
+echo \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', $dbSize) . '| ' . \sprintf('%-9s', $dbRow) . '| ' . \sprintf('%-11s', $dirSize) . '| ' . \sprintf('%-9s', $dirCount) . "|\n";
+echo '|--------------------------|----------|----------|----------|------------|----------|' . "\n";
+
+echo '| ' . \sprintf('%-25s', 'Billing Suppliers') . '| ';
+FileLogger::startTimeLog('section');
+include __DIR__ . '/setupBillingSuppliers.php';
+DataMapperAbstract::clearCache();
+$time = \round(FileLogger::endTimeLog('section'), 2) . 's';
+$sizeOld = $sizeNew; $rowOld = $rowNew; $dirOld = $dirNew; $dirCountOld = $dirCountNew;
+$dbSize = \round(($sizeNew = (float) $con->query($dbSizeQuery)->fetch()['size']) - $sizeOld, 2) . 'MB';
+$dbRow = ($rowNew = (int) $con->query($dbRowQuery)->fetch()['rows']) - $rowOld;
+$dirSize = \round(($dirNew = dirSize()) - $dirOld, 2) . 'MB';
+$dirCount = ($dirCountNew = dirCount()) - $dirCountOld;
+echo \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', $dbSize) . '| ' . \sprintf('%-9s', $dbRow) . '| ' . \sprintf('%-11s', $dirSize) . '| ' . \sprintf('%-9s', $dirCount) . "|\n";
+echo '|--------------------------|----------|----------|----------|------------|----------|' . "\n";
+
+echo '| ' . \sprintf('%-25s', 'Billing Clients') . '| ';
+FileLogger::startTimeLog('section');
+include __DIR__ . '/setupBillingClients.php';
 DataMapperAbstract::clearCache();
 $time = \round(FileLogger::endTimeLog('section'), 2) . 's';
 $sizeOld = $sizeNew; $rowOld = $rowNew; $dirOld = $dirNew; $dirCountOld = $dirCountNew;

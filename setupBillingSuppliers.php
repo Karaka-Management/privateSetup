@@ -12,7 +12,7 @@
  */
 declare(strict_types=1);
 
-use Modules\ClientManagement\Models\ClientMapper;
+use Modules\SupplierManagement\Models\SupplierMapper;
 use Modules\ItemManagement\Models\ItemMapper;
 use Modules\Billing\Models\BillTypeMapper;
 use phpOMS\Message\Http\HttpRequest;
@@ -38,10 +38,10 @@ $BILL_TYPES = BillTypeMapper::getAll();
 $BILL_TYPES_COUNT = \count($BILL_TYPES);
 $ITEM_COUNT = ItemMapper::count();
 $LOREM_COUNT = \count(Text::LOREM_IPSUM) - 1;
-$CUSTOMER_COUNT = ClientMapper::count();
-$INVOICES = 150 * $CUSTOMER_COUNT;
+$SUPPLIER_COUNT = SupplierMapper::count();
+$INVOICES = 15 * $SUPPLIER_COUNT;
 
-// todo: better customer order randomization, currently not realistic (looping all customers instead of random order)
+// todo: better supplier order randomization, currently not realistic (looping all suppliers instead of random order)
 
 for ($i = 0; $i < $INVOICES; ++$i) {
     if (\mt_rand(1, 100) <= 10) {
@@ -52,9 +52,9 @@ for ($i = 0; $i < $INVOICES; ++$i) {
     $request  = new HttpRequest(new HttpUri(''));
 
     $request->header->account = $aId = \mt_rand(2, 5);
-    $request->setData('client', \mt_rand(1, $CUSTOMER_COUNT));
+    $request->setData('supplier', \mt_rand(1, $SUPPLIER_COUNT));
     $request->setData('address', null);
-    $request->setData('type', $type = \mt_rand(1, $BILL_TYPES_COUNT));
+    $request->setData('type', $type = \mt_rand($BILL_TYPES_COUNT / 2 + 1, $BILL_TYPES_COUNT));
     $request->setData('status', null); // null = system settings, value = individual input
     $request->setData('performancedate', DateTime::generateDateTime(new \DateTime('2015-01-01'), new \DateTime('now'))->format('Y-m-d H:i:s'));
     $request->setData('sales_referral', null); // who these sales belong to
@@ -93,14 +93,30 @@ for ($i = 0; $i < $INVOICES; ++$i) {
 
         $request->setData('bill', $bId);
         $request->setData('item', $iId === 0 ? null : $iId);
+
+        if ($iId === 0) {
+            // @todo: add text
+        }
+
         $request->setData('quantity', \mt_rand(1, 11));
-        $request->setData('discount_type', null);
-        $request->setData('discount', null);
         $request->setData('tax', null);
         $request->setData('text', $iId === 0 ? Text::LOREM_IPSUM[\mt_rand(0, $LOREM_COUNT)] : null);
 
+        // discounts
+        if (\mt_rand(1, 100) < 31) {
+            $request->setData('discount_percentage', \mt_rand(5, 30));
+        }
+
         $module->apiBillElementCreate($request, $response);
     }
+
+    $response = new HttpResponse();
+    $request  = new HttpRequest(new HttpUri(''));
+
+    $request->header->account = $aId;
+    $request->setData('bill', $bId);
+
+    $module->apiBillPdfArchiveCreate($request, $response);
 }
 
 unset($BILL_TYPES);

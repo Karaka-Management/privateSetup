@@ -41,14 +41,10 @@ $toInstall = [
     'WarehouseManagement', 'StockTaking', 'QualityManagement', 'AssetManagement', 'Marketing', 'Knowledgebase', 'Exchange',
 ];
 
-if (\is_dir(__DIR__ . '/../Modules/Media/Files')) {
-    Directory::delete(__DIR__ . '/../Modules/Media/Files');
-
-    \mkdir(__DIR__ . '/../Modules/Media/Files');
-}
-
 foreach ($toInstall as $install) {
     $request->setData('module', $install, true);
     $module->apiModuleStatusUpdate($request, $response);
 }
+
+$app->eventManager->importFromFile(__DIR__ . '/../Web/Api/Hooks.php');
 //endregion

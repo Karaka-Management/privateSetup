@@ -32,8 +32,8 @@ $mpdf = new Mpdf([
 ]);
 
 $mpdf->SetDisplayMode('fullpage');
-$mpdf->SetTitle("Orange Management - Demo Report");
-$mpdf->SetAuthor("Orange Management");
+$mpdf->SetTitle('Orange Management - Demo Report');
+$mpdf->SetAuthor('Orange Management');
 
 // Write some HTML code:
 $mpdf->WriteHTML('
@@ -103,7 +103,7 @@ $mpdf->WriteHTML('
 <body>
 
 <div class="splash">
-    <img alt="Company Logo" class="splash-img" src="' . UriFactory::build('{/base}/' . \ltrim($tcoll['other']['logo']->getPath(), '/')) . '">
+    <img alt="Company Logo" class="splash-img" src="' . UriFactory::build('{/base}/' . \ltrim($tcoll['other']['logo.png']->getPath(), '/')) . '">
     <h1>Demo Report</h1>
 </div>
 ');
@@ -112,7 +112,7 @@ $mpdf->AddPage();
 
 $mpdf->SetHTMLFooter('
 <div class="footer">
-    <img alt="Company Logo" class="footer-img" src="' . UriFactory::build('{/base}/' . \ltrim($tcoll['other']['logo']->getPath(), '/')) . '">
+    <img alt="Company Logo" class="footer-img" src="' . UriFactory::build('{/base}/' . \ltrim($tcoll['other']['logo.png']->getPath(), '/')) . '">
 </div>
 ');
 
@@ -179,7 +179,7 @@ $mpdf->SetHTMLFooter('');
 
 $mpdf->WriteHTML('
 <div class="splash">
-    <img alt="Company Logo" class="splash-img" src="' . UriFactory::build('{/base}/' . \ltrim($tcoll['other']['logo']->getPath(), '/')) . '">
+    <img alt="Company Logo" class="splash-img" src="' . UriFactory::build('{/base}/' . \ltrim($tcoll['other']['logo.png']->getPath(), '/')) . '">
     <h1>Thank you!</h1>
 </div>
 ');

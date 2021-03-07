@@ -21,7 +21,7 @@ $lang           = $reportLanguage[$cLang];
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="<?= UriFactory::build('{/base}/' . \ltrim($tcoll['css']['styles']->getPath(), '/')); ?>">
+    <link rel="stylesheet" type="text/css" href="<?= UriFactory::build('{/base}/' . \ltrim($tcoll['css']['styles.css']->getPath(), '/')); ?>">
 </head>
 <body>
 <?php if ($this->request->getData('type') !== 'html') : ?>
@@ -49,7 +49,7 @@ echo \str_replace(["\n"], ['&#13;&#10;'],
 <div id="bar"></div>
 <header>
     <h1>Demo Mailing - <?= $this->request->getData('date') ?? 'Y-m-d'; ?></h1>
-    <img alt="Company Logo" src="<?= UriFactory::build('{/base}/' . \ltrim($tcoll['other']['logo']->getPath(), '/')); ?>">
+    <img alt="Company Logo" src="<?= UriFactory::build('{/base}/' . \ltrim($tcoll['other']['logo.png']->getPath(), '/')); ?>">
 </div>
 </header>
 <main>

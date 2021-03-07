@@ -32,10 +32,14 @@ use phpOMS\Utils\TestUtils;
 $module = $app->moduleManager->get('ItemManagement');
 TestUtils::setMember($module, 'app', $app);
 
+if (!\is_dir(__DIR__ . '/temp')) {
+    \mkdir(__DIR__ . '/temp');
+}
+
 $LOREM = \array_slice(Text::LOREM_IPSUM, 0, 50);
 
 $LOREM_COUNT = \count($LOREM) - 1;
-$ITEMS       = 100;
+$ITEMS       = 10;
 $numbers     = [];
 
 // item attribute types (e.g. color, material etc.)
@@ -153,6 +157,11 @@ for ($i = 0; $i < $ITEMS; ++$i) {
     $request->setData('purchaseprice', $purchaseprice = ((int) \round(\mt_rand(1000, 100000000), -3)));
     $request->setData('salesprice', (int) \round($purchaseprice * \mt_rand(110, 250) / 100, -3));
 
+    if (\mt_rand(1, 100) < 26) {
+        $MARKDOWN = \file_get_contents(__DIR__ . '/lorem_ipsum/' . \mt_rand(0, 999) . '_1-1');
+        $request->setData('info', \preg_replace('/^.+\n/', '', $MARKDOWN));
+    }
+
     $module->apiItemCreate($request, $response);
     $itemId = $response->get('')['response']->getId();
     //endregion
@@ -195,10 +204,6 @@ for ($i = 0; $i < $ITEMS; ++$i) {
     $response = new HttpResponse();
     $request  = new HttpRequest(new HttpUri(''));
 
-    if (!\is_dir(__DIR__ . '/temp')) {
-        \mkdir(__DIR__ . '/temp');
-    }
-
     $image                 = \imagecreate(256, 256);
     $image_backgroundColor = \imagecolorallocate($image, 54, 151, 219);
     $image_textColor       = \imagecolorallocate($image, 52, 58, 64);
@@ -229,5 +234,56 @@ for ($i = 0; $i < $ITEMS; ++$i) {
     ]);
 
     $module->apiFileCreate($request, $response);
+    //endregion
+
+    //region item files
+    $files = \scandir(__DIR__ . '/media/types');
+
+    foreach ($files as $file) {
+        if ($file === '.' || $file === '..' || \mt_rand(1, 100) < 76) {
+            continue;
+        }
+
+        \copy(__DIR__ . '/media/types/' . $file, __DIR__ . '/temp/' . $file);
+
+        $response = new HttpResponse();
+        $request  = new HttpRequest(new HttpUri(''));
+
+        $request->header->account = \mt_rand(2, 5);
+        $request->setData('item', $itemId);
+
+        TestUtils::setMember($request, 'files', [
+            'file1' => [
+                'name'     => $file,
+                'type'     => \explode('.', $file)[1],
+                'tmp_name' => __DIR__ . '/temp/' . $file,
+                'error'    => \UPLOAD_ERR_OK,
+                'size'     => \filesize(__DIR__ . '/temp/' . $file),
+            ],
+        ]);
+
+        $module->apiFileCreate($request, $response);
+    }
+    //endregion
+
+    //region note
+    for ($k = 0; $k < 20; ++$k) {
+        if (\mt_rand(1, 100) < 76) {
+            continue;
+        }
+
+        $response = new HttpResponse();
+        $request  = new HttpRequest(new HttpUri(''));
+
+        $request->header->account = \mt_rand(2, 5);
+
+        $MARKDOWN = \file_get_contents(__DIR__ . '/lorem_ipsum/' . \mt_rand(0, 999) . '_3-6');
+
+        $request->setData('id', $itemId);
+        $request->setData('title', \trim(\strtok($MARKDOWN, "\n"), ' #'));
+        $request->setData('plain', \preg_replace('/^.+\n/', '', $MARKDOWN));
+
+        $module->apiNoteCreate($request, $response);
+    }
     //endregion
 }
