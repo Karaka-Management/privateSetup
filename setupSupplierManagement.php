@@ -12,8 +12,10 @@
  */
 declare(strict_types=1);
 
+use Modules\SupplierManagement\Models\AttributeValueType;
 use Modules\Profile\Models\ContactType;
 use phpOMS\Localization\ISO3166TwoEnum;
+use phpOMS\Localization\ISO639x1Enum;
 use phpOMS\Message\Http\HttpRequest;
 use phpOMS\Message\Http\HttpResponse;
 use phpOMS\Stdlib\Base\AddressType;
@@ -38,9 +40,90 @@ if (!\is_dir(__DIR__ . '/temp')) {
     \mkdir(__DIR__ . '/temp');
 }
 
-$LOREM_COUNT = \count(Text::LOREM_IPSUM) - 1;
+$LOREM = \array_slice(Text::LOREM_IPSUM, 0, 50);
+
+$LOREM_COUNT = \count($LOREM) - 1;
 $SUPPLIERS   = 100;
 $numbers     = [];
+
+// supplier attribute types (e.g. color, material etc.)
+foreach ($LOREM as $word) {
+    $response = new HttpResponse();
+    $request  = new HttpRequest(new HttpUri(''));
+
+    $request->header->account = \mt_rand(2, 5);
+
+    $request->setData('name', '_' . $word); // identifier of the attribute
+    $request->setData('language', ISO639x1Enum::_EN);
+    $request->setData('title', 'EN:' . $word);
+
+    $module->apiSupplierAttributeTypeCreate($request, $response);
+
+    $attrTypeId = $response->get('')['response']->getId();
+    foreach ($variables['languages'] as $language) {
+        if ($language === ISO639x1Enum::_EN) {
+            continue;
+        }
+
+        $response = new HttpResponse();
+        $request  = new HttpRequest(new HttpUri(''));
+
+        $request->header->account = \mt_rand(2, 5);
+
+        $request->setData('type', $attrTypeId);
+        $request->setData('language', $language);
+        $request->setData('title', \strtoupper($language) . ':' . $LOREM[\mt_rand(0, $LOREM_COUNT)]);
+
+        $module->apiSupplierAttributeTypeL11nCreate($request, $response);
+    }
+
+    $type = AttributeValueType::getRandom();
+
+    // create default values
+    foreach ($LOREM as $word) {
+        $response = new HttpResponse();
+        $request  = new HttpRequest(new HttpUri(''));
+
+        $request->header->account = \mt_rand(2, 5);
+
+        $request->setData('attributetype', $attrTypeId);
+        $request->setData('type', $type);
+        $request->setData('default', true);
+
+        $value = null;
+        if ($type === AttributeValueType::_INT) {
+            $value = \mt_rand(\PHP_INT_MIN, \PHP_INT_MAX);
+        } elseif ($type === AttributeValueType::_STRING) {
+            $request->setData('language', ISO639x1Enum::_EN);
+            $request->setData('country', ISO3166TwoEnum::_USA);
+            $value = 'EN:' . $word;
+        } elseif ($type === AttributeValueType::_FLOAT) {
+            $value = \mt_rand(\PHP_INT_MIN, \PHP_INT_MAX) / \mt_rand(\PHP_INT_MIN, \PHP_INT_MAX);
+        } elseif ($type === AttributeValueType::_DATETIME) {
+            $value = (new \DateTime())->setTimestamp(\mt_rand(0, \PHP_INT_SIZE == 4 ? \PHP_INT_MAX : \PHP_INT_MAX >> 32))->format('Y-m-d H:i:s');
+        }
+
+        $request->setData('value', $value);
+
+        $module->apiSupplierAttributeValueCreate($request, $response);
+
+        if ($type === AttributeValueType::_STRING) {
+            foreach ($variables['languages'] as $language) {
+                if ($language === ISO639x1Enum::_EN) {
+                    continue;
+                }
+
+                $response = new HttpResponse();
+
+                $request->setData('language', $language, true);
+                $request->setData('country', ISO3166TwoEnum::_USA, true);
+                $request->setData('value', \strtoupper($language) . ':' . $LOREM[\mt_rand(0, $LOREM_COUNT)], true);
+
+                $module->apiSupplierAttributeValueCreate($request, $response);
+            }
+        }
+    }
+}
 
 for ($i = 0; $i < $SUPPLIERS; ++$i) {
     $response = new HttpResponse();
@@ -77,6 +160,22 @@ for ($i = 0; $i < $SUPPLIERS; ++$i) {
 
     $sId = $response->get('')['response']->getId();
 
+    //region attributes
+    for ($j = 1; $j < $LOREM_COUNT; ++$j) {
+        $response = new HttpResponse();
+        $request  = new HttpRequest(new HttpUri(''));
+
+        $request->header->account = \mt_rand(2, 5);
+
+        $request->setData('supplier', $sId);
+        $request->setData('type', $j);
+        $request->setData('value', \mt_rand(($j - 1) * $LOREM_COUNT + 1, $j * $LOREM_COUNT));
+
+        $module->apiSupplierAttributeCreate($request, $response);
+    }
+    //endregion
+
+    //region contacts
     $count = \mt_rand(0, 4);
     for ($j = 0; $j < $count; ++$j) {
         $response = new HttpResponse();
@@ -99,6 +198,7 @@ for ($i = 0; $i < $SUPPLIERS; ++$i) {
 
         $module->apiContactElementCreate($request, $response);
     }
+    //endregion
 
     //region profile image
     $response = new HttpResponse();

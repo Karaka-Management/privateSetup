@@ -46,6 +46,24 @@ foreach ($files as $file) {
     $request->header->account = \mt_rand(2, 5);
     $request->setData('virtualpath', '/');
 
+    // tags
+    $tags      = [];
+    $TAG_COUNT = \mt_rand(0, 4);
+    $added     = [];
+
+    for ($j = 0; $j < $TAG_COUNT; ++$j) {
+        $tagId = \mt_rand(1, $LOREM_COUNT - 1);
+
+        if (!\in_array($tagId, $added)) {
+            $added[] = $tagId;
+            $tags[]  = ['id' => $tagId];
+        }
+    }
+
+    if (!empty($tags)) {
+        $request->setData('tags', \json_encode($tags));
+    }
+
     TestUtils::setMember($request, 'files', [
         [
             'name'     => $file,

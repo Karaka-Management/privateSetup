@@ -60,5 +60,37 @@ for ($i = 0; $i < $EDITOR_DOCS; ++$i) {
     }
 
     $module->apiEditorCreate($request, $response);
+
+    $docId = $response->get('')['response']->getId();
+
+    //region client files
+    $files = \scandir(__DIR__ . '/media/types');
+
+    foreach ($files as $file) {
+        if ($file === '.' || $file === '..' || \mt_rand(1, 100) < 90) {
+            continue;
+        }
+
+        \copy(__DIR__ . '/media/types/' . $file, __DIR__ . '/temp/' . $file);
+
+        $response = new HttpResponse();
+        $request  = new HttpRequest(new HttpUri(''));
+
+        $request->header->account = \mt_rand(2, 5);
+        $request->setData('doc', $docId);
+
+        TestUtils::setMember($request, 'files', [
+            'file1' => [
+                'name'     => $file,
+                'type'     => \explode('.', $file)[1],
+                'tmp_name' => __DIR__ . '/temp/' . $file,
+                'error'    => \UPLOAD_ERR_OK,
+                'size'     => \filesize(__DIR__ . '/temp/' . $file),
+            ],
+        ]);
+
+        $module->apiFileCreate($request, $response);
+    }
+    //endregion
 }
 //endregion

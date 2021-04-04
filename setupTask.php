@@ -69,6 +69,8 @@ for ($i = 0; $i < $TASK_COUNT; ++$i) {
     $module->apiTaskCreate($request, $response);
     $id = $response->get('')['response']->getId();
 
+    $completion = 0;
+
     //region answers
     $ANSWER_COUNT  = \mt_rand(0, 5);
     for ($j = 0; $j < $ANSWER_COUNT; ++$j) {
@@ -88,6 +90,10 @@ for ($i = 0; $i < $TASK_COUNT; ++$i) {
         ($DUE_DATE = new \DateTime())->setTimestamp(\time() + \mt_rand(-100000000, 100000000));
         $request->setData('due', $DUE_DATE->format('Y-m-d H:i:s'));
         $request->setData('priority', TaskPriority::getRandom());
+
+        if (\mt_rand(0, 100) < 21) {
+            $request->setData('completion', $completion = \mt_rand($completion, 100));
+        }
 
         // @todo handle to
         // @todo handle cc

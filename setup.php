@@ -306,6 +306,19 @@ $dirCount = ($dirCountNew = dirCount()) - $dirCountOld;
 echo \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', $dbSize) . '| ' . \sprintf('%-9s', $dbRow) . '| ' . \sprintf('%-11s', $dirSize) . '| ' . \sprintf('%-9s', $dirCount) . "|\n";
 echo '|--------------------------|----------|----------|----------|------------|----------|' . "\n";
 
+echo '| ' . \sprintf('%-25s', 'Monitoring') . '| ';
+FileLogger::startTimeLog('section');
+include __DIR__ . '/setupMonitoring.php';
+DataMapperAbstract::clearCache();
+$time = \round(FileLogger::endTimeLog('section'), 2) . 's';
+$sizeOld = $sizeNew; $rowOld = $rowNew; $dirOld = $dirNew; $dirCountOld = $dirCountNew;
+$dbSize = \round(($sizeNew = (float) $con->query($dbSizeQuery)->fetch()['size']) - $sizeOld, 2) . 'MB';
+$dbRow = ($rowNew = (int) $con->query($dbRowQuery)->fetch()['rows']) - $rowOld;
+$dirSize = \round(($dirNew = dirSize()) - $dirOld, 2) . 'MB';
+$dirCount = ($dirCountNew = dirCount()) - $dirCountOld;
+echo \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', $dbSize) . '| ' . \sprintf('%-9s', $dbRow) . '| ' . \sprintf('%-11s', $dirSize) . '| ' . \sprintf('%-9s', $dirCount) . "|\n";
+echo '|--------------------------|----------|----------|----------|------------|----------|' . "\n";
+
 echo '| ' . \sprintf('%-25s', 'Group') . '| ';
 FileLogger::startTimeLog('section');
 include __DIR__ . '/setupGroups.php';
