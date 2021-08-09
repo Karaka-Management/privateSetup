@@ -37,6 +37,11 @@ $LOREM_COUNT = \count(Text::LOREM_IPSUM) - 1;
 $COLOR_COUNT = \count($variables['colors']) - 1;
 $ICON_COUNT  = \count($tagIcons) - 1;
 
+$count = \count(Text::LOREM_IPSUM);
+$interval = (int) \ceil($count / 10);
+$z = 0;
+$p = 0;
+
 foreach (Text::LOREM_IPSUM as $word) {
     $response = new HttpResponse();
     $request  = new HttpRequest(new HttpUri(''));
@@ -70,5 +75,13 @@ foreach (Text::LOREM_IPSUM as $word) {
 
         $module->apiTagL11nCreate($request, $response);
     }
+
+    ++$z;
+    if ($z % $interval === 0) {
+        echo '░';
+        ++$p;
+    }
 }
+
+echo \str_repeat('░', 10 - $p);
 //endregion

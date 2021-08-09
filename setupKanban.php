@@ -31,8 +31,17 @@ use phpOMS\Utils\TestUtils;
 $module = $app->moduleManager->get('Kanban');
 TestUtils::setMember($module, 'app', $app);
 
-$KANBAN_COUNT = 50;
+if (!\is_dir(__DIR__ . '/temp')) {
+    \mkdir(__DIR__ . '/temp');
+}
+
+$KANBAN_COUNT = 30;
 $LOREM_COUNT  = \count(Text::LOREM_IPSUM) - 1;
+
+$count = $KANBAN_COUNT - 1;
+$interval = (int) \ceil($count / 10);
+$z = 0;
+$p = 0;
 
 for ($i = 0; $i < $KANBAN_COUNT; ++$i) {
     $response = new HttpResponse();
@@ -83,7 +92,7 @@ for ($i = 0; $i < $KANBAN_COUNT; ++$i) {
         $columnId = $response->get('')['response']->getId();
 
         //region cards
-        $CARD_COUNT  = \mt_rand(0, 50);
+        $CARD_COUNT  = \mt_rand(0, 10);
         for ($k = 0; $k < $CARD_COUNT; ++$k) {
             $response = new HttpResponse();
             $request  = new HttpRequest(new HttpUri(''));
@@ -116,11 +125,48 @@ for ($i = 0; $i < $KANBAN_COUNT; ++$i) {
                 $request->setData('tags', \json_encode($tags));
             }
 
+            //region files
+            $files = \scandir(__DIR__ . '/media/types');
+
+            $fileCounter = 0;
+            $toUpload    = [];
+            $mFiles      = [];
+            foreach ($files as $file) {
+                if ($file === '.' || $file === '..' || $file === 'Video.mp4' || \mt_rand(1, 100) < 86) {
+                    continue;
+                }
+
+                ++$fileCounter;
+
+                if ($fileCounter === 1) {
+                    \copy(__DIR__ . '/media/types/' . $file, __DIR__ . '/temp/' . $file);
+
+                    $toUpload['file' . $fileCounter] = [
+                        'name'     => $file,
+                        'type'     => \explode('.', $file)[1],
+                        'tmp_name' => __DIR__ . '/temp/' . $file,
+                        'error'    => \UPLOAD_ERR_OK,
+                        'size'     => \filesize(__DIR__ . '/temp/' . $file),
+                    ];
+                } else {
+                    $mFiles[] = $variables['mFiles'][\mt_rand(0, \count($variables['mFiles']) - 1)];
+                }
+            }
+
+            if (!empty($toUpload)) {
+                TestUtils::setMember($request, 'files', $toUpload);
+            }
+
+            if (!empty($mFiles)) {
+                $request->setData('media', \json_encode(\array_unique($mFiles)));
+            }
+            //endregion
+
             $module->apiKanbanCardCreate($request, $response);
 
             $cardId = $response->get('')['response']->getId();
 
-            $COMMENT_COUNT  = \mt_rand(0, 5);
+            $COMMENT_COUNT  = \mt_rand(0, 3);
             for ($l = 0; $l < $COMMENT_COUNT; ++$l) {
                 $response = new HttpResponse();
                 $request  = new HttpRequest(new HttpUri(''));
@@ -131,11 +177,56 @@ for ($i = 0; $i < $KANBAN_COUNT; ++$i) {
                 $request->setData('plain', \preg_replace('/^.+\n/', '', $MARKDOWN));
                 $request->setData('card', $cardId);
 
+                //region files
+                $files = \scandir(__DIR__ . '/media/types');
+
+                $fileCounter = 0;
+                $toUpload    = [];
+                $mFiles      = [];
+                foreach ($files as $file) {
+                    if ($file === '.' || $file === '..' || $file === 'Video.mp4' || \mt_rand(1, 100) < 96) {
+                        continue;
+                    }
+
+                    ++$fileCounter;
+
+                    if ($fileCounter === 1) {
+                        \copy(__DIR__ . '/media/types/' . $file, __DIR__ . '/temp/' . $file);
+
+                        $toUpload['file' . $fileCounter] = [
+                            'name'     => $file,
+                            'type'     => \explode('.', $file)[1],
+                            'tmp_name' => __DIR__ . '/temp/' . $file,
+                            'error'    => \UPLOAD_ERR_OK,
+                            'size'     => \filesize(__DIR__ . '/temp/' . $file),
+                        ];
+                    } else {
+                        $mFiles[] = $variables['mFiles'][\mt_rand(0, \count($variables['mFiles']) - 1)];
+                    }
+                }
+
+                if (!empty($toUpload)) {
+                    TestUtils::setMember($request, 'files', $toUpload);
+                }
+
+                if (!empty($mFiles)) {
+                    $request->setData('media', \json_encode(\array_unique($mFiles)));
+                }
+                //endregion
+
                 $module->apiKanbanCardCommentCreate($request, $response);
             }
         }
         //endregion
     }
     //endregion
+
+    ++$z;
+    if ($z % $interval === 0) {
+        echo '░';
+        ++$p;
+    }
 }
+
+echo \str_repeat('░', 10 - $p);
 //endregion

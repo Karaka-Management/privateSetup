@@ -35,16 +35,29 @@ $request->header->account = 1;
 $request->setData('status', ModuleStatusUpdateType::INSTALL);
 
 $toInstall = [
-    'Monitoring', 'Helper', 'Search', 'Dashboard', 'Media', 'Tasks', 'Messages', 'Calendar', 'Editor', 'DatabaseEditor', 'CMS', 'Checklist',
-    'News', 'Comments', 'Profile', 'Kanban', 'QA', 'Workflow', 'HumanResourceManagement', 'HumanResourceTimeRecording', 'MyPrivate',
+    'Monitoring', 'Helper', 'Search', 'Dashboard', 'Media', 'Tasks', 'Messages', 'Calendar', 'Editor', 'DatabaseEditor', 'CMS', 'Checklist', 'Surveys',
+    'News', 'Comments', 'Profile', 'Kanban', 'QA', 'Workflow', 'Job', 'HumanResourceManagement', 'HumanResourceTimeRecording', 'MyPrivate', 'ContractManagement',
     'Support', 'Sales', 'ClientManagement', 'Accounting', 'Purchase', 'SupplierManagement', 'ItemManagement', 'Billing', 'InvoiceManagement',
-    'WarehouseManagement', 'StockTaking', 'QualityManagement', 'AssetManagement', 'Marketing', 'Knowledgebase', 'Exchange',
+    'WarehouseManagement', 'StockTaking', 'Shop', 'QualityManagement', 'AssetManagement', 'Marketing', 'Knowledgebase', 'Exchange',
 ];
+
+$count = \count($toInstall);
+$interval = (int) \ceil($count / 10);
+$c = 0;
+$p = 0;
 
 foreach ($toInstall as $install) {
     $request->setData('module', $install, true);
     $module->apiModuleStatusUpdate($request, $response);
+
+    ++$c;
+    if ($c % $interval === 0) {
+    	echo '░';
+    	++$p;
+    }
 }
 
 $app->eventManager->importFromFile(__DIR__ . '/../Web/Api/Hooks.php');
 //endregion
+
+echo \str_repeat('░', 10 - $p);

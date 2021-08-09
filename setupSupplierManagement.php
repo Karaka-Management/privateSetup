@@ -92,7 +92,7 @@ foreach ($LOREM as $word) {
 
         $value = null;
         if ($type === AttributeValueType::_INT) {
-            $value = \mt_rand(\PHP_INT_MIN, \PHP_INT_MAX);
+            $value = \mt_rand(-2147483647, 2147483647);
         } elseif ($type === AttributeValueType::_STRING) {
             $request->setData('language', ISO639x1Enum::_EN);
             $request->setData('country', ISO3166TwoEnum::_USA);
@@ -100,7 +100,7 @@ foreach ($LOREM as $word) {
         } elseif ($type === AttributeValueType::_FLOAT) {
             $value = \mt_rand(\PHP_INT_MIN, \PHP_INT_MAX) / \mt_rand(\PHP_INT_MIN, \PHP_INT_MAX);
         } elseif ($type === AttributeValueType::_DATETIME) {
-            $value = (new \DateTime())->setTimestamp(\mt_rand(0, \PHP_INT_SIZE == 4 ? \PHP_INT_MAX : \PHP_INT_MAX >> 32))->format('Y-m-d H:i:s');
+            $value = (new \DateTime())->setTimestamp(\mt_rand(0, \PHP_INT_SIZE === 4 ? \PHP_INT_MAX : \PHP_INT_MAX >> 32))->format('Y-m-d H:i:s');
         }
 
         $request->setData('value', $value);
@@ -124,6 +124,13 @@ foreach ($LOREM as $word) {
         }
     }
 }
+
+echo '░';
+
+$count = $SUPPLIERS;
+$interval = (int) \ceil($count / 9);
+$z = 0;
+$p = 0;
 
 for ($i = 0; $i < $SUPPLIERS; ++$i) {
     $response = new HttpResponse();
@@ -240,7 +247,7 @@ for ($i = 0; $i < $SUPPLIERS; ++$i) {
     $files = \scandir(__DIR__ . '/media/types');
 
     foreach ($files as $file) {
-        if ($file === '.' || $file === '..' || \mt_rand(1, 100) < 76) {
+        if ($file === '.' || $file === '..' || $file === 'Video.mp4' || \mt_rand(1, 100) < 76) {
             continue;
         }
 
@@ -286,4 +293,12 @@ for ($i = 0; $i < $SUPPLIERS; ++$i) {
         $module->apiNoteCreate($request, $response);
     }
     //endregion
+
+    ++$z;
+    if ($z % $interval === 0) {
+        echo '░';
+        ++$p;
+    }
 }
+
+echo \str_repeat('░', 9 - $p);

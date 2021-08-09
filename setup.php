@@ -70,7 +70,7 @@ function dirSize() : float
         $tSize = \substr($tSize, 0, \strpos($tSize, "\t"));
         \pclose($io);
 
-        $size += $tSize;
+        $size += (int) $tSize;
     }
 
     return (float) ($size / 1024);
@@ -89,12 +89,12 @@ function dirCount() : int
     ];
 
     foreach ($f as $dir) {
-        $io = \popen('/usr/bin/du -sk ' . $dir, 'r');
+        $io = \popen('/usr/bin/find ' . $dir . ' -type f | wc -l', 'r');
         $tCount = \fgets($io, 4096);
-        $tCount = \substr($tCount, 0, \strpos($tCount, "\t"));
+        $tCount = \trim($tCount, "\t\r\n");
         \pclose($io);
 
-        $count += $tCount;
+        $count += (int) $tCount;
     }
 
     return (int) $count;
@@ -277,379 +277,71 @@ $dirNew = dirSize();
 $dirCountOld = 0;
 $dirCountNew = dirCount();
 
+$toInstall = [
+    __DIR__ . '/setupDemoTemplates.php' => 'Template',
+    __DIR__ . '/setupModules.php' => 'Module',
+    __DIR__ . '/setupMonitoring.php' => 'Monitoring',
+    __DIR__ . '/setupGroups.php' => 'Group',
+    __DIR__ . '/setupOrganization.php' => 'Organization',
+    __DIR__ . '/setupAccounts.php' => 'Account',
+    __DIR__ . '/setupExchange.php' => 'Exchange',
+    __DIR__ . '/setupTag.php' => 'Tag',
+    __DIR__ . '/setupMedia.php' => 'Media',
+    __DIR__ . '/setupSurveys.php' => 'Surveys',
+    __DIR__ . '/setupDashboard.php' => 'Dashboard',
+    __DIR__ . '/setupContractManagement.php' => 'ContractManagement',
+    __DIR__ . '/setupKanban.php' => 'Kanban',
+    __DIR__ . '/setupQA.php' => 'QA',
+    __DIR__ . '/setupEditor.php' => 'Editor',
+    __DIR__ . '/setupTask.php' => 'Task',
+    __DIR__ . '/setupNews.php' => 'News',
+    __DIR__ . '/setupHelper.php' => 'Helper',
+    __DIR__ . '/setupCMS.php' => 'CMS',
+    __DIR__ . '/setupHumanResourceManagement.php' => 'HumanResourceManagement',
+    __DIR__ . '/setupKnowledgebase.php' => 'Knowledgebase',
+    __DIR__ . '/setupSupport.php' => 'Support',
+    __DIR__ . '/setupDatabaseEditor.php' => 'DatabaseEditor',
+    __DIR__ . '/setupCalendar.php' => 'Calendar',
+    __DIR__ . '/setupItemManagement.php' => 'ItemManagement',
+    __DIR__ . '/setupClientManagement.php' => 'ClientManagement',
+    __DIR__ . '/setupSupplierManagement.php' => 'SupplierManagement',
+    __DIR__ . '/setupWarehouseManagement.php' => 'WarehouseManagement',
+    __DIR__ . '/setupBillingSuppliers.php' => 'Billing Suppliers',
+    __DIR__ . '/setupBillingClients.php' => 'Billing Clients',
+];
+
+$toInstallCount = \count($toInstall);
+
 echo "\n";
 FileLogger::startTimeLog('total');
 
-echo ' -----------------------------------------------------------------------------------' . "\n";
-echo '| ' . \sprintf('%-25s', 'Section') . '| ' . \sprintf('%-9s', 'ExecTime') . '| ' . \sprintf('%-9s', 'DbSize') . '| ' . \sprintf('%-9s', 'DbRows') . '| ' . \sprintf('%-11s', 'DirSize') . '| ' . \sprintf('%-9s', 'DirCount') . "|\n";
-echo '|==========================|==========|==========|==========|============|==========|' . "\n";
+echo ' ------------------------------------------------------------------------------------------------------------' . "\n";
+echo '| ' . \sprintf('%-25s', 'Section') . '| ' . \sprintf('%-11s', 'Progress') . '| ' . \sprintf('%-9s', 'ExecTime') . '| ' . \sprintf('%-9s', 'DbSize') . '| ' . \sprintf('%-9s', 'DbRows') . '| ' . \sprintf('%-11s', 'DirSize') . '| ' . \sprintf('%-9s', 'DirCount') . '| ' . \sprintf('%-10s', 'Mem.') . "|\n";
+echo '|==========================|============|==========|==========|==========|============|==========|===========|' . "\n";
 
-echo '| ' . \sprintf('%-25s', 'Template') . '| ';
-FileLogger::startTimeLog('section');
-include __DIR__ . '/setupDemoTemplates.php';
-$time = \round(FileLogger::endTimeLog('section'), 2) . 's';
-$dirCountOld = $dirCountNew;
-$dirCount = ($dirCountNew = dirCount()) - $dirCountOld;
-echo \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', '0MB') . '| ' . \sprintf('%-9s', '0') . '| ' . \sprintf('%-11s', '0MB') . '| ' . \sprintf('%-9s', $dirCount)  . "|\n";
-echo '|--------------------------|----------|----------|----------|------------|----------|' . "\n";
+$installCounter = 0;
+foreach ($toInstall as $path => $title) {
+    ++$installCounter;
 
-echo '| ' . \sprintf('%-25s', 'Module') . '| ';
-FileLogger::startTimeLog('section');
-include __DIR__ . '/setupModules.php';
-DataMapperAbstract::clearCache();
-$time = \round(FileLogger::endTimeLog('section'), 2) . 's';
-$sizeOld = $sizeNew; $rowOld = $rowNew; $dirOld = $dirNew; $dirCountOld = $dirCountNew;
-$dbSize = \round(($sizeNew = (float) $con->query($dbSizeQuery)->fetch()['size']) - $sizeOld, 2) . 'MB';
-$dbRow = ($rowNew = (int) $con->query($dbRowQuery)->fetch()['rows']) - $rowOld;
-$dirSize = \round(($dirNew = dirSize()) - $dirOld, 2) . 'MB';
-$dirCount = ($dirCountNew = dirCount()) - $dirCountOld;
-echo \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', $dbSize) . '| ' . \sprintf('%-9s', $dbRow) . '| ' . \sprintf('%-11s', $dirSize) . '| ' . \sprintf('%-9s', $dirCount) . "|\n";
-echo '|--------------------------|----------|----------|----------|------------|----------|' . "\n";
+    \gc_collect_cycles();
 
-echo '| ' . \sprintf('%-25s', 'Monitoring') . '| ';
-FileLogger::startTimeLog('section');
-include __DIR__ . '/setupMonitoring.php';
-DataMapperAbstract::clearCache();
-$time = \round(FileLogger::endTimeLog('section'), 2) . 's';
-$sizeOld = $sizeNew; $rowOld = $rowNew; $dirOld = $dirNew; $dirCountOld = $dirCountNew;
-$dbSize = \round(($sizeNew = (float) $con->query($dbSizeQuery)->fetch()['size']) - $sizeOld, 2) . 'MB';
-$dbRow = ($rowNew = (int) $con->query($dbRowQuery)->fetch()['rows']) - $rowOld;
-$dirSize = \round(($dirNew = dirSize()) - $dirOld, 2) . 'MB';
-$dirCount = ($dirCountNew = dirCount()) - $dirCountOld;
-echo \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', $dbSize) . '| ' . \sprintf('%-9s', $dbRow) . '| ' . \sprintf('%-11s', $dirSize) . '| ' . \sprintf('%-9s', $dirCount) . "|\n";
-echo '|--------------------------|----------|----------|----------|------------|----------|' . "\n";
+    echo '| ' . \sprintf('%-25s', $title) . '| ';
+    FileLogger::startTimeLog('section');
+    include $path;
+    DataMapperAbstract::clearCache();
+    $time = \round(FileLogger::endTimeLog('section'), 2);
+    $time = $time > 60.0 ? \round($time / 60, 2) . 'm' : $time . 's';
+    $sizeOld = $sizeNew; $rowOld = $rowNew; $dirOld = $dirNew; $dirCountOld = $dirCountNew;
+    $dbSize = \round(($sizeNew = (float) $con->query($dbSizeQuery)->fetch()['size']) - $sizeOld, 2) . 'MB';
+    $dbRow = ($rowNew = (int) $con->query($dbRowQuery)->fetch()['rows']) - $rowOld;
+    $dirSize = \round(($dirNew = dirSize()) - $dirOld, 2) . 'MB';
+    $dirCount = ($dirCountNew = dirCount()) - $dirCountOld;
+    echo ' | ' . \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', $dbSize) . '| ' . \sprintf('%-9s', $dbRow) . '| ' . \sprintf('%-11s', $dirSize) . '| ' . \sprintf('%-9s', $dirCount) . '| ' . \sprintf('%-10s', \round(\memory_get_usage() / 1048576, 2) . 'MB') . "|\n";
 
-echo '| ' . \sprintf('%-25s', 'Group') . '| ';
-FileLogger::startTimeLog('section');
-include __DIR__ . '/setupGroups.php';
-DataMapperAbstract::clearCache();
-$time = \round(FileLogger::endTimeLog('section'), 2) . 's';
-$sizeOld = $sizeNew; $rowOld = $rowNew; $dirOld = $dirNew; $dirCountOld = $dirCountNew;
-$dbSize = \round(($sizeNew = (float) $con->query($dbSizeQuery)->fetch()['size']) - $sizeOld, 2) . 'MB';
-$dbRow = ($rowNew = (int) $con->query($dbRowQuery)->fetch()['rows']) - $rowOld;
-$dirSize = \round(($dirNew = dirSize()) - $dirOld, 2) . 'MB';
-$dirCount = ($dirCountNew = dirCount()) - $dirCountOld;
-echo \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', $dbSize) . '| ' . \sprintf('%-9s', $dbRow) . '| ' . \sprintf('%-11s', $dirSize) . '| ' . \sprintf('%-9s', $dirCount) . "|\n";
-echo '|--------------------------|----------|----------|----------|------------|----------|' . "\n";
-
-echo '| ' . \sprintf('%-25s', 'Organization') . '| ';
-FileLogger::startTimeLog('section');
-include __DIR__ . '/setupOrganization.php';
-DataMapperAbstract::clearCache();
-$time = \round(FileLogger::endTimeLog('section'), 2) . 's';
-$sizeOld = $sizeNew; $rowOld = $rowNew; $dirOld = $dirNew; $dirCountOld = $dirCountNew;
-$dbSize = \round(($sizeNew = (float) $con->query($dbSizeQuery)->fetch()['size']) - $sizeOld, 2) . 'MB';
-$dbRow = ($rowNew = (int) $con->query($dbRowQuery)->fetch()['rows']) - $rowOld;
-$dirSize = \round(($dirNew = dirSize()) - $dirOld, 2) . 'MB';
-$dirCount = ($dirCountNew = dirCount()) - $dirCountOld;
-echo \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', $dbSize) . '| ' . \sprintf('%-9s', $dbRow) . '| ' . \sprintf('%-11s', $dirSize) . '| ' . \sprintf('%-9s', $dirCount) . "|\n";
-echo '|--------------------------|----------|----------|----------|------------|----------|' . "\n";
-
-echo '| ' . \sprintf('%-25s', 'Account') . '| ';
-FileLogger::startTimeLog('section');
-include __DIR__ . '/setupAccounts.php';
-DataMapperAbstract::clearCache();
-$time = \round(FileLogger::endTimeLog('section'), 2) . 's';
-$sizeOld = $sizeNew; $rowOld = $rowNew; $dirOld = $dirNew; $dirCountOld = $dirCountNew;
-$dbSize = \round(($sizeNew = (float) $con->query($dbSizeQuery)->fetch()['size']) - $sizeOld, 2) . 'MB';
-$dbRow = ($rowNew = (int) $con->query($dbRowQuery)->fetch()['rows']) - $rowOld;
-$dirSize = \round(($dirNew = dirSize()) - $dirOld, 2) . 'MB';
-$dirCount = ($dirCountNew = dirCount()) - $dirCountOld;
-echo \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', $dbSize) . '| ' . \sprintf('%-9s', $dbRow) . '| ' . \sprintf('%-11s', $dirSize) . '| ' . \sprintf('%-9s', $dirCount) . "|\n";
-echo '|--------------------------|----------|----------|----------|------------|----------|' . "\n";
-
-echo '| ' . \sprintf('%-25s', 'Exchange') . '| ';
-FileLogger::startTimeLog('section');
-include __DIR__ . '/setupExchange.php';
-DataMapperAbstract::clearCache();
-$time = \round(FileLogger::endTimeLog('section'), 2) . 's';
-$sizeOld = $sizeNew; $rowOld = $rowNew; $dirOld = $dirNew; $dirCountOld = $dirCountNew;
-$dbSize = \round(($sizeNew = (float) $con->query($dbSizeQuery)->fetch()['size']) - $sizeOld, 2) . 'MB';
-$dbRow = ($rowNew = (int) $con->query($dbRowQuery)->fetch()['rows']) - $rowOld;
-$dirSize = \round(($dirNew = dirSize()) - $dirOld, 2) . 'MB';
-$dirCount = ($dirCountNew = dirCount()) - $dirCountOld;
-echo \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', $dbSize) . '| ' . \sprintf('%-9s', $dbRow) . '| ' . \sprintf('%-11s', $dirSize) . '| ' . \sprintf('%-9s', $dirCount) . "|\n";
-echo '|--------------------------|----------|----------|----------|------------|----------|' . "\n";
-
-
-echo '| ' . \sprintf('%-25s', 'Tag') . '| ';
-FileLogger::startTimeLog('section');
-include __DIR__ . '/setupTag.php';
-DataMapperAbstract::clearCache();
-$time = \round(FileLogger::endTimeLog('section'), 2) . 's';
-$sizeOld = $sizeNew; $rowOld = $rowNew; $dirOld = $dirNew; $dirCountOld = $dirCountNew;
-$dbSize = \round(($sizeNew = (float) $con->query($dbSizeQuery)->fetch()['size']) - $sizeOld, 2) . 'MB';
-$dbRow = ($rowNew = (int) $con->query($dbRowQuery)->fetch()['rows']) - $rowOld;
-$dirSize = \round(($dirNew = dirSize()) - $dirOld, 2) . 'MB';
-$dirCount = ($dirCountNew = dirCount()) - $dirCountOld;
-echo \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', $dbSize) . '| ' . \sprintf('%-9s', $dbRow) . '| ' . \sprintf('%-11s', $dirSize) . '| ' . \sprintf('%-9s', $dirCount) . "|\n";
-echo '|--------------------------|----------|----------|----------|------------|----------|' . "\n";
-
-echo '| ' . \sprintf('%-25s', 'Media') . '| ';
-FileLogger::startTimeLog('section');
-include __DIR__ . '/setupMedia.php';
-DataMapperAbstract::clearCache();
-$time = \round(FileLogger::endTimeLog('section'), 2) . 's';
-$sizeOld = $sizeNew; $rowOld = $rowNew; $dirOld = $dirNew; $dirCountOld = $dirCountNew;
-$dbSize = \round(($sizeNew = (float) $con->query($dbSizeQuery)->fetch()['size']) - $sizeOld, 2) . 'MB';
-$dbRow = ($rowNew = (int) $con->query($dbRowQuery)->fetch()['rows']) - $rowOld;
-$dirSize = \round(($dirNew = dirSize()) - $dirOld, 2) . 'MB';
-$dirCount = ($dirCountNew = dirCount()) - $dirCountOld;
-echo \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', $dbSize) . '| ' . \sprintf('%-9s', $dbRow) . '| ' . \sprintf('%-11s', $dirSize) . '| ' . \sprintf('%-9s', $dirCount) . "|\n";
-echo '|--------------------------|----------|----------|----------|------------|----------|' . "\n";
-
-echo '| ' . \sprintf('%-25s', 'Dashboard') . '| ';
-FileLogger::startTimeLog('section');
-include __DIR__ . '/setupDashboard.php';
-DataMapperAbstract::clearCache();
-$time = \round(FileLogger::endTimeLog('section'), 2) . 's';
-$sizeOld = $sizeNew; $rowOld = $rowNew; $dirOld = $dirNew; $dirCountOld = $dirCountNew;
-$dbSize = \round(($sizeNew = (float) $con->query($dbSizeQuery)->fetch()['size']) - $sizeOld, 2) . 'MB';
-$dbRow = ($rowNew = (int) $con->query($dbRowQuery)->fetch()['rows']) - $rowOld;
-$dirSize = \round(($dirNew = dirSize()) - $dirOld, 2) . 'MB';
-$dirCount = ($dirCountNew = dirCount()) - $dirCountOld;
-echo \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', $dbSize) . '| ' . \sprintf('%-9s', $dbRow) . '| ' . \sprintf('%-11s', $dirSize) . '| ' . \sprintf('%-9s', $dirCount) . "|\n";
-echo '|--------------------------|----------|----------|----------|------------|----------|' . "\n";
-
-echo '| ' . \sprintf('%-25s', 'ItemManagement') . '| ';
-FileLogger::startTimeLog('section');
-include __DIR__ . '/setupItemManagement.php';
-DataMapperAbstract::clearCache();
-$time = \round(FileLogger::endTimeLog('section'), 2) . 's';
-$sizeOld = $sizeNew; $rowOld = $rowNew; $dirOld = $dirNew; $dirCountOld = $dirCountNew;
-$dbSize = \round(($sizeNew = (float) $con->query($dbSizeQuery)->fetch()['size']) - $sizeOld, 2) . 'MB';
-$dbRow = ($rowNew = (int) $con->query($dbRowQuery)->fetch()['rows']) - $rowOld;
-$dirSize = \round(($dirNew = dirSize()) - $dirOld, 2) . 'MB';
-$dirCount = ($dirCountNew = dirCount()) - $dirCountOld;
-echo \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', $dbSize) . '| ' . \sprintf('%-9s', $dbRow) . '| ' . \sprintf('%-11s', $dirSize) . '| ' . \sprintf('%-9s', $dirCount) . "|\n";
-echo '|--------------------------|----------|----------|----------|------------|----------|' . "\n";
-
-echo '| ' . \sprintf('%-25s', 'ClientManagement') . '| ';
-FileLogger::startTimeLog('section');
-include __DIR__ . '/setupClientManagement.php';
-DataMapperAbstract::clearCache();
-$time = \round(FileLogger::endTimeLog('section'), 2) . 's';
-$sizeOld = $sizeNew; $rowOld = $rowNew; $dirOld = $dirNew; $dirCountOld = $dirCountNew;
-$dbSize = \round(($sizeNew = (float) $con->query($dbSizeQuery)->fetch()['size']) - $sizeOld, 2) . 'MB';
-$dbRow = ($rowNew = (int) $con->query($dbRowQuery)->fetch()['rows']) - $rowOld;
-$dirSize = \round(($dirNew = dirSize()) - $dirOld, 2) . 'MB';
-$dirCount = ($dirCountNew = dirCount()) - $dirCountOld;
-echo \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', $dbSize) . '| ' . \sprintf('%-9s', $dbRow) . '| ' . \sprintf('%-11s', $dirSize) . '| ' . \sprintf('%-9s', $dirCount) . "|\n";
-echo '|--------------------------|----------|----------|----------|------------|----------|' . "\n";
-
-echo '| ' . \sprintf('%-25s', 'SupplierManagement') . '| ';
-FileLogger::startTimeLog('section');
-include __DIR__ . '/setupSupplierManagement.php';
-DataMapperAbstract::clearCache();
-$time = \round(FileLogger::endTimeLog('section'), 2) . 's';
-$sizeOld = $sizeNew; $rowOld = $rowNew; $dirOld = $dirNew; $dirCountOld = $dirCountNew;
-$dbSize = \round(($sizeNew = (float) $con->query($dbSizeQuery)->fetch()['size']) - $sizeOld, 2) . 'MB';
-$dbRow = ($rowNew = (int) $con->query($dbRowQuery)->fetch()['rows']) - $rowOld;
-$dirSize = \round(($dirNew = dirSize()) - $dirOld, 2) . 'MB';
-$dirCount = ($dirCountNew = dirCount()) - $dirCountOld;
-echo \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', $dbSize) . '| ' . \sprintf('%-9s', $dbRow) . '| ' . \sprintf('%-11s', $dirSize) . '| ' . \sprintf('%-9s', $dirCount) . "|\n";
-echo '|--------------------------|----------|----------|----------|------------|----------|' . "\n";
-
-echo '| ' . \sprintf('%-25s', 'WarehouseManagement') . '| ';
-FileLogger::startTimeLog('section');
-include __DIR__ . '/setupWarehouseManagement.php';
-DataMapperAbstract::clearCache();
-$time = \round(FileLogger::endTimeLog('section'), 2) . 's';
-$sizeOld = $sizeNew; $rowOld = $rowNew; $dirOld = $dirNew; $dirCountOld = $dirCountNew;
-$dbSize = \round(($sizeNew = (float) $con->query($dbSizeQuery)->fetch()['size']) - $sizeOld, 2) . 'MB';
-$dbRow = ($rowNew = (int) $con->query($dbRowQuery)->fetch()['rows']) - $rowOld;
-$dirSize = \round(($dirNew = dirSize()) - $dirOld, 2) . 'MB';
-$dirCount = ($dirCountNew = dirCount()) - $dirCountOld;
-echo \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', $dbSize) . '| ' . \sprintf('%-9s', $dbRow) . '| ' . \sprintf('%-11s', $dirSize) . '| ' . \sprintf('%-9s', $dirCount) . "|\n";
-echo '|--------------------------|----------|----------|----------|------------|----------|' . "\n";
-
-echo '| ' . \sprintf('%-25s', 'Billing Suppliers') . '| ';
-FileLogger::startTimeLog('section');
-include __DIR__ . '/setupBillingSuppliers.php';
-DataMapperAbstract::clearCache();
-$time = \round(FileLogger::endTimeLog('section'), 2) . 's';
-$sizeOld = $sizeNew; $rowOld = $rowNew; $dirOld = $dirNew; $dirCountOld = $dirCountNew;
-$dbSize = \round(($sizeNew = (float) $con->query($dbSizeQuery)->fetch()['size']) - $sizeOld, 2) . 'MB';
-$dbRow = ($rowNew = (int) $con->query($dbRowQuery)->fetch()['rows']) - $rowOld;
-$dirSize = \round(($dirNew = dirSize()) - $dirOld, 2) . 'MB';
-$dirCount = ($dirCountNew = dirCount()) - $dirCountOld;
-echo \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', $dbSize) . '| ' . \sprintf('%-9s', $dbRow) . '| ' . \sprintf('%-11s', $dirSize) . '| ' . \sprintf('%-9s', $dirCount) . "|\n";
-echo '|--------------------------|----------|----------|----------|------------|----------|' . "\n";
-
-echo '| ' . \sprintf('%-25s', 'Billing Clients') . '| ';
-FileLogger::startTimeLog('section');
-include __DIR__ . '/setupBillingClients.php';
-DataMapperAbstract::clearCache();
-$time = \round(FileLogger::endTimeLog('section'), 2) . 's';
-$sizeOld = $sizeNew; $rowOld = $rowNew; $dirOld = $dirNew; $dirCountOld = $dirCountNew;
-$dbSize = \round(($sizeNew = (float) $con->query($dbSizeQuery)->fetch()['size']) - $sizeOld, 2) . 'MB';
-$dbRow = ($rowNew = (int) $con->query($dbRowQuery)->fetch()['rows']) - $rowOld;
-$dirSize = \round(($dirNew = dirSize()) - $dirOld, 2) . 'MB';
-$dirCount = ($dirCountNew = dirCount()) - $dirCountOld;
-echo \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', $dbSize) . '| ' . \sprintf('%-9s', $dbRow) . '| ' . \sprintf('%-11s', $dirSize) . '| ' . \sprintf('%-9s', $dirCount) . "|\n";
-echo '|--------------------------|----------|----------|----------|------------|----------|' . "\n";
-
-echo '| ' . \sprintf('%-25s', 'Kanban') . '| ';
-FileLogger::startTimeLog('section');
-include __DIR__ . '/setupKanban.php';
-DataMapperAbstract::clearCache();
-$time = \round(FileLogger::endTimeLog('section'), 2) . 's';
-$sizeOld = $sizeNew; $rowOld = $rowNew; $dirOld = $dirNew; $dirCountOld = $dirCountNew;
-$dbSize = \round(($sizeNew = (float) $con->query($dbSizeQuery)->fetch()['size']) - $sizeOld, 2) . 'MB';
-$dbRow = ($rowNew = (int) $con->query($dbRowQuery)->fetch()['rows']) - $rowOld;
-$dirSize = \round(($dirNew = dirSize()) - $dirOld, 2) . 'MB';
-$dirCount = ($dirCountNew = dirCount()) - $dirCountOld;
-echo \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', $dbSize) . '| ' . \sprintf('%-9s', $dbRow) . '| ' . \sprintf('%-11s', $dirSize) . '| ' . \sprintf('%-9s', $dirCount) . "|\n";
-echo '|--------------------------|----------|----------|----------|------------|----------|' . "\n";
-
-echo '| ' . \sprintf('%-25s', 'QA') . '| ';
-FileLogger::startTimeLog('section');
-include __DIR__ . '/setupQA.php';
-DataMapperAbstract::clearCache();
-$time = \round(FileLogger::endTimeLog('section'), 2) . 's';
-$sizeOld = $sizeNew; $rowOld = $rowNew; $dirOld = $dirNew; $dirCountOld = $dirCountNew;
-$dbSize = \round(($sizeNew = (float) $con->query($dbSizeQuery)->fetch()['size']) - $sizeOld, 2) . 'MB';
-$dbRow = ($rowNew = (int) $con->query($dbRowQuery)->fetch()['rows']) - $rowOld;
-$dirSize = \round(($dirNew = dirSize()) - $dirOld, 2) . 'MB';
-$dirCount = ($dirCountNew = dirCount()) - $dirCountOld;
-echo \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', $dbSize) . '| ' . \sprintf('%-9s', $dbRow) . '| ' . \sprintf('%-11s', $dirSize) . '| ' . \sprintf('%-9s', $dirCount) . "|\n";
-echo '|--------------------------|----------|----------|----------|------------|----------|' . "\n";
-
-echo '| ' . \sprintf('%-25s', 'Editor') . '| ';
-FileLogger::startTimeLog('section');
-include __DIR__ . '/setupEditor.php';
-DataMapperAbstract::clearCache();
-$time = \round(FileLogger::endTimeLog('section'), 2) . 's';
-$sizeOld = $sizeNew; $rowOld = $rowNew; $dirOld = $dirNew; $dirCountOld = $dirCountNew;
-$dbSize = \round(($sizeNew = (float) $con->query($dbSizeQuery)->fetch()['size']) - $sizeOld, 2) . 'MB';
-$dbRow = ($rowNew = (int) $con->query($dbRowQuery)->fetch()['rows']) - $rowOld;
-$dirSize = \round(($dirNew = dirSize()) - $dirOld, 2) . 'MB';
-$dirCount = ($dirCountNew = dirCount()) - $dirCountOld;
-echo \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', $dbSize) . '| ' . \sprintf('%-9s', $dbRow) . '| ' . \sprintf('%-11s', $dirSize) . '| ' . \sprintf('%-9s', $dirCount) . "|\n";
-echo '|--------------------------|----------|----------|----------|------------|----------|' . "\n";
-
-echo '| ' . \sprintf('%-25s', 'Task') . '| ';
-FileLogger::startTimeLog('section');
-include __DIR__ . '/setupTask.php';
-DataMapperAbstract::clearCache();
-$time = \round(FileLogger::endTimeLog('section'), 2) . 's';
-$sizeOld = $sizeNew; $rowOld = $rowNew; $dirOld = $dirNew; $dirCountOld = $dirCountNew;
-$dbSize = \round(($sizeNew = (float) $con->query($dbSizeQuery)->fetch()['size']) - $sizeOld, 2) . 'MB';
-$dbRow = ($rowNew = (int) $con->query($dbRowQuery)->fetch()['rows']) - $rowOld;
-$dirSize = \round(($dirNew = dirSize()) - $dirOld, 2) . 'MB';
-$dirCount = ($dirCountNew = dirCount()) - $dirCountOld;
-echo \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', $dbSize) . '| ' . \sprintf('%-9s', $dbRow) . '| ' . \sprintf('%-11s', $dirSize) . '| ' . \sprintf('%-9s', $dirCount) . "|\n";
-echo '|--------------------------|----------|----------|----------|------------|----------|' . "\n";
-
-echo '| ' . \sprintf('%-25s', 'News') . '| ';
-FileLogger::startTimeLog('section');
-include __DIR__ . '/setupNews.php';
-DataMapperAbstract::clearCache();
-$time = \round(FileLogger::endTimeLog('section'), 2) . 's';
-$sizeOld = $sizeNew; $rowOld = $rowNew; $dirOld = $dirNew; $dirCountOld = $dirCountNew;
-$dbSize = \round(($sizeNew = (float) $con->query($dbSizeQuery)->fetch()['size']) - $sizeOld, 2) . 'MB';
-$dbRow = ($rowNew = (int) $con->query($dbRowQuery)->fetch()['rows']) - $rowOld;
-$dirSize = \round(($dirNew = dirSize()) - $dirOld, 2) . 'MB';
-$dirCount = ($dirCountNew = dirCount()) - $dirCountOld;
-echo \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', $dbSize) . '| ' . \sprintf('%-9s', $dbRow) . '| ' . \sprintf('%-11s', $dirSize) . '| ' . \sprintf('%-9s', $dirCount) . "|\n";
-echo '|--------------------------|----------|----------|----------|------------|----------|' . "\n";
-
-echo '| ' . \sprintf('%-25s', 'Helper') . '| ';
-FileLogger::startTimeLog('section');
-include __DIR__ . '/setupHelper.php';
-DataMapperAbstract::clearCache();
-$time = \round(FileLogger::endTimeLog('section'), 2) . 's';
-$sizeOld = $sizeNew; $rowOld = $rowNew; $dirOld = $dirNew; $dirCountOld = $dirCountNew;
-$dbSize = \round(($sizeNew = (float) $con->query($dbSizeQuery)->fetch()['size']) - $sizeOld, 2) . 'MB';
-$dbRow = ($rowNew = (int) $con->query($dbRowQuery)->fetch()['rows']) - $rowOld;
-$dirSize = \round(($dirNew = dirSize()) - $dirOld, 2) . 'MB';
-$dirCount = ($dirCountNew = dirCount()) - $dirCountOld;
-echo \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', $dbSize) . '| ' . \sprintf('%-9s', $dbRow) . '| ' . \sprintf('%-11s', $dirSize) . '| ' . \sprintf('%-9s', $dirCount) . "|\n";
-echo '|--------------------------|----------|----------|----------|------------|----------|' . "\n";
-
-echo '| ' . \sprintf('%-25s', 'CMS') . '| ';
-FileLogger::startTimeLog('section');
-include __DIR__ . '/setupCMS.php';
-DataMapperAbstract::clearCache();
-$time = \round(FileLogger::endTimeLog('section'), 2) . 's';
-$sizeOld = $sizeNew; $rowOld = $rowNew; $dirOld = $dirNew; $dirCountOld = $dirCountNew;
-$dbSize = \round(($sizeNew = (float) $con->query($dbSizeQuery)->fetch()['size']) - $sizeOld, 2) . 'MB';
-$dbRow = ($rowNew = (int) $con->query($dbRowQuery)->fetch()['rows']) - $rowOld;
-$dirSize = \round(($dirNew = dirSize()) - $dirOld, 2) . 'MB';
-$dirCount = ($dirCountNew = dirCount()) - $dirCountOld;
-echo \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', $dbSize) . '| ' . \sprintf('%-9s', $dbRow) . '| ' . \sprintf('%-11s', $dirSize) . '| ' . \sprintf('%-9s', $dirCount) . "|\n";
-echo '|--------------------------|----------|----------|----------|------------|----------|' . "\n";
-
-// item mgmt and others here!
-
-echo '| ' . \sprintf('%-25s', 'HumanResourceManagement') . '| ';
-FileLogger::startTimeLog('section');
-include __DIR__ . '/setupHumanResourceManagement.php';
-DataMapperAbstract::clearCache();
-$time = \round(FileLogger::endTimeLog('section'), 2) . 's';
-$sizeOld = $sizeNew; $rowOld = $rowNew; $dirOld = $dirNew; $dirCountOld = $dirCountNew;
-$dbSize = \round(($sizeNew = (float) $con->query($dbSizeQuery)->fetch()['size']) - $sizeOld, 2) . 'MB';
-$dbRow = ($rowNew = (int) $con->query($dbRowQuery)->fetch()['rows']) - $rowOld;
-$dirSize = \round(($dirNew = dirSize()) - $dirOld, 2) . 'MB';
-$dirCount = ($dirCountNew = dirCount()) - $dirCountOld;
-echo \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', $dbSize) . '| ' . \sprintf('%-9s', $dbRow) . '| ' . \sprintf('%-11s', $dirSize) . '| ' . \sprintf('%-9s', $dirCount) . "|\n";
-echo '|--------------------------|----------|----------|----------|------------|----------|' . "\n";
-
-echo '| ' . \sprintf('%-25s', 'Knowledgebase') . '| ';
-FileLogger::startTimeLog('section');
-include __DIR__ . '/setupKnowledgebase.php';
-DataMapperAbstract::clearCache();
-$time = \round(FileLogger::endTimeLog('section'), 2) . 's';
-$sizeOld = $sizeNew; $rowOld = $rowNew; $dirOld = $dirNew; $dirCountOld = $dirCountNew;
-$dbSize = \round(($sizeNew = (float) $con->query($dbSizeQuery)->fetch()['size']) - $sizeOld, 2) . 'MB';
-$dbRow = ($rowNew = (int) $con->query($dbRowQuery)->fetch()['rows']) - $rowOld;
-$dirSize = \round(($dirNew = dirSize()) - $dirOld, 2) . 'MB';
-$dirCount = ($dirCountNew = dirCount()) - $dirCountOld;
-echo \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', $dbSize) . '| ' . \sprintf('%-9s', $dbRow) . '| ' . \sprintf('%-11s', $dirSize) . '| ' . \sprintf('%-9s', $dirCount) . "|\n";
-echo '|--------------------------|----------|----------|----------|------------|----------|' . "\n";
-
-echo '| ' . \sprintf('%-25s', 'Support') . '| ';
-FileLogger::startTimeLog('section');
-include __DIR__ . '/setupSupport.php';
-DataMapperAbstract::clearCache();
-$time = \round(FileLogger::endTimeLog('section'), 2) . 's';
-$sizeOld = $sizeNew; $rowOld = $rowNew; $dirOld = $dirNew; $dirCountOld = $dirCountNew;
-$dbSize = \round(($sizeNew = (float) $con->query($dbSizeQuery)->fetch()['size']) - $sizeOld, 2) . 'MB';
-$dbRow = ($rowNew = (int) $con->query($dbRowQuery)->fetch()['rows']) - $rowOld;
-$dirSize = \round(($dirNew = dirSize()) - $dirOld, 2) . 'MB';
-$dirCount = ($dirCountNew = dirCount()) - $dirCountOld;
-echo \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', $dbSize) . '| ' . \sprintf('%-9s', $dbRow) . '| ' . \sprintf('%-11s', $dirSize) . '| ' . \sprintf('%-9s', $dirCount) . "|\n";
-echo '|--------------------------|----------|----------|----------|------------|----------|' . "\n";
-
-echo '| ' . \sprintf('%-25s', 'DatabaseEditor') . '| ';
-FileLogger::startTimeLog('section');
-include __DIR__ . '/setupDatabaseEditor.php';
-DataMapperAbstract::clearCache();
-$time = \round(FileLogger::endTimeLog('section'), 2) . 's';
-$sizeOld = $sizeNew; $rowOld = $rowNew; $dirOld = $dirNew; $dirCountOld = $dirCountNew;
-$dbSize = \round(($sizeNew = (float) $con->query($dbSizeQuery)->fetch()['size']) - $sizeOld, 2) . 'MB';
-$dbRow = ($rowNew = (int) $con->query($dbRowQuery)->fetch()['rows']) - $rowOld;
-$dirSize = \round(($dirNew = dirSize()) - $dirOld, 2) . 'MB';
-$dirCount = ($dirCountNew = dirCount()) - $dirCountOld;
-echo \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', $dbSize) . '| ' . \sprintf('%-9s', $dbRow) . '| ' . \sprintf('%-11s', $dirSize) . '| ' . \sprintf('%-9s', $dirCount) . "|\n";
-echo '|--------------------------|----------|----------|----------|------------|----------|' . "\n";
-
-echo '| ' . \sprintf('%-25s', 'Calendar') . '| ';
-FileLogger::startTimeLog('section');
-include __DIR__ . '/setupCalendar.php';
-DataMapperAbstract::clearCache();
-$time = \round(FileLogger::endTimeLog('section'), 2) . 's';
-$sizeOld = $sizeNew; $rowOld = $rowNew; $dirOld = $dirNew; $dirCountOld = $dirCountNew;
-$dbSize = \round(($sizeNew = (float) $con->query($dbSizeQuery)->fetch()['size']) - $sizeOld, 2) . 'MB';
-$dbRow = ($rowNew = (int) $con->query($dbRowQuery)->fetch()['rows']) - $rowOld;
-$dirSize = \round(($dirNew = dirSize()) - $dirOld, 2) . 'MB';
-$dirCount = ($dirCountNew = dirCount()) - $dirCountOld;
-echo \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', $dbSize) . '| ' . \sprintf('%-9s', $dbRow) . '| ' . \sprintf('%-11s', $dirSize) . '| ' . \sprintf('%-9s', $dirCount) . "|\n";
-echo '|==========================|==========|==========|==========|============|==========|' . "\n";
-
-// include __DIR__ . '/setupMessenges.php';
-// include __DIR__ . '/setupWarehouseing.php';
-// include __DIR__ . '/setupBilling.php';
+    echo $installCounter < $toInstallCount
+        ? '|--------------------------|------------|----------|----------|----------|------------|----------|-----------|' . "\n"
+        : '|==========================|============|==========|==========|==========|============|==========|===========|' . "\n";
+}
 
 $time = \round(FileLogger::endTimeLog('total') / 60, 2) . 'm';
 $dbSize = $con->query($dbSizeQuery)->fetch()['size'] . 'MB';
@@ -657,5 +349,5 @@ $dbRow = (int) $con->query($dbRowQuery)->fetch()['rows'];
 $dirSize = \round(dirSize(), 2) . 'MB';
 $dirCount = dirCount();
 
-echo '| ' . \sprintf('%-25s', 'Total') . '| ' . \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', $dbSize) . '| ' . \sprintf('%-9s', $dbRow) . '| ' . \sprintf('%-11s', $dirSize) . '| ' . \sprintf('%-9s', $dirCount) . "|\n";
-echo ' -----------------------------------------------------------------------------------' . "\n\n";
+echo '| ' . \sprintf('%-38s', 'Total') . '| ' . \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', $dbSize) . '| ' . \sprintf('%-9s', $dbRow) . '| ' . \sprintf('%-11s', $dirSize) . '| ' . \sprintf('%-9s', $dirCount) . '| ' . \sprintf('%-10s', \round(\memory_get_peak_usage() / 1048576, 2) . 'MB') . "|\n";
+echo ' ------------------------------------------------------------------------------------------------------------' . "\n\n";

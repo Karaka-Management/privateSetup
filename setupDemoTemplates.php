@@ -6,3 +6,5 @@ if (\is_file($file = __DIR__ . '/../Web/Backend/login.tpl.php')) {
 }
 
 \copy(__DIR__ . '/demo/login.tpl.php', $file);
+
+echo '░░░░░░░░░░';

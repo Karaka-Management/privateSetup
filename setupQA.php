@@ -31,46 +31,26 @@ use phpOMS\Utils\TestUtils;
 $module = $app->moduleManager->get('QA');
 TestUtils::setMember($module, 'app', $app);
 
-$QUESTION_COUNT = 1000;
-$CATEGORY_COUNT = 30;
+$QUESTION_COUNT = 500;
 $LOREM_COUNT    = \count(Text::LOREM_IPSUM) - 1;
 $LANGUAGES      = \count($variables['languages']);
 
-$categories = [];
+// create public QA board
 
-$LOREM = \array_slice(Text::LOREM_IPSUM, 0, $CATEGORY_COUNT);
-foreach ($LOREM as $j => $word) {
-    $response = new HttpResponse();
-    $request  = new HttpRequest(new HttpUri(''));
+$response = new HttpResponse();
+$request  = new HttpRequest(new HttpUri(''));
 
-    $request->header->account = \mt_rand(2, 5);
-    $request->setData('language', ISO639x1Enum::_EN);
-    $request->setData('name', 'EN:' . $word);
+$request->header->account = \mt_rand(2, 5);
+$request->setData('name', Text::LOREM_IPSUM[\mt_rand(0, $LOREM_COUNT - 1)]);
 
-    if ($j > 0 && \mt_rand(1, 100) < 50) {
-        $request->setData('parent', $categories[\mt_rand(0, $j - 1)]->getId());
-    }
+$module->apiQAAppCreate($request, $response);
 
-    $module->apiQACategoryCreate($request, $response);
-    $category     = $response->get('')['response'];
-    $categories[] = $category;
+echo '░';
 
-    foreach ($variables['languages'] as $language) {
-        if ($language === ISO639x1Enum::_EN) {
-            continue;
-        }
-
-        $response = new HttpResponse();
-        $request  = new HttpRequest(new HttpUri(''));
-
-        $request->header->account = \mt_rand(2, 5);
-        $request->setData('category', $category->getId());
-        $request->setData('language', $language);
-        $request->setData('name', \strtoupper($language) . ':' . Text::LOREM_IPSUM[\mt_rand(0, $LOREM_COUNT)]);
-
-        $module->apiQACategoryL11nCreate($request, $response);
-    }
-}
+$count = $QUESTION_COUNT;
+$interval = (int) \ceil($count / 9);
+$z = 0;
+$p = 0;
 
 for ($i = 0; $i < $QUESTION_COUNT; ++$i) {
     $response = new HttpResponse();
@@ -82,7 +62,7 @@ for ($i = 0; $i < $QUESTION_COUNT; ++$i) {
     $request->setData('title', \trim(\strtok($MARKDOWN, "\n"), ' #'));
     $request->setData('plain', \preg_replace('/^.+\n/', '', $MARKDOWN));
     $request->setData('language', $variables['languages'][\mt_rand(0, $LANGUAGES - 1)]);
-    $request->setData('category', $categories[\mt_rand(0, $CATEGORY_COUNT - 1)]->getId());
+    $request->setData('app', \mt_rand(1, 2));
     $request->setData('status', QAQuestionStatus::getRandom());
 
     // tags
@@ -103,12 +83,64 @@ for ($i = 0; $i < $QUESTION_COUNT; ++$i) {
         $request->setData('tags', \json_encode($tags));
     }
 
+    //region files
+    $files = \scandir(__DIR__ . '/media/types');
+
+    $fileCounter = 0;
+    $toUpload    = [];
+    $mFiles      = [];
+    foreach ($files as $file) {
+        if ($file === '.' || $file === '..' || $file === 'Video.mp4' || \mt_rand(1, 100) < 91) {
+            continue;
+        }
+
+        ++$fileCounter;
+
+        if ($fileCounter === 1) {
+            \copy(__DIR__ . '/media/types/' . $file, __DIR__ . '/temp/' . $file);
+
+            $toUpload['file' . $fileCounter] = [
+                'name'     => $file,
+                'type'     => \explode('.', $file)[1],
+                'tmp_name' => __DIR__ . '/temp/' . $file,
+                'error'    => \UPLOAD_ERR_OK,
+                'size'     => \filesize(__DIR__ . '/temp/' . $file),
+            ];
+        } else {
+            $mFiles[] = $variables['mFiles'][\mt_rand(0, \count($variables['mFiles']) - 1)];
+        }
+    }
+
+    if (!empty($toUpload)) {
+        TestUtils::setMember($request, 'files', $toUpload);
+    }
+
+    if (!empty($mFiles)) {
+        $request->setData('media', \json_encode(\array_unique($mFiles)));
+    }
+    //endregion
+
     $module->apiQAQuestionCreate($request, $response);
 
-    $id = $response->get('')['response']->getId();
+    $qId = $response->get('')['response']->getId();
+
+    $qVotes = \mt_rand(-2, 5);
+    $sign   = $qVotes <=> 0;
+    $maxVotes = \abs($qVotes);
+
+    for ($k = 0; $k < $maxVotes; ++$k) {
+        $response = new HttpResponse();
+        $request  = new HttpRequest(new HttpUri(''));
+        $request->header->account = \mt_rand(1, 5);
+
+        $request->setData('id', $qId);
+        $request->setData('type', $sign * 1);
+        $module->apiChangeQAQuestionVote($request, $response);
+    }
 
     //region columns
     $ANSWERS_COUNT  = \mt_rand(-2, 5);
+    $isAccepted     = false;
     for ($j = 0; $j < $ANSWERS_COUNT; ++$j) {
         $response = new HttpResponse();
         $request  = new HttpRequest(new HttpUri(''));
@@ -118,10 +150,80 @@ for ($i = 0; $i < $QUESTION_COUNT; ++$i) {
         $request->header->account = \mt_rand(1, 5);
         $request->setData('plain', \preg_replace('/^.+\n/', '', $MARKDOWN));
         $request->setData('status', QAAnswerStatus::getRandom());
-        $request->setData('question', $id);
+        $request->setData('question', $qId);
+
+        //region files
+        $files = \scandir(__DIR__ . '/media/types');
+
+        $fileCounter = 0;
+        $toUpload    = [];
+        $mFiles      = [];
+        foreach ($files as $file) {
+            if ($file === '.' || $file === '..' || $file === 'Video.mp4' || \mt_rand(1, 100) < 96) {
+                continue;
+            }
+
+            ++$fileCounter;
+
+            if ($fileCounter === 1) {
+                \copy(__DIR__ . '/media/types/' . $file, __DIR__ . '/temp/' . $file);
+
+                $toUpload['file' . $fileCounter] = [
+                    'name'     => $file,
+                    'type'     => \explode('.', $file)[1],
+                    'tmp_name' => __DIR__ . '/temp/' . $file,
+                    'error'    => \UPLOAD_ERR_OK,
+                    'size'     => \filesize(__DIR__ . '/temp/' . $file),
+                ];
+            } else {
+                $mFiles[] = $variables['mFiles'][\mt_rand(0, \count($variables['mFiles']) - 1)];
+            }
+        }
+
+        if (!empty($toUpload)) {
+            TestUtils::setMember($request, 'files', $toUpload);
+        }
+
+        if (!empty($mFiles)) {
+            $request->setData('media', \json_encode(\array_unique($mFiles)));
+        }
+        //endregion
 
         $module->apiQAAnswerCreate($request, $response);
+        $aId = $response->get('')['response']->getId();
+
+        $aVotes = \mt_rand(-2, 5);
+        $sign   = $aVotes <=> 0;
+        $maxVotes = \abs($aVotes);
+
+        for ($k = 0; $k < $maxVotes; ++$k) {
+            $response = new HttpResponse();
+            $request  = new HttpRequest(new HttpUri(''));
+            $request->header->account = \mt_rand(1, 5);
+
+            $request->setData('id', $aId);
+            $request->setData('type', $sign * 1);
+            $module->apiChangeQAAnswerVote($request, $response);
+        }
+
+        if (!$isAccepted && ($isAccepted = \mt_rand(1, 100) < 10)) {
+            $response = new HttpResponse();
+            $request  = new HttpRequest(new HttpUri(''));
+            $request->header->account = \mt_rand(1, 5);
+
+            $request->setData('id', $aId);
+            $request->setData('accepted', '1');
+            $module->apiChangeAnsweredStatus($request, $response);
+        }
     }
     //endregion
+
+    ++$z;
+    if ($z % $interval === 0) {
+        echo '░';
+        ++$p;
+    }
 }
+
+echo \str_repeat('░', 9 - $p);
 //endregion

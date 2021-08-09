@@ -52,4 +52,6 @@ $module->apiApplicationInstall($request, $response);
 if (\is_file(__DIR__ . '/temp/Demo.zip')) {
 	\unlink(__DIR__ . '/temp/Demo.zip');
 }
+
+echo '░░░░░░░░░░';
 //endregion

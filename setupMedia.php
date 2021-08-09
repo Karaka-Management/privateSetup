@@ -33,8 +33,19 @@ if (!\is_dir(__DIR__ . '/temp')) {
 
 $files = \scandir(__DIR__ . '/media/types');
 
+$count = \count($files);
+$interval = (int) \ceil($count / 10);
+$z = 0;
+$p = 0;
+
 foreach ($files as $file) {
     if ($file === '.' || $file === '..') {
+        ++$z;
+        if ($z % $interval === 0) {
+            echo '░';
+            ++$p;
+        }
+
         continue;
     }
 
@@ -75,5 +86,14 @@ foreach ($files as $file) {
     ]);
 
     $module->apiMediaUpload($request, $response);
+    $variables['mFiles'] = \array_merge($variables['mFiles'], $response->get('')['response']);
+
+    ++$z;
+    if ($z % $interval === 0) {
+        echo '░';
+        ++$p;
+    }
 }
+
+echo \str_repeat('░', 10 - $p);
 //endregion

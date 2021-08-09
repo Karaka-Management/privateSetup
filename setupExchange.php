@@ -36,3 +36,6 @@ $request->header->account = 1;
 $request->setData('interface', 'OMS');
 
 $module->apiInterfaceInstall($request, $response);
+
+echo '░░░░░░░░░░';
+//endregion

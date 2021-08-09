@@ -28,8 +28,13 @@ use phpOMS\Utils\TestUtils;
 $module = $app->moduleManager->get('Editor');
 TestUtils::setMember($module, 'app', $app);
 
-$EDITOR_DOCS = 1000;
+$EDITOR_DOCS = 500;
 $LOREM_COUNT = \count(Text::LOREM_IPSUM) - 1;
+
+$count = $EDITOR_DOCS;
+$interval = (int) \ceil($count / 10);
+$z = 0;
+$p = 0;
 
 for ($i = 0; $i < $EDITOR_DOCS; ++$i) {
     $response = new HttpResponse();
@@ -59,38 +64,51 @@ for ($i = 0; $i < $EDITOR_DOCS; ++$i) {
         $request->setData('tags', \json_encode($tags));
     }
 
-    $module->apiEditorCreate($request, $response);
-
-    $docId = $response->get('')['response']->getId();
-
-    //region client files
+    //region files
     $files = \scandir(__DIR__ . '/media/types');
 
+    $fileCounter = 0;
+    $toUpload    = [];
+    $mFiles      = [];
     foreach ($files as $file) {
-        if ($file === '.' || $file === '..' || \mt_rand(1, 100) < 90) {
+        if ($file === '.' || $file === '..' || $file === 'Video.mp4' || \mt_rand(1, 100) < 76) {
             continue;
         }
 
-        \copy(__DIR__ . '/media/types/' . $file, __DIR__ . '/temp/' . $file);
+        ++$fileCounter;
 
-        $response = new HttpResponse();
-        $request  = new HttpRequest(new HttpUri(''));
+        if ($fileCounter === 1) {
+            \copy(__DIR__ . '/media/types/' . $file, __DIR__ . '/temp/' . $file);
 
-        $request->header->account = \mt_rand(2, 5);
-        $request->setData('doc', $docId);
-
-        TestUtils::setMember($request, 'files', [
-            'file1' => [
+            $toUpload['file' . $fileCounter] = [
                 'name'     => $file,
                 'type'     => \explode('.', $file)[1],
                 'tmp_name' => __DIR__ . '/temp/' . $file,
                 'error'    => \UPLOAD_ERR_OK,
                 'size'     => \filesize(__DIR__ . '/temp/' . $file),
-            ],
-        ]);
+            ];
+        } else {
+            $mFiles[] = $variables['mFiles'][\mt_rand(0, \count($variables['mFiles']) - 1)];
+        }
+    }
 
-        $module->apiFileCreate($request, $response);
+    if (!empty($toUpload)) {
+        TestUtils::setMember($request, 'files', $toUpload);
+    }
+
+    if (!empty($mFiles)) {
+        $request->setData('media', \json_encode(\array_unique($mFiles)));
     }
     //endregion
+
+    $module->apiEditorCreate($request, $response);
+
+    ++$z;
+    if ($z % $interval === 0) {
+        echo '░';
+        ++$p;
+    }
 }
+
+echo \str_repeat('░', 10 - $p);
 //endregion

@@ -4,8 +4,7 @@
  *
  * PHP Version 8.0
  *
- * @package   Web\Backend
- *
+ * @package   Web\{APPNAME}
  * @copyright Dennis Eichhorn
  * @license   OMS License 1.0
  *
@@ -16,5 +15,5 @@
 declare(strict_types=1);
 
 return [[
-    ':meta' => 'IMPLA Application.',
+    ':meta' => 'Demo Application.',
 ]];

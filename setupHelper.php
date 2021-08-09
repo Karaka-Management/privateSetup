@@ -32,8 +32,20 @@ if (!\is_dir(__DIR__ . '/temp')) {
 }
 
 $helpers = \scandir(__DIR__ . '/helper');
+
+$count = \count($helpers);
+$interval = (int) \ceil($count / 10);
+$z = 0;
+$p = 0;
+
 foreach ($helpers as $helper) {
     if (!\is_dir(__DIR__ . '/helper/' . $helper) || $helper === '..' || $helper === '.') {
+        ++$z;
+        if ($z % $interval === 0) {
+            echo '░';
+            ++$p;
+        }
+
         continue;
     }
 
@@ -84,6 +96,13 @@ foreach ($helpers as $helper) {
     }
 
     $module->apiTemplateCreate($request, $response);
+
+    ++$z;
+    if ($z % $interval === 0) {
+        echo '░';
+        ++$p;
+    }
 }
 
+echo \str_repeat('░', 10 - $p);
 //endregion

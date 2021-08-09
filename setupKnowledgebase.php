@@ -45,6 +45,11 @@ for ($i = 0; $i < 1; ++$i) {
     $module->apiWikiAppCreate($request, $response);
 }
 
+$count = $APPS;
+$interval = (int) \ceil($count / 2);
+$z = 0;
+$p = 0;
+
 for ($i = 0; $i < $APPS + 1; ++$i) {
     $categories = [];
     $j          = 0;
@@ -57,7 +62,7 @@ for ($i = 0; $i < $APPS + 1; ++$i) {
         $request->setData('name', 'EN:' . $word);
         $request->setData('app', \mt_rand(1, $APPS));
 
-        if ($j > 0 && \mt_rand(1, 100) < 50) {
+        if ($j > 0 && \mt_rand(1, 100) < 81) {
             $request->setData('parent', $categories[\mt_rand(0, $j - 1)]->getId());
         }
 
@@ -84,7 +89,20 @@ for ($i = 0; $i < $APPS + 1; ++$i) {
 
         ++$j;
     }
+
+    ++$z;
+    if ($z % $interval === 0) {
+        echo '░';
+        ++$p;
+    }
 }
+
+echo \str_repeat('░', 2 - $p);
+
+$count = \count($variables['languages']);
+$interval = (int) \ceil($count / 8);
+$z = 0;
+$p = 0;
 
 foreach ($variables['languages'] as $language) {
     for ($i = 0; $i < $WIKI_ARTICLES; ++$i) {
@@ -118,7 +136,52 @@ foreach ($variables['languages'] as $language) {
             $request->setData('tags', \json_encode($tags));
         }
 
+        //region files
+        $files = \scandir(__DIR__ . '/media/types');
+
+        $fileCounter = 0;
+        $toUpload    = [];
+        $mFiles      = [];
+        foreach ($files as $file) {
+            if ($file === '.' || $file === '..' || $file === 'Video.mp4' || \mt_rand(1, 100) < 96) {
+                continue;
+            }
+
+            ++$fileCounter;
+
+            if ($fileCounter === 1) {
+                \copy(__DIR__ . '/media/types/' . $file, __DIR__ . '/temp/' . $file);
+
+                $toUpload['file' . $fileCounter] = [
+                    'name'     => $file,
+                    'type'     => \explode('.', $file)[1],
+                    'tmp_name' => __DIR__ . '/temp/' . $file,
+                    'error'    => \UPLOAD_ERR_OK,
+                    'size'     => \filesize(__DIR__ . '/temp/' . $file),
+                ];
+            } else {
+                $mFiles[] = $variables['mFiles'][\mt_rand(0, \count($variables['mFiles']) - 1)];
+            }
+        }
+
+        if (!empty($toUpload)) {
+            TestUtils::setMember($request, 'files', $toUpload);
+        }
+
+        if (!empty($mFiles)) {
+            $request->setData('media', \json_encode(\array_unique($mFiles)));
+        }
+        //endregion
+
         $module->apiWikiDocCreate($request, $response);
     }
+
+    ++$z;
+    if ($z % $interval === 0) {
+        echo '░';
+        ++$p;
+    }
 }
+
+echo \str_repeat('░', 8 - $p);
 //endregion

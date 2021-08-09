@@ -32,6 +32,11 @@ TestUtils::setMember($module, 'app', $app);
 
 $departmentIds = [];
 
+$count = \count($variables['departments']);
+$interval = (int) \ceil($count / 2);
+$z = 0;
+$p = 0;
+
 foreach ($variables['departments'] as $key => $department) {
     $response = new HttpResponse();
     $request  = new HttpRequest(new HttpUri(''));
@@ -46,7 +51,15 @@ foreach ($variables['departments'] as $key => $department) {
     $module->apiDepartmentCreate($request, $response);
     $departmentIds[$department['name']]   = $response->get('')['response']->getId();
     $variables['departments'][$key]['id'] = $response->get('')['response']->getId();
+
+    ++$z;
+    if ($z % $interval === 0) {
+        echo '░';
+        ++$p;
+    }
 }
+
+echo $p < 2 ? '░' : '';
 //endregion
 
 /**
@@ -60,6 +73,12 @@ TestUtils::setMember($module, 'app', $app);
 
 $departments = DepartmentMapper::getAll();
 $postionIds  = [];
+
+$count = \count($variables['positions']);
+$interval = (int) \ceil($count / 6);
+$z = 0;
+$p = 0;
+
 foreach ($variables['positions'] as $key => $position) {
     $response = new HttpResponse();
     $request  = new HttpRequest(new HttpUri(''));
@@ -80,7 +99,16 @@ foreach ($variables['positions'] as $key => $position) {
             break;
         }
     }
+
+    ++$z;
+    if ($z % $interval === 0) {
+        echo '░';
+        ++$p;
+    }
 }
+
+echo $p < 6 ? '░' : '';
+
 //endregion
 
 //region Organization image
@@ -112,6 +140,8 @@ TestUtils::setMember($request, 'files', [
 ]);
 $module->apiUnitImageSet($request, $response);
 
+echo '░';
+
 // upload lima icon
 \copy(__DIR__ . '/img/m_icon.png', __DIR__ . '/temp/m_icon.png');
 
@@ -132,4 +162,8 @@ TestUtils::setMember($request, 'files', [
     ],
 ]);
 $module->apiUnitImageSet($request, $response);
+
+unset($departments);
+
+echo '░';
 //endregion

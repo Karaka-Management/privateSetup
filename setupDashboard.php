@@ -50,4 +50,6 @@ $module->apiComponentCreate($request, $response);
 $request->setData('order', 4, true);
 $request->setData('module', 'Calendar', true);
 $module->apiComponentCreate($request, $response);
+
+echo '░░░░░░░░░░';
 //endregion

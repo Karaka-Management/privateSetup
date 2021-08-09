@@ -43,6 +43,11 @@ $INVOICES = 15 * $CUSTOMER_COUNT;
 
 // todo: better customer order randomization, currently not realistic (looping all customers instead of random order)
 
+$count = $INVOICES;
+$interval = (int) \ceil($count / 10);
+$z = 0;
+$p = 0;
+
 for ($i = 0; $i < $INVOICES; ++$i) {
     if (\mt_rand(1, 100) <= 10) {
         continue;
@@ -81,7 +86,7 @@ for ($i = 0; $i < $INVOICES; ++$i) {
     // if invoice probability of delivery note or order confirmation or offer
     // if delivery note probability of order confirmation or offer
 
-    $ITEMS = \mt_rand(1, 15);
+    $ITEMS = \mt_rand(1, 10);
 
     for ($k = 0; $k < $ITEMS; ++$k) {
         $response = new HttpResponse();
@@ -117,6 +122,14 @@ for ($i = 0; $i < $INVOICES; ++$i) {
     $request->setData('bill', $bId);
 
     $module->apiBillPdfArchiveCreate($request, $response);
+
+    ++$z;
+    if ($z % $interval === 0) {
+        echo '░';
+        ++$p;
+    }
 }
 
 unset($BILL_TYPES);
+
+echo \str_repeat('░', 10 - $p);

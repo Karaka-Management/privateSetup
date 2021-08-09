@@ -452,4 +452,6 @@ foreach ($groups as $group) {
         }
     }
 }
+
+echo '░░░░░░░░░░';
 //endregion

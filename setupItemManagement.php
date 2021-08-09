@@ -42,6 +42,11 @@ $LOREM_COUNT = \count($LOREM) - 1;
 $ITEMS       = 10;
 $numbers     = [];
 
+$count = \count($LOREM);
+$interval = (int) \ceil($count / 4);
+$z = 0;
+$p = 0;
+
 // item attribute types (e.g. color, material etc.)
 foreach ($LOREM as $word) {
     $response = new HttpResponse();
@@ -88,7 +93,7 @@ foreach ($LOREM as $word) {
 
         $value = null;
         if ($type === AttributeValueType::_INT) {
-            $value = \mt_rand(\PHP_INT_MIN, \PHP_INT_MAX);
+            $value = \mt_rand(-2147483647, 2147483647);
         } elseif ($type === AttributeValueType::_STRING) {
             $request->setData('language', ISO639x1Enum::_EN);
             $request->setData('country', ISO3166TwoEnum::_USA);
@@ -96,7 +101,7 @@ foreach ($LOREM as $word) {
         } elseif ($type === AttributeValueType::_FLOAT) {
             $value = \mt_rand(\PHP_INT_MIN, \PHP_INT_MAX) / \mt_rand(\PHP_INT_MIN, \PHP_INT_MAX);
         } elseif ($type === AttributeValueType::_DATETIME) {
-            $value = (new \DateTime())->setTimestamp(\mt_rand(0, \PHP_INT_SIZE == 4 ? \PHP_INT_MAX : \PHP_INT_MAX >> 32))->format('Y-m-d H:i:s');
+            $value = (new \DateTime())->setTimestamp(\mt_rand(0, \PHP_INT_SIZE === 4 ? \PHP_INT_MAX : \PHP_INT_MAX >> 32))->format('Y-m-d H:i:s');
         }
 
         $request->setData('value', $value);
@@ -119,7 +124,15 @@ foreach ($LOREM as $word) {
             }
         }
     }
+
+    ++$z;
+    if ($z % $interval === 0) {
+        echo '░';
+        ++$p;
+    }
 }
+
+echo \str_repeat('░', 4 - $p);
 
 // item l11n types (e.g. article names)
 $L11N_TYPES = 30;
@@ -139,6 +152,13 @@ foreach ($LOREM2 as $word) {
 
     $module->apiItemL11nTypeCreate($request, $response);
 }
+
+echo '░';
+
+$count = $ITEMS;
+$interval = (int) \ceil($count / 5);
+$z = 0;
+$p = 0;
 
 // items
 for ($i = 0; $i < $ITEMS; ++$i) {
@@ -240,7 +260,7 @@ for ($i = 0; $i < $ITEMS; ++$i) {
     $files = \scandir(__DIR__ . '/media/types');
 
     foreach ($files as $file) {
-        if ($file === '.' || $file === '..' || \mt_rand(1, 100) < 76) {
+        if ($file === '.' || $file === '..' || $file === 'Video.mp4' || \mt_rand(1, 100) < 76) {
             continue;
         }
 
@@ -286,4 +306,12 @@ for ($i = 0; $i < $ITEMS; ++$i) {
         $module->apiNoteCreate($request, $response);
     }
     //endregion
+
+    ++$z;
+    if ($z % $interval === 0) {
+        echo '░';
+        ++$p;
+    }
 }
+
+echo \str_repeat('░', 5 - $p);

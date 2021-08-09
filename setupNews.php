@@ -31,9 +31,18 @@ use phpOMS\Utils\TestUtils;
 $module = $app->moduleManager->get('News');
 TestUtils::setMember($module, 'app', $app);
 
+if (!\is_dir(__DIR__ . '/temp')) {
+    \mkdir(__DIR__ . '/temp');
+}
+
 $NEWS_ARTICLES = 50;
 $FEATURED_PROB = 10;
 $LOREM_COUNT   = \count(Text::LOREM_IPSUM) - 1;
+
+$count = \count($variables['languages']);
+$interval = (int) \ceil($count / 10);
+$z = 0;
+$p = 0;
 
 foreach ($variables['languages'] as $language) {
     for ($i = 0; $i < $NEWS_ARTICLES; ++$i) {
@@ -71,10 +80,47 @@ foreach ($variables['languages'] as $language) {
             $request->setData('tags', \json_encode($tags));
         }
 
+        //region files
+        $files = \scandir(__DIR__ . '/media/types');
+
+        $fileCounter = 0;
+        $toUpload    = [];
+        $mFiles      = [];
+        foreach ($files as $file) {
+            if ($file === '.' || $file === '..' || $file === 'Video.mp4' || \mt_rand(1, 100) < 96) {
+                continue;
+            }
+
+            ++$fileCounter;
+
+            if ($fileCounter === 1) {
+                \copy(__DIR__ . '/media/types/' . $file, __DIR__ . '/temp/' . $file);
+
+                $toUpload['file' . $fileCounter] = [
+                    'name'     => $file,
+                    'type'     => \explode('.', $file)[1],
+                    'tmp_name' => __DIR__ . '/temp/' . $file,
+                    'error'    => \UPLOAD_ERR_OK,
+                    'size'     => \filesize(__DIR__ . '/temp/' . $file),
+                ];
+            } else {
+                $mFiles[] = $variables['mFiles'][\mt_rand(0, \count($variables['mFiles']) - 1)];
+            }
+        }
+
+        if (!empty($toUpload)) {
+            TestUtils::setMember($request, 'files', $toUpload);
+        }
+
+        if (!empty($mFiles)) {
+            $request->setData('media', \json_encode(\array_unique($mFiles)));
+        }
+        //endregion
+
         $module->apiNewsCreate($request, $response);
 
         //region comments
-        $COMMENT_COUNT = \mt_rand(0, 20);
+        $COMMENT_COUNT = \mt_rand(0, 7);
         $commentModule = $app->moduleManager->get('Comments');
         $commentList   = $response->get('')['response']->comments->getId();
 
@@ -94,9 +140,54 @@ foreach ($variables['languages'] as $language) {
                 $request->setData('ref', $ref);
             }
 
+            //region files
+            $files = \scandir(__DIR__ . '/media/types');
+
+            $fileCounter = 0;
+            $toUpload    = [];
+            $mFiles      = [];
+            foreach ($files as $file) {
+                if ($file === '.' || $file === '..' || $file === 'Video.mp4' || \mt_rand(1, 100) < 98) {
+                    continue;
+                }
+
+                ++$fileCounter;
+
+                if ($fileCounter === 1) {
+                    \copy(__DIR__ . '/media/types/' . $file, __DIR__ . '/temp/' . $file);
+
+                    $toUpload['file' . $fileCounter] = [
+                        'name'     => $file,
+                        'type'     => \explode('.', $file)[1],
+                        'tmp_name' => __DIR__ . '/temp/' . $file,
+                        'error'    => \UPLOAD_ERR_OK,
+                        'size'     => \filesize(__DIR__ . '/temp/' . $file),
+                    ];
+                } else {
+                    $mFiles[] = $variables['mFiles'][\mt_rand(0, \count($variables['mFiles']) - 1)];
+                }
+            }
+
+            if (!empty($toUpload)) {
+                TestUtils::setMember($request, 'files', $toUpload);
+            }
+
+            if (!empty($mFiles)) {
+                $request->setData('media', \json_encode(\array_unique($mFiles)));
+            }
+            //endregion
+
             $commentModule->apiCommentCreate($request, $response);
         }
         //endregion
     }
+
+    ++$z;
+    if ($z % $interval === 0) {
+        echo '░';
+        ++$p;
+    }
 }
+
+echo \str_repeat('░', 10 - $p);
 //endregion

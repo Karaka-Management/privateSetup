@@ -28,4 +28,6 @@ use phpOMS\Utils\TestUtils;
 $module = $app->moduleManager->get('Monitoring');
 TestUtils::setMember($module, 'app', $app);
 
+echo '░░░░░░░░░░';
+
 //endregion

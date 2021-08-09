@@ -34,6 +34,11 @@ $POSITIONS   = \count($variables['positions']);
 $DEPARTMENTS = \count($variables['departments']);
 $LOREM_COUNT = \count(Text::LOREM_IPSUM) - 1;
 
+$count = \count($variables['accounts']);
+$interval = (int) \ceil($count / 10);
+$z = 0;
+$p = 0;
+
 foreach ($variables['accounts'] as $account) {
     if (!\in_array('Employee', $account['groups'])) {
         continue;
@@ -165,5 +170,12 @@ foreach ($variables['accounts'] as $account) {
         );
     }
 
+    ++$z;
+    if ($z % $interval === 0) {
+        echo '░';
+        ++$p;
+    }
 }
+
+echo \str_repeat('░', 10 - $p);
 //endregion

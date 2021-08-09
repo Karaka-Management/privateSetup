@@ -45,6 +45,11 @@ TestUtils::setMember($profileModule, 'app', $app);
 
 $LOREM_COUNT = \count(Text::LOREM_IPSUM) - 1;
 
+$count = \count($accounts);
+$interval = (int) \ceil($count / 10);
+$z = 0;
+$p = 0;
+
 $groups = GroupMapper::getAll();
 foreach ($accounts as $key=> $account) {
     $response = new HttpResponse();
@@ -166,5 +171,15 @@ foreach ($accounts as $key=> $account) {
         $profileModule->apiContactElementCreate($request, $response);
     }
     //endregion
+
+    ++$z;
+    if ($z % $interval === 0) {
+        echo '░';
+        ++$p;
+    }
 }
+
+unset($groups);
+
+echo \str_repeat('░', 10 - $p);
 //endregion
