@@ -1,32 +1,31 @@
 <?php
 /**
- * Orange Management
+ * Karaka
  *
  * PHP Version 8.0
  *
- * @package   OrangeManagement
+ * @package   Karaka
  * @copyright Dennis Eichhorn
  * @license   OMS License 1.0
  * @version   1.0.0
- * @link      https://orange-management.org
+ * @link      https://karaka.app
  */
 declare(strict_types=1);
 
+use phpOMS\Localization\ISO3166TwoEnum;
 use phpOMS\Message\Http\HttpRequest;
 use phpOMS\Message\Http\HttpResponse;
-use phpOMS\Localization\ISO3166TwoEnum;
 use phpOMS\Uri\HttpUri;
 use phpOMS\Utils\RnG\DateTime;
-use phpOMS\Utils\TestUtils;
 use phpOMS\Utils\RnG\Text;
+use phpOMS\Utils\TestUtils;
 
 /**
  * Setup human resource module
- *
- * @var \Modules\HumanResourceManagement\Controller\ApiController $module
  */
 //region HumanResource
 /** @var \phpOMS\Application\ApplicationAbstract $app */
+/** @var \Modules\HumanResourceManagement\Controller\ApiController $module */
 $module = $app->moduleManager->get('HumanResourceManagement');
 TestUtils::setMember($module, 'app', $app);
 
@@ -34,10 +33,10 @@ $POSITIONS   = \count($variables['positions']);
 $DEPARTMENTS = \count($variables['departments']);
 $LOREM_COUNT = \count(Text::LOREM_IPSUM) - 1;
 
-$count = \count($variables['accounts']);
+$count    = \count($variables['accounts']);
 $interval = (int) \ceil($count / 10);
-$z = 0;
-$p = 0;
+$z        = 0;
+$p        = 0;
 
 foreach ($variables['accounts'] as $account) {
     if (!\in_array('Employee', $account['groups'])) {
@@ -51,6 +50,7 @@ foreach ($variables['accounts'] as $account) {
 
     $request->setData('profiles', (string) $account['profile']);
     $module->apiEmployeeCreate($request, $response);
+    ++$apiCalls;
 
     $id = $response->get('')['response'][0]->getId();
 
@@ -79,6 +79,7 @@ foreach ($variables['accounts'] as $account) {
         $request->setData('department', $variables['departments'][\mt_rand(0, $DEPARTMENTS - 1)]['id']);
         $request->setData('position', $variables['positions'][\mt_rand(0, $POSITIONS - 1)]['id']);
         $module->apiEmployeeHistoryCreate($request, $response);
+        ++$apiCalls;
 
         $start = clone $end;
         $end   = DateTime::generateDateTime(
@@ -120,6 +121,7 @@ foreach ($variables['accounts'] as $account) {
         $request->setData('state', '');
 
         $module->apiEmployeeWorkHistoryCreate($request, $response);
+        ++$apiCalls;
 
         $start = clone $end;
         $end   = DateTime::generateDateTime(
@@ -162,6 +164,7 @@ foreach ($variables['accounts'] as $account) {
         $request->setData('state', '');
 
         $module->apiEmployeeEducationHistoryCreate($request, $response);
+        ++$apiCalls;
 
         $start = clone $end;
         $end   = DateTime::generateDateTime(

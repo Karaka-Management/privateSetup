@@ -28,10 +28,10 @@ $date = new \phpOMS\Stdlib\Base\SmartDateTime($this->request->getData('date') ??
 
 $objPHPPresentation = new PhpPresentation();
 
-$objPHPPresentation->getDocumentProperties()->setCreator('Orange Management')
-    ->setLastModifiedBy('Orange Management')
-    ->setTitle('Orange Management - Demo Report')
-    ->setSubject('Orange Management - Demo Report')
+$objPHPPresentation->getDocumentProperties()->setCreator('Karaka')
+    ->setLastModifiedBy('Karaka')
+    ->setTitle('Karaka - Demo Report')
+    ->setSubject('Karaka - Demo Report')
     ->setDescription('Demo')
     ->setKeywords('demo helper report')
     ->setCategory('demo');
@@ -296,7 +296,7 @@ $shape->createParagraph()->createTextRun('File upload (e.g. excel, csv)');
 $shape->createParagraph()->createTextRun('Database upload (e.g. sqlite)');
 $shape->createParagraph()->createTextRun('Database connection to local or remote database');
 $shape->createParagraph()->createTextRun('External APIs');
-$shape->createParagraph()->createTextRun('Internal APIs (everything from the Orange Management backend)');
+$shape->createParagraph()->createTextRun('Internal APIs (everything from the Karaka backend)');
 
 $shape = new File();
 $shape->setName('Company Logo')

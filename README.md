@@ -1,3 +1,3 @@
-# Orange-Management Setup
+# Karaka Setup
 
-This script automatically installes the Orange-Management demo application and configures the different modules.
+This script automatically installes the Karaka demo application and configures the different modules.

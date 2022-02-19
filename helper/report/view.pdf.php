@@ -32,8 +32,8 @@ $mpdf = new Mpdf([
 ]);
 
 $mpdf->SetDisplayMode('fullpage');
-$mpdf->SetTitle('Orange Management - Demo Report');
-$mpdf->SetAuthor('Orange Management');
+$mpdf->SetTitle('Karaka - Demo Report');
+$mpdf->SetAuthor('Karaka');
 
 // Write some HTML code:
 $mpdf->WriteHTML('
@@ -166,7 +166,7 @@ $mpdf->WriteHTML('
                 <li>Database upload (e.g. sqlite)</li>
                 <li>Database connection to local or remote database</li>
                 <li>External APIs</li>
-                <li>Internal APIs (everything from the Orange Management backend)</li>
+                <li>Internal APIs (everything from the Karaka backend)</li>
             </ul>
         </li>
     </ul>

@@ -1,4 +1,16 @@
-<?php declare(strict_types=1);
+<?php
+/**
+ * Karaka
+ *
+ * PHP Version 8.0
+ *
+ * @package   Template
+ * @copyright Dennis Eichhorn
+ * @license   OMS License 1.0
+ * @version   1.0.0
+ * @link      https://karaka.app
+ */
+declare(strict_types=1);
 
 use phpOMS\Uri\UriFactory;
 
@@ -67,11 +79,11 @@ echo \str_replace(["\n"], ['&#13;&#10;'],
 </main>
 <footer>
     <ul>
-        <li>Website: orange-management.org</li>
-        <li>Email: dennis.eichhorn@orange-management.email</li>
+        <li>Website: karaka.app</li>
+        <li>Email: dennis.eichhorn@karaka.email</li>
         <li>Twitter: @orange_mgmt</li>
         <li>Twitch: spl1nes</li>
-        <li>Youtube: Orange-Management</li>
+        <li>Youtube: Karaka</li>
     </ul>
 </footer>
 <?php endif; ?>

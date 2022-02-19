@@ -1,14 +1,14 @@
 <?php
 /**
- * Orange Management
+ * Karaka
  *
  * PHP Version 8.0
  *
- * @package   OrangeManagement
+ * @package   Karaka
  * @copyright Dennis Eichhorn
  * @license   OMS License 1.0
  * @version   1.0.0
- * @link      https://orange-management.org
+ * @link      https://karaka.app
  */
 declare(strict_types=1);
 
@@ -34,7 +34,6 @@ use phpOMS\Account\AccountManager;
 use phpOMS\Account\PermissionType;
 use phpOMS\Application\ApplicationAbstract;
 use phpOMS\DataStorage\Database\DatabasePool;
-use phpOMS\DataStorage\Database\DataMapperAbstract;
 use phpOMS\DataStorage\Session\HttpSession;
 use phpOMS\Dispatcher\Dispatcher;
 use phpOMS\Event\EventManager;
@@ -44,18 +43,19 @@ use phpOMS\Message\Http\HttpResponse;
 use phpOMS\Message\Http\RequestMethod;
 use phpOMS\Module\ModuleManager;
 use phpOMS\Router\WebRouter;
+use phpOMS\System\File\Local\Directory;
 use phpOMS\Uri\HttpUri;
 use phpOMS\Utils\TestUtils;
-use phpOMS\System\File\Local\Directory;
 
 //region Setup
 $config    = require_once __DIR__ . '/config.php';
 $variables = require_once __DIR__ . '/variables.php';
 
+// Get directory size (recursive)
 function dirSize() : float
 {
     $size = 0;
-    $f = [
+    $f    = [
         \realpath(__DIR__ . '/../Web'),
         \realpath(__DIR__ . '/../Modules/Media/Files'),
         \realpath(__DIR__ . '/../phpOMS'),
@@ -65,7 +65,7 @@ function dirSize() : float
     ];
 
     foreach ($f as $dir) {
-        $io = \popen('/usr/bin/du -sk ' . $dir, 'r');
+        $io    = \popen('/usr/bin/du -sk ' . $dir, 'r');
         $tSize = \fgets($io, 4096);
         $tSize = \substr($tSize, 0, \strpos($tSize, "\t"));
         \pclose($io);
@@ -76,10 +76,11 @@ function dirSize() : float
     return (float) ($size / 1024);
 }
 
+// Get file count (recursive)
 function dirCount() : int
 {
     $count = 0;
-    $f = [
+    $f     = [
         \realpath(__DIR__ . '/../Web'),
         \realpath(__DIR__ . '/../Modules/Media/Files'),
         \realpath(__DIR__ . '/../phpOMS'),
@@ -89,7 +90,7 @@ function dirCount() : int
     ];
 
     foreach ($f as $dir) {
-        $io = \popen('/usr/bin/find ' . $dir . ' -type f | wc -l', 'r');
+        $io     = \popen('/usr/bin/find ' . $dir . ' -type f | wc -l', 'r');
         $tCount = \fgets($io, 4096);
         $tCount = \trim($tCount, "\t\r\n");
         \pclose($io);
@@ -98,6 +99,21 @@ function dirCount() : int
     }
 
     return (int) $count;
+}
+
+// Get database rows (reliable)
+function getDatabaseRows($con, string $dbname) : int
+{
+    $sth    = $con->query("SELECT table_name FROM information_schema.tables WHERE table_schema = '" . $dbname ."' AND table_type = 'BASE TABLE';");
+    $tables = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);
+
+    $rows = 0;
+    foreach ($tables as $table) {
+        $sth   = $con->query('SELECT COUNT(*) FROM ' . $dbname . '.' . $table);
+        $rows += $sth->fetch(\PDO::FETCH_COLUMN, 0);
+    }
+
+    return $rows;
 }
 
 Directory::delete(__DIR__ . '/../Modules/Media/Files');
@@ -132,7 +148,7 @@ $request->setData('updatepassword', $config['db']['core']['masters']['admin']['p
 $request->setData('deleteuser', $config['db']['core']['masters']['admin']['login']);
 $request->setData('deletepassword', $config['db']['core']['masters']['admin']['password']);
 
-$request->setData('orgname', 'Orange Management');
+$request->setData('orgname', 'Karaka');
 $request->setData('adminname', 'admin');
 $request->setData('adminpassword', 'orange');
 $request->setData('adminemail', 'admin@oms.com');
@@ -152,7 +168,7 @@ $request->setData(
 
 WebApplication::installRequest($request, $response);
 
-// Setup for api calls
+// Setup installer for api calls
 $app = new class() extends ApplicationAbstract
 {
     protected string $appName = 'Api';
@@ -168,8 +184,8 @@ $app->dbPool->create('schema', $config['db']['core']['masters']['schema']);
 $app->orgId          = 2;
 $app->appName        = 'Backend';
 $app->accountManager = new AccountManager(new HttpSession());
-$app->l11nServer     = LocalizationMapper::get(1);
-$app->appSettings    = new CoreSettings($app->dbPool->get());
+$app->l11nServer     = LocalizationMapper::get()->where('id', 1)->execute();
+$app->appSettings    = new CoreSettings();
 $app->moduleManager  = new ModuleManager($app, __DIR__ . '/../Modules/');
 $app->dispatcher     = new Dispatcher($app);
 $app->eventManager   = new EventManager($app->dispatcher);
@@ -263,51 +279,59 @@ $config = include __DIR__ . '/../Install/Templates/config.tpl.php';
 \file_put_contents(__DIR__ . '/../config.php', $config);
 //endregion
 
+// Setup query for database size
 $dbSizeQuery = 'SELECT ROUND(SUM(data_length + index_length) / 1024 / 1024, 1) "size"  FROM information_schema.tables where table_schema = "' . $dbname . '";';
-$sizeOld = 0.0;
-$sizeNew = (float) $con->query($dbSizeQuery)->fetch()['size'];
+$sizeOld     = 0.0;
+$sizeNew     = (float) $con->query($dbSizeQuery)->fetch()['size'];
 
-$dbRowQuery = 'SELECT SUM(table_rows) "rows" FROM information_schema.tables WHERE table_schema = "' . $dbname . '";';
+// Setup query for database row count
 $rowOld = 0;
-$rowNew = (int) $con->query($dbRowQuery)->fetch()['rows'];
+$rowNew = \getDatabaseRows($con, $dbname);
 
+// Set base directory size
 $dirOld = 0;
-$dirNew = dirSize();
+$dirNew = \dirSize();
 
+// Set base directory count
 $dirCountOld = 0;
-$dirCountNew = dirCount();
+$dirCountNew = \dirCount();
 
+// Set simulated API call counter
+$apiOld = 0;
+$apiCalls = 0;
+
+// Install scripts for the different module demos
 $toInstall = [
-    __DIR__ . '/setupDemoTemplates.php' => 'Template',
-    __DIR__ . '/setupModules.php' => 'Module',
-    __DIR__ . '/setupMonitoring.php' => 'Monitoring',
-    __DIR__ . '/setupGroups.php' => 'Group',
-    __DIR__ . '/setupOrganization.php' => 'Organization',
-    __DIR__ . '/setupAccounts.php' => 'Account',
-    __DIR__ . '/setupExchange.php' => 'Exchange',
-    __DIR__ . '/setupTag.php' => 'Tag',
-    __DIR__ . '/setupMedia.php' => 'Media',
-    __DIR__ . '/setupSurveys.php' => 'Surveys',
-    __DIR__ . '/setupDashboard.php' => 'Dashboard',
-    __DIR__ . '/setupContractManagement.php' => 'ContractManagement',
-    __DIR__ . '/setupKanban.php' => 'Kanban',
-    __DIR__ . '/setupQA.php' => 'QA',
-    __DIR__ . '/setupEditor.php' => 'Editor',
-    __DIR__ . '/setupTask.php' => 'Task',
-    __DIR__ . '/setupNews.php' => 'News',
-    __DIR__ . '/setupHelper.php' => 'Helper',
-    __DIR__ . '/setupCMS.php' => 'CMS',
+    __DIR__ . '/setupDemoTemplates.php'           => 'Template',
+    __DIR__ . '/setupModules.php'                 => 'Module',
+    __DIR__ . '/setupMonitoring.php'              => 'Monitoring',
+    __DIR__ . '/setupGroups.php'                  => 'Group',
+    __DIR__ . '/setupOrganization.php'            => 'Organization',
+    __DIR__ . '/setupAccounts.php'                => 'Account',
+    __DIR__ . '/setupExchange.php'                => 'Exchange',
+    __DIR__ . '/setupTag.php'                     => 'Tag',
+    __DIR__ . '/setupMedia.php'                   => 'Media',
+    __DIR__ . '/setupTask.php'                    => 'Task',
+    __DIR__ . '/setupSurveys.php'                 => 'Surveys',
+    __DIR__ . '/setupDashboard.php'               => 'Dashboard',
+    __DIR__ . '/setupContractManagement.php'      => 'ContractManagement',
+    __DIR__ . '/setupKanban.php'                  => 'Kanban',
+    __DIR__ . '/setupQA.php'                      => 'QA',
+    __DIR__ . '/setupEditor.php'                  => 'Editor',
+    __DIR__ . '/setupNews.php'                    => 'News',
+    __DIR__ . '/setupHelper.php'                  => 'Helper',
+    __DIR__ . '/setupCMS.php'                     => 'CMS',
     __DIR__ . '/setupHumanResourceManagement.php' => 'HumanResourceManagement',
-    __DIR__ . '/setupKnowledgebase.php' => 'Knowledgebase',
-    __DIR__ . '/setupSupport.php' => 'Support',
-    __DIR__ . '/setupDatabaseEditor.php' => 'DatabaseEditor',
-    __DIR__ . '/setupCalendar.php' => 'Calendar',
-    __DIR__ . '/setupItemManagement.php' => 'ItemManagement',
-    __DIR__ . '/setupClientManagement.php' => 'ClientManagement',
-    __DIR__ . '/setupSupplierManagement.php' => 'SupplierManagement',
-    __DIR__ . '/setupWarehouseManagement.php' => 'WarehouseManagement',
-    __DIR__ . '/setupBillingSuppliers.php' => 'Billing Suppliers',
-    __DIR__ . '/setupBillingClients.php' => 'Billing Clients',
+    __DIR__ . '/setupKnowledgebase.php'           => 'Knowledgebase',
+    __DIR__ . '/setupSupport.php'                 => 'Support',
+    __DIR__ . '/setupDatabaseEditor.php'          => 'DatabaseEditor',
+    __DIR__ . '/setupCalendar.php'                => 'Calendar',
+    __DIR__ . '/setupItemManagement.php'          => 'ItemManagement',
+    __DIR__ . '/setupClientManagement.php'        => 'ClientManagement',
+    __DIR__ . '/setupSupplierManagement.php'      => 'SupplierManagement',
+    __DIR__ . '/setupWarehouseManagement.php'     => 'WarehouseManagement',
+    __DIR__ . '/setupBillingSuppliers.php'        => 'Billing Suppliers',
+    __DIR__ . '/setupBillingClients.php'          => 'Billing Clients',
 ];
 
 $toInstallCount = \count($toInstall);
@@ -315,9 +339,18 @@ $toInstallCount = \count($toInstall);
 echo "\n";
 FileLogger::startTimeLog('total');
 
-echo ' ------------------------------------------------------------------------------------------------------------' . "\n";
-echo '| ' . \sprintf('%-25s', 'Section') . '| ' . \sprintf('%-11s', 'Progress') . '| ' . \sprintf('%-9s', 'ExecTime') . '| ' . \sprintf('%-9s', 'DbSize') . '| ' . \sprintf('%-9s', 'DbRows') . '| ' . \sprintf('%-11s', 'DirSize') . '| ' . \sprintf('%-9s', 'DirCount') . '| ' . \sprintf('%-10s', 'Mem.') . "|\n";
-echo '|==========================|============|==========|==========|==========|============|==========|===========|' . "\n";
+echo ' -----------------------------------------------------------------------------------------------------------------------' , "\n";
+echo '| ' , \sprintf('%-25s', 'Section')
+    , '| ' , \sprintf('%-11s', 'Progress')
+    , '| ' , \sprintf('%-9s', 'ExecTime')
+    , '| ' , \sprintf('%-9s', 'APICalls')
+    , '| ' , \sprintf('%-9s', 'DbSize')
+    , '| ' , \sprintf('%-9s', 'DbRows')
+    , '| ' , \sprintf('%-11s', 'DirSize')
+    , '| ' , \sprintf('%-9s', 'DirCount')
+    , '| ' , \sprintf('%-10s', 'Mem.')
+    , "|\n";
+echo '|==========================|============|==========|==========|==========|==========|============|==========|===========|' , "\n";
 
 $installCounter = 0;
 foreach ($toInstall as $path => $title) {
@@ -325,29 +358,49 @@ foreach ($toInstall as $path => $title) {
 
     \gc_collect_cycles();
 
-    echo '| ' . \sprintf('%-25s', $title) . '| ';
+    echo '| ' , \sprintf('%-25s', $title) , '| ';
+
     FileLogger::startTimeLog('section');
+
+    $sizeOld  = $sizeNew; $rowOld = $rowNew; $dirOld = $dirNew; $dirCountOld = $dirCountNew; $apiOld = $apiCalls;
+
     include $path;
-    DataMapperAbstract::clearCache();
+
     $time = \round(FileLogger::endTimeLog('section'), 2);
     $time = $time > 60.0 ? \round($time / 60, 2) . 'm' : $time . 's';
-    $sizeOld = $sizeNew; $rowOld = $rowNew; $dirOld = $dirNew; $dirCountOld = $dirCountNew;
+
     $dbSize = \round(($sizeNew = (float) $con->query($dbSizeQuery)->fetch()['size']) - $sizeOld, 2) . 'MB';
-    $dbRow = ($rowNew = (int) $con->query($dbRowQuery)->fetch()['rows']) - $rowOld;
-    $dirSize = \round(($dirNew = dirSize()) - $dirOld, 2) . 'MB';
-    $dirCount = ($dirCountNew = dirCount()) - $dirCountOld;
-    echo ' | ' . \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', $dbSize) . '| ' . \sprintf('%-9s', $dbRow) . '| ' . \sprintf('%-11s', $dirSize) . '| ' . \sprintf('%-9s', $dirCount) . '| ' . \sprintf('%-10s', \round(\memory_get_usage() / 1048576, 2) . 'MB') . "|\n";
+    $dbRow  = ($rowNew = \getDatabaseRows($con, $dbname)) - $rowOld;
+
+    $dirSize  = \round(($dirNew = \dirSize()) - $dirOld, 2) . 'MB';
+    $dirCount = ($dirCountNew = \dirCount()) - $dirCountOld;
+
+    echo ' | ' , \sprintf('%-9s', $time)
+        , '| ' , \sprintf('%-9s', $apiCalls - $apiOld)
+        , '| ' , \sprintf('%-9s', $dbSize)
+        , '| ' , \sprintf('%-9s', $dbRow)
+        , '| ' , \sprintf('%-11s', $dirSize)
+        , '| ' , \sprintf('%-9s', $dirCount)
+        , '| ' , \sprintf('%-10s', \round(\memory_get_usage() / 1048576, 2) . 'MB')
+        , "|\n";
 
     echo $installCounter < $toInstallCount
-        ? '|--------------------------|------------|----------|----------|----------|------------|----------|-----------|' . "\n"
-        : '|==========================|============|==========|==========|==========|============|==========|===========|' . "\n";
+        ? '|--------------------------|------------|----------|----------|----------|----------|------------|----------|-----------|' . "\n"
+        : '|==========================|============|==========|==========|==========|==========|============|==========|===========|' . "\n";
 }
 
-$time = \round(FileLogger::endTimeLog('total') / 60, 2) . 'm';
-$dbSize = $con->query($dbSizeQuery)->fetch()['size'] . 'MB';
-$dbRow = (int) $con->query($dbRowQuery)->fetch()['rows'];
-$dirSize = \round(dirSize(), 2) . 'MB';
-$dirCount = dirCount();
+$time     = \round(FileLogger::endTimeLog('total') / 60, 2) . 'm';
+$dbSize   = $con->query($dbSizeQuery)->fetch()['size'] . 'MB';
+$dbRow    = \getDatabaseRows($con, $dbname);
+$dirSize  = \round(\dirSize(), 2) . 'MB';
+$dirCount = \dirCount();
 
-echo '| ' . \sprintf('%-38s', 'Total') . '| ' . \sprintf('%-9s', $time) . '| ' . \sprintf('%-9s', $dbSize) . '| ' . \sprintf('%-9s', $dbRow) . '| ' . \sprintf('%-11s', $dirSize) . '| ' . \sprintf('%-9s', $dirCount) . '| ' . \sprintf('%-10s', \round(\memory_get_peak_usage() / 1048576, 2) . 'MB') . "|\n";
-echo ' ------------------------------------------------------------------------------------------------------------' . "\n\n";
+echo '| ' , \sprintf('%-38s', 'Total')
+    , '| ' , \sprintf('%-9s', $time)
+    , '| ' , \sprintf('%-9s', $apiCalls)
+    , '| ' , \sprintf('%-9s', $dbSize)
+    , '| ' , \sprintf('%-9s', $dbRow)
+    , '| ' , \sprintf('%-11s', $dirSize)
+    , '| ' , \sprintf('%-9s', $dirCount)
+    , '| ' , \sprintf('%-10s', \round(\memory_get_peak_usage() / 1048576, 2) . 'MB') . "|\n";
+echo ' -----------------------------------------------------------------------------------------------------------------------' , "\n\n";

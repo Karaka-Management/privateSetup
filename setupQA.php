@@ -1,20 +1,19 @@
 <?php
 /**
- * Orange Management
+ * Karaka
  *
  * PHP Version 8.0
  *
- * @package   OrangeManagement
+ * @package   Karaka
  * @copyright Dennis Eichhorn
  * @license   OMS License 1.0
  * @version   1.0.0
- * @link      https://orange-management.org
+ * @link      https://karaka.app
  */
 declare(strict_types=1);
 
 use Modules\QA\Models\QAAnswerStatus;
 use Modules\QA\Models\QAQuestionStatus;
-use phpOMS\Localization\ISO639x1Enum;
 use phpOMS\Message\Http\HttpRequest;
 use phpOMS\Message\Http\HttpResponse;
 use phpOMS\Uri\HttpUri;
@@ -23,11 +22,10 @@ use phpOMS\Utils\TestUtils;
 
 /**
  * Create tasks
- *
- * @var \Modules\Kanban\Controller\ApiController $module
  */
 //region Kanban
 /** @var \phpOMS\Application\ApplicationAbstract $app */
+/** @var \Modules\QA\Controller\ApiController $module */
 $module = $app->moduleManager->get('QA');
 TestUtils::setMember($module, 'app', $app);
 
@@ -44,13 +42,14 @@ $request->header->account = \mt_rand(2, 5);
 $request->setData('name', Text::LOREM_IPSUM[\mt_rand(0, $LOREM_COUNT - 1)]);
 
 $module->apiQAAppCreate($request, $response);
+++$apiCalls;
 
 echo '░';
 
-$count = $QUESTION_COUNT;
+$count    = $QUESTION_COUNT;
 $interval = (int) \ceil($count / 9);
-$z = 0;
-$p = 0;
+$z        = 0;
+$p        = 0;
 
 for ($i = 0; $i < $QUESTION_COUNT; ++$i) {
     $response = new HttpResponse();
@@ -121,21 +120,23 @@ for ($i = 0; $i < $QUESTION_COUNT; ++$i) {
     //endregion
 
     $module->apiQAQuestionCreate($request, $response);
+    ++$apiCalls;
 
     $qId = $response->get('')['response']->getId();
 
-    $qVotes = \mt_rand(-2, 5);
-    $sign   = $qVotes <=> 0;
+    $qVotes   = \mt_rand(-2, 5);
+    $sign     = $qVotes <=> 0;
     $maxVotes = \abs($qVotes);
 
     for ($k = 0; $k < $maxVotes; ++$k) {
-        $response = new HttpResponse();
-        $request  = new HttpRequest(new HttpUri(''));
+        $response                 = new HttpResponse();
+        $request                  = new HttpRequest(new HttpUri(''));
         $request->header->account = \mt_rand(1, 5);
 
         $request->setData('id', $qId);
         $request->setData('type', $sign * 1);
         $module->apiChangeQAQuestionVote($request, $response);
+        ++$apiCalls;
     }
 
     //region columns
@@ -190,30 +191,33 @@ for ($i = 0; $i < $QUESTION_COUNT; ++$i) {
         //endregion
 
         $module->apiQAAnswerCreate($request, $response);
+        ++$apiCalls;
         $aId = $response->get('')['response']->getId();
 
-        $aVotes = \mt_rand(-2, 5);
-        $sign   = $aVotes <=> 0;
+        $aVotes   = \mt_rand(-2, 5);
+        $sign     = $aVotes <=> 0;
         $maxVotes = \abs($aVotes);
 
         for ($k = 0; $k < $maxVotes; ++$k) {
-            $response = new HttpResponse();
-            $request  = new HttpRequest(new HttpUri(''));
+            $response                 = new HttpResponse();
+            $request                  = new HttpRequest(new HttpUri(''));
             $request->header->account = \mt_rand(1, 5);
 
             $request->setData('id', $aId);
             $request->setData('type', $sign * 1);
             $module->apiChangeQAAnswerVote($request, $response);
+            ++$apiCalls;
         }
 
         if (!$isAccepted && ($isAccepted = \mt_rand(1, 100) < 10)) {
-            $response = new HttpResponse();
-            $request  = new HttpRequest(new HttpUri(''));
+            $response                 = new HttpResponse();
+            $request                  = new HttpRequest(new HttpUri(''));
             $request->header->account = \mt_rand(1, 5);
 
             $request->setData('id', $aId);
             $request->setData('accepted', '1');
             $module->apiChangeAnsweredStatus($request, $response);
+            ++$apiCalls;
         }
     }
     //endregion

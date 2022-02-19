@@ -1,14 +1,14 @@
 <?php
 /**
- * Orange Management
+ * Karaka
  *
  * PHP Version 8.0
  *
- * @package   OrangeManagement
+ * @package   Karaka
  * @copyright Dennis Eichhorn
  * @license   OMS License 1.0
  * @version   1.0.0
- * @link      https://orange-management.org
+ * @link      https://karaka.app
  */
 declare(strict_types=1);
 
@@ -23,16 +23,15 @@ use phpOMS\Utils\TestUtils;
 
 /**
  * Setup news module
- *
- * @var \Modules\Knowledgebase\Controller\ApiController $module
  */
 //region Knowledgebase
 /** @var \phpOMS\Application\ApplicationAbstract $app */
+/** @var \Modules\Knowledgebase\Controller\ApiController $module */
 $module = $app->moduleManager->get('Knowledgebase');
 TestUtils::setMember($module, 'app', $app);
 
 $WIKI_ARTICLES = 100;
-$APPS          = WikiAppMapper::count();
+$APPS          = WikiAppMapper::count()->execute();
 $LOREM_COUNT   = \count(Text::LOREM_IPSUM) - 1;
 
 for ($i = 0; $i < 1; ++$i) {
@@ -43,12 +42,13 @@ for ($i = 0; $i < 1; ++$i) {
     $request->setData('name', Text::LOREM_IPSUM[\mt_rand(0, $LOREM_COUNT)]);
 
     $module->apiWikiAppCreate($request, $response);
+    ++$apiCalls;
 }
 
-$count = $APPS;
+$count    = $APPS;
 $interval = (int) \ceil($count / 2);
-$z = 0;
-$p = 0;
+$z        = 0;
+$p        = 0;
 
 for ($i = 0; $i < $APPS + 1; ++$i) {
     $categories = [];
@@ -67,6 +67,7 @@ for ($i = 0; $i < $APPS + 1; ++$i) {
         }
 
         $module->apiWikiCategoryCreate($request, $response);
+        ++$apiCalls;
         $category     = $response->get('')['response'];
         $categories[] = $category;
 
@@ -85,6 +86,7 @@ for ($i = 0; $i < $APPS + 1; ++$i) {
             $request->setData('name', \strtoupper($language) . ':' . Text::LOREM_IPSUM[\mt_rand(0, $LOREM_COUNT)]);
 
             $module->apiWikiCategoryL11nCreate($request, $response);
+            ++$apiCalls;
         }
 
         ++$j;
@@ -99,10 +101,10 @@ for ($i = 0; $i < $APPS + 1; ++$i) {
 
 echo \str_repeat('░', 2 - $p);
 
-$count = \count($variables['languages']);
+$count    = \count($variables['languages']);
 $interval = (int) \ceil($count / 8);
-$z = 0;
-$p = 0;
+$z        = 0;
+$p        = 0;
 
 foreach ($variables['languages'] as $language) {
     for ($i = 0; $i < $WIKI_ARTICLES; ++$i) {
@@ -174,6 +176,7 @@ foreach ($variables['languages'] as $language) {
         //endregion
 
         $module->apiWikiDocCreate($request, $response);
+        ++$apiCalls;
     }
 
     ++$z;

@@ -1,6 +1,6 @@
 <?php
 /**
- * Orange Management
+ * Karaka
  *
  * PHP Version 8.0
  *
@@ -8,7 +8,7 @@
  * @copyright Dennis Eichhorn
  * @license   OMS License 1.0
  * @version   1.0.0
- * @link      https://orange-management.org
+ * @link      https://karaka.app
  */
 declare(strict_types=1);
 ?>
@@ -16,7 +16,7 @@ declare(strict_types=1);
 <div class="content">
     <div class="floater">
         <h1>Imprint</h1>
-        <p>Orange-Management</p>
+        <p>Karaka</p>
 
         <h2>Vertreten durch</h2>
         <p>Dennis Eichhorn</p>
@@ -31,7 +31,7 @@ declare(strict_types=1);
         <p>Nicht vorhanden</p>
 
         <h2>Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV</h2>
-        <p>Orange-Management</p>
+        <p>Karaka</p>
         <p>Dennis Eichhorn</p>
 
         <h2>Datenschutzbeauftragter</h2>

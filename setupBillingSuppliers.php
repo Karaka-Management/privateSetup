@@ -1,52 +1,49 @@
 <?php
 /**
- * Orange Management
+ * Karaka
  *
  * PHP Version 8.0
  *
- * @package   OrangeManagement
+ * @package   Karaka
  * @copyright Dennis Eichhorn
  * @license   OMS License 1.0
  * @version   1.0.0
- * @link      https://orange-management.org
+ * @link      https://karaka.app
  */
 declare(strict_types=1);
 
-use Modules\SupplierManagement\Models\SupplierMapper;
-use Modules\ItemManagement\Models\ItemMapper;
 use Modules\Billing\Models\BillTypeMapper;
+use Modules\ItemManagement\Models\ItemMapper;
+use Modules\SupplierManagement\Models\SupplierMapper;
 use phpOMS\Message\Http\HttpRequest;
 use phpOMS\Message\Http\HttpResponse;
 use phpOMS\Uri\HttpUri;
+use phpOMS\Utils\RnG\DateTime;
 use phpOMS\Utils\RnG\Text;
 use phpOMS\Utils\TestUtils;
-use phpOMS\Utils\RnG\DateTime;
 
 /**
  * Setup news module
- *
- * @var \Modules\Billing\Controller\ApiController $module
  */
 //region Billing
 /** @var \phpOMS\Application\ApplicationAbstract $app */
+/** @var \Modules\Billing\Controller\ApiController $module */
 $module = $app->moduleManager->get('Billing');
 TestUtils::setMember($module, 'app', $app);
 
 // create invoice types
 
-$BILL_TYPES = BillTypeMapper::getAll();
+$BILL_TYPES       = BillTypeMapper::getAll()->execute();
 $BILL_TYPES_COUNT = \count($BILL_TYPES);
-$ITEM_COUNT = ItemMapper::count();
-$LOREM_COUNT = \count(Text::LOREM_IPSUM) - 1;
-$SUPPLIER_COUNT = SupplierMapper::count();
-$INVOICES = 15 * $SUPPLIER_COUNT;
+$ITEM_COUNT       = ItemMapper::count()->execute();
+$LOREM_COUNT      = \count(Text::LOREM_IPSUM) - 1;
+$SUPPLIER_COUNT   = SupplierMapper::count()->execute();
+$INVOICES         = 15 * $SUPPLIER_COUNT;
 
-// todo: better supplier order randomization, currently not realistic (looping all suppliers instead of random order)
-
-$count = $INVOICES;
+$count    = $INVOICES;
 $interval = (int) \ceil($count / 10);
-$z = 0;
-$p = 0;
+$z        = 0;
+$p        = 0;
 
 for ($i = 0; $i < $INVOICES; ++$i) {
     if (\mt_rand(1, 100) <= 10) {
@@ -64,7 +61,7 @@ for ($i = 0; $i < $INVOICES; ++$i) {
     $request->setData('performancedate', DateTime::generateDateTime(new \DateTime('2015-01-01'), new \DateTime('now'))->format('Y-m-d H:i:s'));
     $request->setData('sales_referral', null); // who these sales belong to
     $request->setData('shipping_terms', 1); // e.g. incoterms
-    $request->setData('shipping_type', 1); // @todo consider to create general cost type for many different costs (e.g. banking fees etc.)
+    $request->setData('shipping_type', 1);
     $request->setData('shipping_cost', null);
     $request->setData('insurance_type', 1);
     $request->setData('insurance_cost', null); // null = system settings, value = individual input
@@ -75,6 +72,7 @@ for ($i = 0; $i < $INVOICES; ++$i) {
 
     // promotion keys (only one or multiple?)
     $module->apiBillCreate($request, $response);
+    ++$apiCalls;
     $bId = $response->get('')['response']->getId();
 
     switch ($type) {
@@ -113,6 +111,7 @@ for ($i = 0; $i < $INVOICES; ++$i) {
         }
 
         $module->apiBillElementCreate($request, $response);
+        ++$apiCalls;
     }
 
     $response = new HttpResponse();
@@ -122,6 +121,69 @@ for ($i = 0; $i < $INVOICES; ++$i) {
     $request->setData('bill', $bId);
 
     $module->apiBillPdfArchiveCreate($request, $response);
+    ++$apiCalls;
+
+    //region note
+    for ($k = 0; $k < 10; ++$k) {
+        if (\mt_rand(1, 100) < 76) {
+            continue;
+        }
+
+        $response = new HttpResponse();
+        $request  = new HttpRequest(new HttpUri(''));
+
+        $request->header->account = \mt_rand(2, 5);
+
+        $MARKDOWN = \file_get_contents(__DIR__ . '/lorem_ipsum/' . \mt_rand(0, 999) . '_3-6');
+
+        $request->setData('id', $bId);
+        $request->setData('title', \trim(\strtok($MARKDOWN, "\n"), ' #'));
+        $request->setData('plain', \preg_replace('/^.+\n/', '', $MARKDOWN));
+
+        $module->apiNoteCreate($request, $response);
+        ++$apiCalls;
+    }
+    //endregion
+
+    //region files
+    $files = \scandir(__DIR__ . '/media/types');
+
+    $fileCounter = 0;
+    $toUpload    = [];
+    $mFiles      = [];
+    foreach ($files as $file) {
+        if ($file === '.' || $file === '..' || $file === 'Video.mp4' || \mt_rand(1, 100) < 76) {
+            continue;
+        }
+
+        ++$fileCounter;
+
+        if ($fileCounter === 1) {
+            \copy(__DIR__ . '/media/types/' . $file, __DIR__ . '/temp/' . $file);
+
+            $toUpload['file' . $fileCounter] = [
+                'name'     => $file,
+                'type'     => \explode('.', $file)[1],
+                'tmp_name' => __DIR__ . '/temp/' . $file,
+                'error'    => \UPLOAD_ERR_OK,
+                'size'     => \filesize(__DIR__ . '/temp/' . $file),
+            ];
+        } else {
+            $mFiles[] = $variables['mFiles'][\mt_rand(0, \count($variables['mFiles']) - 1)];
+        }
+    }
+
+    if (!empty($toUpload)) {
+        TestUtils::setMember($request, 'files', $toUpload);
+    }
+
+    if (!empty($mFiles)) {
+        $request->setData('media', \json_encode(\array_unique($mFiles)));
+    }
+
+    $module->apiMediaAddToBill($request, $response);
+    ++$apiCalls;
+    //endregion
 
     ++$z;
     if ($z % $interval === 0) {

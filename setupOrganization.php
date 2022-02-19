@@ -1,14 +1,14 @@
 <?php
 /**
- * Orange Management
+ * Karaka
  *
  * PHP Version 8.0
  *
- * @package   OrangeManagement
+ * @package   Karaka
  * @copyright Dennis Eichhorn
  * @license   OMS License 1.0
  * @version   1.0.0
- * @link      https://orange-management.org
+ * @link      https://karaka.app
  */
 declare(strict_types=1);
 
@@ -22,20 +22,19 @@ use phpOMS\Utils\TestUtils;
 
 /**
  * Setup departments
- *
- * @var \Modules\Organization\Controller\ApiController $module
  */
 //region Department
 /** @var \phpOMS\Application\ApplicationAbstract $app */
+/** @var \Modules\Organization\Controller\ApiController $module */
 $module = $app->moduleManager->get('Organization');
 TestUtils::setMember($module, 'app', $app);
 
 $departmentIds = [];
 
-$count = \count($variables['departments']);
+$count    = \count($variables['departments']);
 $interval = (int) \ceil($count / 2);
-$z = 0;
-$p = 0;
+$z        = 0;
+$p        = 0;
 
 foreach ($variables['departments'] as $key => $department) {
     $response = new HttpResponse();
@@ -49,6 +48,7 @@ foreach ($variables['departments'] as $key => $department) {
     $request->setData('description', \file_get_contents(__DIR__ . '/lorem_ipsum/' . \mt_rand(0, 999) . '_3-6'));
 
     $module->apiDepartmentCreate($request, $response);
+    ++$apiCalls;
     $departmentIds[$department['name']]   = $response->get('')['response']->getId();
     $variables['departments'][$key]['id'] = $response->get('')['response']->getId();
 
@@ -64,20 +64,15 @@ echo $p < 2 ? '░' : '';
 
 /**
  * Setup positions
- *
- * @var \Modules\Organization\Controller\ApiController $module
  */
 //region Departments
-$module = $app->moduleManager->get('Organization');
-TestUtils::setMember($module, 'app', $app);
-
-$departments = DepartmentMapper::getAll();
+$departments = DepartmentMapper::getAll()->execute();
 $postionIds  = [];
 
-$count = \count($variables['positions']);
+$count    = \count($variables['positions']);
 $interval = (int) \ceil($count / 6);
-$z = 0;
-$p = 0;
+$z        = 0;
+$p        = 0;
 
 foreach ($variables['positions'] as $key => $position) {
     $response = new HttpResponse();
@@ -93,6 +88,7 @@ foreach ($variables['positions'] as $key => $position) {
         if (!isset($position['department']) || $d->name === $position['department']) {
             $request->setData('department', $d->getId());
             $module->apiPositionCreate($request, $response);
+            ++$apiCalls;
 
             $positionIds[$position['name']]     = $response->get('')['response']->getId();
             $variables['positions'][$key]['id'] = $response->get('')['response']->getId();
@@ -116,17 +112,14 @@ if (!\is_dir(__DIR__ . '/temp')) {
     \mkdir(__DIR__ . '/temp');
 }
 
-// upload orange management icon
+// upload Karakaicon
 \copy(__DIR__ . '/img/m_icon.png', __DIR__ . '/temp/m_icon.png');
-
-$module = $app->moduleManager->get('Organization');
-TestUtils::setMember($module, 'app', $app);
 
 $response = new HttpResponse();
 $request  = new HttpRequest(new HttpUri(''));
 
 $request->header->account = 1;
-$request->setData('name', 'Orange Management Logo');
+$request->setData('name', 'Karaka Logo');
 $request->setData('id', 1);
 
 TestUtils::setMember($request, 'files', [
@@ -139,6 +132,7 @@ TestUtils::setMember($request, 'files', [
     ],
 ]);
 $module->apiUnitImageSet($request, $response);
+++$apiCalls;
 
 echo '░';
 
@@ -162,6 +156,7 @@ TestUtils::setMember($request, 'files', [
     ],
 ]);
 $module->apiUnitImageSet($request, $response);
+++$apiCalls;
 
 unset($departments);
 

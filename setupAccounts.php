@@ -1,14 +1,14 @@
 <?php
 /**
- * Orange Management
+ * Karaka
  *
  * PHP Version 8.0
  *
- * @package   OrangeManagement
+ * @package   Karaka
  * @copyright Dennis Eichhorn
  * @license   OMS License 1.0
  * @version   1.0.0
- * @link      https://orange-management.org
+ * @link      https://karaka.app
  */
 declare(strict_types=1);
 
@@ -34,6 +34,7 @@ use phpOMS\Utils\TestUtils;
  */
 //region Accounts
 /** @var \phpOMS\Application\ApplicationAbstract $app */
+/** @var \Modules\Admin\Controller\ApiController $module */
 $module = $app->moduleManager->get('Admin');
 TestUtils::setMember($module, 'app', $app);
 
@@ -45,12 +46,12 @@ TestUtils::setMember($profileModule, 'app', $app);
 
 $LOREM_COUNT = \count(Text::LOREM_IPSUM) - 1;
 
-$count = \count($accounts);
+$count    = \count($accounts);
 $interval = (int) \ceil($count / 10);
-$z = 0;
-$p = 0;
+$z        = 0;
+$p        = 0;
 
-$groups = GroupMapper::getAll();
+$groups = GroupMapper::getAll()->execute();
 foreach ($accounts as $key=> $account) {
     $response = new HttpResponse();
     $request  = new HttpRequest(new HttpUri(''));
@@ -66,11 +67,12 @@ foreach ($accounts as $key=> $account) {
     $request->setData('type', AccountType::USER);
     $request->setData('status', $account['status'] ?? AccountStatus::INACTIVE);
     $module->apiAccountCreate($request, $response);
+    ++$apiCalls;
 
     //region groups
     $a                                      = $response->get('')['response'];
     $variables['accounts'][$key]['id']      = $a->getId();
-    $variables['accounts'][$key]['profile'] = \Modules\Profile\Models\ProfileMapper::getFor($a->getId(), 'account')->getId();
+    $variables['accounts'][$key]['profile'] = \Modules\Profile\Models\ProfileMapper::get()->where('account', $a->getId())->execute()->getId();
 
     foreach ($groups as $g) {
         if (\in_array($g->name, $account['groups'])) {
@@ -82,6 +84,7 @@ foreach ($accounts as $key=> $account) {
             $request->setData('igroup-idlist', (string) $g->getId());
 
             $module->apiAddGroupToAccount($request, $response);
+            ++$apiCalls;
         }
     }
     //endregion
@@ -123,6 +126,7 @@ foreach ($accounts as $key=> $account) {
         ]);
 
         $profileModule->apiSettingsAccountImageSet($request, $response);
+        ++$apiCalls;
     }
     //endregion
 
@@ -144,6 +148,7 @@ foreach ($accounts as $key=> $account) {
         $request->setData('state', '');
 
         $profileModule->apiAddressCreate($request, $response);
+        ++$apiCalls;
     }
     //endregion
 
@@ -169,6 +174,7 @@ foreach ($accounts as $key=> $account) {
         }
 
         $profileModule->apiContactElementCreate($request, $response);
+        ++$apiCalls;
     }
     //endregion
 

@@ -1,23 +1,22 @@
 <?php
 /**
- * Orange Management
+ * Karaka
  *
  * PHP Version 8.0
  *
- * @package   OrangeManagement
+ * @package   Karaka
  * @copyright Dennis Eichhorn
  * @license   OMS License 1.0
  * @version   1.0.0
- * @link      https://orange-management.org
+ * @link      https://karaka.app
  */
 declare(strict_types=1);
 
+use phpOMS\DataStorage\Database\DatabaseType;
 use phpOMS\Message\Http\HttpRequest;
 use phpOMS\Message\Http\HttpResponse;
 use phpOMS\Uri\HttpUri;
-use phpOMS\Utils\RnG\Text;
 use phpOMS\Utils\TestUtils;
-use phpOMS\DataStorage\Database\DatabaseType;
 
 /**
  * Setup news module
@@ -26,36 +25,37 @@ use phpOMS\DataStorage\Database\DatabaseType;
  */
 //region DatabaseEditor
 /** @var \phpOMS\Application\ApplicationAbstract $app */
+/** @var \Modules\DatabaseEditor\Controller\ApiController $module */
 $module = $app->moduleManager->get('DatabaseEditor');
 TestUtils::setMember($module, 'app', $app);
 
 $QUERIES = [
 	[
-		'title' => 'Orange-Management Accounts',
-		'con' => [
-			'type' => DatabaseType::MYSQL,
-			'host' => '127.0.0.1',
-			'port' => '3306',
-			'db' => 'oms',
-			'login' => 'root',
+		'title' => 'Karaka Accounts',
+		'con'   => [
+			'type'     => DatabaseType::MYSQL,
+			'host'     => '127.0.0.1',
+			'port'     => '3306',
+			'db'       => 'oms',
+			'login'    => 'root',
 			'password' => 'root',
 		],
-		'query' => 'SELECT account_id, account_login, account_name1, account_name2, account_email FROM account WHERE account_login != \'\';',
-		'result' => \file_get_contents(__DIR__ . '/databaseeditor/accounts.csv')
+		'query'  => 'SELECT account_id, account_login, account_name1, account_name2, account_email FROM account WHERE account_login != \'\';',
+		'result' => \file_get_contents(__DIR__ . '/databaseeditor/accounts.csv'),
 	],
 	[
 		'title' => 'Sqlite Database Countries',
-		'con' => [
-			'type' => DatabaseType::SQLITE,
-			'host' => __DIR__ . '/../phpOMS/Localization/Defaults/localization.sqlite',
-			'port' => '',
-			'db' => '',
-			'login' => '',
+		'con'   => [
+			'type'     => DatabaseType::SQLITE,
+			'host'     => __DIR__ . '/../phpOMS/Localization/Defaults/localization.sqlite',
+			'port'     => '',
+			'db'       => '',
+			'login'    => '',
 			'password' => '',
 		],
-		'query' => 'SELECT * FROM country;',
-		'result' => \file_get_contents(__DIR__ . '/databaseeditor/countries.csv')
-	]
+		'query'  => 'SELECT * FROM country;',
+		'result' => \file_get_contents(__DIR__ . '/databaseeditor/countries.csv'),
+	],
 ];
 
 foreach ($QUERIES as $query) {
@@ -73,7 +73,8 @@ foreach ($QUERIES as $query) {
     $request->setData('query', $query['query']);
     $request->setData('result', $query['result']);
 
-    $module->apiQueryCreate($request, $response);
+	$module->apiQueryCreate($request, $response);
+	++$apiCalls;
 }
 //endregion
 

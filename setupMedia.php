@@ -1,14 +1,14 @@
 <?php
 /**
- * Orange Management
+ * Karaka
  *
  * PHP Version 8.0
  *
- * @package   OrangeManagement
+ * @package   Karaka
  * @copyright Dennis Eichhorn
  * @license   OMS License 1.0
  * @version   1.0.0
- * @link      https://orange-management.org
+ * @link      https://karaka.app
  */
 declare(strict_types=1);
 
@@ -19,11 +19,10 @@ use phpOMS\Utils\TestUtils;
 
 /**
  * Create tasks
- *
- * @var \Modules\Media\Controller\ApiController $module
  */
 //region Media
 /** @var \phpOMS\Application\ApplicationAbstract $app */
+/** @var \Modules\Media\Controller\ApiController $module */
 $module = $app->moduleManager->get('Media');
 TestUtils::setMember($module, 'app', $app);
 
@@ -33,10 +32,10 @@ if (!\is_dir(__DIR__ . '/temp')) {
 
 $files = \scandir(__DIR__ . '/media/types');
 
-$count = \count($files);
+$count    = \count($files);
 $interval = (int) \ceil($count / 10);
-$z = 0;
-$p = 0;
+$z        = 0;
+$p        = 0;
 
 foreach ($files as $file) {
     if ($file === '.' || $file === '..') {
@@ -86,6 +85,7 @@ foreach ($files as $file) {
     ]);
 
     $module->apiMediaUpload($request, $response);
+    ++$apiCalls;
     $variables['mFiles'] = \array_merge($variables['mFiles'], $response->get('')['response']);
 
     ++$z;

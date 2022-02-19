@@ -1,19 +1,19 @@
 <?php
 /**
- * Orange Management
+ * Karaka
  *
  * PHP Version 8.0
  *
- * @package   OrangeManagement
+ * @package   Karaka
  * @copyright Dennis Eichhorn
  * @license   OMS License 1.0
  * @version   1.0.0
- * @link      https://orange-management.org
+ * @link      https://karaka.app
  */
 declare(strict_types=1);
 
-use Modules\SupplierManagement\Models\AttributeValueType;
 use Modules\Profile\Models\ContactType;
+use Modules\SupplierManagement\Models\AttributeValueType;
 use phpOMS\Localization\ISO3166TwoEnum;
 use phpOMS\Localization\ISO639x1Enum;
 use phpOMS\Message\Http\HttpRequest;
@@ -28,11 +28,10 @@ use phpOMS\Utils\TestUtils;
 
 /**
  * Setup accounts
- *
- * @var \Modules\SupplierManagement\Controller\ApiController $module
  */
 //region Accounts
 /** @var \phpOMS\Application\ApplicationAbstract $app */
+/** @var \Modules\SupplierManagement\Controller\ApiController $module */
 $module = $app->moduleManager->get('SupplierManagement');
 TestUtils::setMember($module, 'app', $app);
 
@@ -58,6 +57,7 @@ foreach ($LOREM as $word) {
     $request->setData('title', 'EN:' . $word);
 
     $module->apiSupplierAttributeTypeCreate($request, $response);
+    ++$apiCalls;
 
     $attrTypeId = $response->get('')['response']->getId();
     foreach ($variables['languages'] as $language) {
@@ -75,6 +75,7 @@ foreach ($LOREM as $word) {
         $request->setData('title', \strtoupper($language) . ':' . $LOREM[\mt_rand(0, $LOREM_COUNT)]);
 
         $module->apiSupplierAttributeTypeL11nCreate($request, $response);
+        ++$apiCalls;
     }
 
     $type = AttributeValueType::getRandom();
@@ -106,6 +107,7 @@ foreach ($LOREM as $word) {
         $request->setData('value', $value);
 
         $module->apiSupplierAttributeValueCreate($request, $response);
+        ++$apiCalls;
 
         if ($type === AttributeValueType::_STRING) {
             foreach ($variables['languages'] as $language) {
@@ -120,6 +122,7 @@ foreach ($LOREM as $word) {
                 $request->setData('value', \strtoupper($language) . ':' . $LOREM[\mt_rand(0, $LOREM_COUNT)], true);
 
                 $module->apiSupplierAttributeValueCreate($request, $response);
+                ++$apiCalls;
             }
         }
     }
@@ -127,10 +130,10 @@ foreach ($LOREM as $word) {
 
 echo '░';
 
-$count = $SUPPLIERS;
+$count    = $SUPPLIERS;
 $interval = (int) \ceil($count / 9);
-$z = 0;
-$p = 0;
+$z        = 0;
+$p        = 0;
 
 for ($i = 0; $i < $SUPPLIERS; ++$i) {
     $response = new HttpResponse();
@@ -164,6 +167,7 @@ for ($i = 0; $i < $SUPPLIERS; ++$i) {
     $request->setData('state', '');
 
     $module->apiSupplierCreate($request, $response);
+    ++$apiCalls;
 
     $sId = $response->get('')['response']->getId();
 
@@ -179,6 +183,7 @@ for ($i = 0; $i < $SUPPLIERS; ++$i) {
         $request->setData('value', \mt_rand(($j - 1) * $LOREM_COUNT + 1, $j * $LOREM_COUNT));
 
         $module->apiSupplierAttributeCreate($request, $response);
+        ++$apiCalls;
     }
     //endregion
 
@@ -189,7 +194,7 @@ for ($i = 0; $i < $SUPPLIERS; ++$i) {
         $request  = new HttpRequest(new HttpUri(''));
 
         $request->header->account = 2;
-        $request->setData('supplier', $sId);
+        $request->setData('account', $sId);
         $request->setData('type', $type = ContactType::getRandom());
         $request->setData('subtype', 0);
 
@@ -204,6 +209,7 @@ for ($i = 0; $i < $SUPPLIERS; ++$i) {
         }
 
         $module->apiContactElementCreate($request, $response);
+        ++$apiCalls;
     }
     //endregion
 
@@ -241,6 +247,7 @@ for ($i = 0; $i < $SUPPLIERS; ++$i) {
     ]);
 
     $module->apiFileCreate($request, $response);
+    ++$apiCalls;
     //endregion
 
     //region supplier files
@@ -270,6 +277,7 @@ for ($i = 0; $i < $SUPPLIERS; ++$i) {
         ]);
 
         $module->apiFileCreate($request, $response);
+        ++$apiCalls;
     }
     //endregion
 
@@ -291,6 +299,7 @@ for ($i = 0; $i < $SUPPLIERS; ++$i) {
         $request->setData('plain', \preg_replace('/^.+\n/', '', $MARKDOWN));
 
         $module->apiNoteCreate($request, $response);
+        ++$apiCalls;
     }
     //endregion
 

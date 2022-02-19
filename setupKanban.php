@@ -1,14 +1,14 @@
 <?php
 /**
- * Orange Management
+ * Karaka
  *
  * PHP Version 8.0
  *
- * @package   OrangeManagement
+ * @package   Karaka
  * @copyright Dennis Eichhorn
  * @license   OMS License 1.0
  * @version   1.0.0
- * @link      https://orange-management.org
+ * @link      https://karaka.app
  */
 declare(strict_types=1);
 
@@ -23,11 +23,10 @@ use phpOMS\Utils\TestUtils;
 
 /**
  * Create tasks
- *
- * @var \Modules\Kanban\Controller\ApiController $module
  */
 //region Kanban
 /** @var \phpOMS\Application\ApplicationAbstract $app */
+/** @var \Modules\Kanban\Controller\ApiController $module */
 $module = $app->moduleManager->get('Kanban');
 TestUtils::setMember($module, 'app', $app);
 
@@ -38,10 +37,10 @@ if (!\is_dir(__DIR__ . '/temp')) {
 $KANBAN_COUNT = 30;
 $LOREM_COUNT  = \count(Text::LOREM_IPSUM) - 1;
 
-$count = $KANBAN_COUNT - 1;
+$count    = $KANBAN_COUNT - 1;
 $interval = (int) \ceil($count / 10);
-$z = 0;
-$p = 0;
+$z        = 0;
+$p        = 0;
 
 for ($i = 0; $i < $KANBAN_COUNT; ++$i) {
     $response = new HttpResponse();
@@ -73,6 +72,7 @@ for ($i = 0; $i < $KANBAN_COUNT; ++$i) {
     }
 
     $module->apiKanbanBoardCreate($request, $response);
+    ++$apiCalls;
 
     $boardId = $response->get('')['response']->getId();
 
@@ -88,6 +88,7 @@ for ($i = 0; $i < $KANBAN_COUNT; ++$i) {
         $request->setData('board', $boardId);
 
         $module->apiKanbanColumnCreate($request, $response);
+        ++$apiCalls;
 
         $columnId = $response->get('')['response']->getId();
 
@@ -163,6 +164,7 @@ for ($i = 0; $i < $KANBAN_COUNT; ++$i) {
             //endregion
 
             $module->apiKanbanCardCreate($request, $response);
+            ++$apiCalls;
 
             $cardId = $response->get('')['response']->getId();
 
@@ -215,6 +217,7 @@ for ($i = 0; $i < $KANBAN_COUNT; ++$i) {
                 //endregion
 
                 $module->apiKanbanCardCommentCreate($request, $response);
+                ++$apiCalls;
             }
         }
         //endregion

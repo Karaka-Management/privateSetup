@@ -1,6 +1,6 @@
 <?php
 /**
- * Orange Management
+ * Karaka
  *
  * PHP Version 8.0
  *
@@ -8,7 +8,7 @@
  * @copyright Dennis Eichhorn
  * @license   OMS License 1.0
  * @version   1.0.0
- * @link      https://orange-management.org
+ * @link      https://karaka.app
  */
 declare(strict_types=1);
 
@@ -29,7 +29,7 @@ use phpOMS\DataStorage\Cookie\CookieJar;
 use phpOMS\DataStorage\Database\Connection\ConnectionAbstract;
 use phpOMS\DataStorage\Database\DatabasePool;
 use phpOMS\DataStorage\Database\DatabaseStatus;
-use phpOMS\DataStorage\Database\DataMapperAbstract;
+use phpOMS\DataStorage\Database\Mapper\DataMapperFactory;
 use phpOMS\DataStorage\Session\HttpSession;
 use phpOMS\Dispatcher\Dispatcher;
 use phpOMS\Event\EventManager;
@@ -54,7 +54,7 @@ use Web\{APPNAME}\AppView;
  *
  * @package Web\{APPNAME}
  * @license OMS License 1.0
- * @link    https://orange-management.org
+ * @link    https://karaka.app
  * @since   1.0.0
  * @codeCoverageIgnore
  */
@@ -139,10 +139,10 @@ final class Application
 
         /** @var ConnectionAbstract $con */
         $con = $this->app->dbPool->get();
-        DataMapperAbstract::setConnection($con);
+        DataMapperFactory::db($con);
 
         $this->app->cachePool      = new CachePool();
-        $this->app->appSettings    = new CoreSettings($con);
+        $this->app->appSettings    = new CoreSettings();
         $this->app->eventManager   = new EventManager($this->app->dispatcher);
         $this->app->accountManager = new AccountManager($this->app->sessionManager);
         $this->app->l11nServer     = LocalizationMapper::get(1);
@@ -358,8 +358,8 @@ final class Application
     private function initResponseHead(Head $head, HttpRequest $request, HttpResponse $response) : void
     {
         /* Load assets */
-        $head->addAsset(AssetType::CSS, 'Resources/fontawesome/css/font-awesome.min.css');
-        $head->addAsset(AssetType::CSS, '../Web/{APPNAME}/css/fonts.css');
+        $head->addAsset(AssetType::CSS, 'Resources/fonts/fontawesome/css/font-awesome.min.css');
+        $head->addAsset(AssetType::CSS, 'Resources/fonts/Roboto/roboto.css');
 
         // Framework
         $head->addAsset(AssetType::JS, 'jsOMS/Utils/oLib.js');

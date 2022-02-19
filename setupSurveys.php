@@ -1,31 +1,30 @@
 <?php
 /**
- * Orange Management
+ * Karaka
  *
  * PHP Version 8.0
  *
- * @package   OrangeManagement
+ * @package   Karaka
  * @copyright Dennis Eichhorn
  * @license   OMS License 1.0
  * @version   1.0.0
- * @link      https://orange-management.org
+ * @link      https://karaka.app
  */
 declare(strict_types=1);
 
+use Modules\Surveys\Models\SurveyElementType;
 use phpOMS\Message\Http\HttpRequest;
 use phpOMS\Message\Http\HttpResponse;
 use phpOMS\Uri\HttpUri;
 use phpOMS\Utils\RnG\Text;
 use phpOMS\Utils\TestUtils;
-use Modules\Surveys\Models\SurveyElementType;
 
 /**
  * Create surveys
- *
- * @var \Modules\Surveys\Controller\ApiController $module
  */
 //region Surveys
 /** @var \phpOMS\Application\ApplicationAbstract $app */
+/** @var \Modules\Surveys\Controller\ApiController $module */
 $module = $app->moduleManager->get('Surveys');
 TestUtils::setMember($module, 'app', $app);
 
@@ -39,10 +38,10 @@ $LOREM_COUNT  = \count(Text::LOREM_IPSUM) - 1;
 
 $descriptionRng = new Text();
 
-$count = $SURVEY_COUNT;
+$count    = $SURVEY_COUNT;
 $interval = (int) \ceil($count / 10);
-$z = 0;
-$p = 0;
+$z        = 0;
+$p        = 0;
 
 for ($i = 0; $i < $SURVEY_COUNT; ++$i) {
     $response = new HttpResponse();
@@ -98,6 +97,7 @@ for ($i = 0; $i < $SURVEY_COUNT; ++$i) {
     //endregion
 
     $module->apiSurveyTemplateCreate($request, $response);
+    ++$apiCalls;
     $sId = $response->get('')['response']->getId();
 
     $elements = [];
@@ -138,14 +138,15 @@ for ($i = 0; $i < $SURVEY_COUNT; ++$i) {
 	    }
 
         $elements[] = [
-            'type' => $type,
+            'type'   => $type,
             'values' => $values,
         ];
 
     	$request->setData('labels', \json_encode($labels));
     	$request->setData('values', \json_encode($values));
 
-    	$module->apiSurveyTemplateElementCreate($request, $response);
+        $module->apiSurveyTemplateElementCreate($request, $response);
+        ++$apiCalls;
     }
 
     for ($k = 0; $k < $FILLED_COUNT; ++$k) {
@@ -175,7 +176,8 @@ for ($i = 0; $i < $SURVEY_COUNT; ++$i) {
     		$request->setData('e_' . $l, $value);
     	}
 
-    	$module->apiSurveyAnswerCreate($request, $response);
+        $module->apiSurveyAnswerCreate($request, $response);
+        ++$apiCalls;
     }
 
     ++$z;

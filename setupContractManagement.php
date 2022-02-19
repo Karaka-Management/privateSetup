@@ -1,22 +1,20 @@
 <?php
 /**
- * Orange Management
+ * Karaka
  *
  * PHP Version 8.0
  *
- * @package   OrangeManagement
+ * @package   Karaka
  * @copyright Dennis Eichhorn
  * @license   OMS License 1.0
  * @version   1.0.0
- * @link      https://orange-management.org
+ * @link      https://karaka.app
  */
 declare(strict_types=1);
 
-use phpOMS\Localization\ISO3166TwoEnum;
 use phpOMS\Localization\ISO639x1Enum;
 use phpOMS\Message\Http\HttpRequest;
 use phpOMS\Message\Http\HttpResponse;
-use phpOMS\System\MimeType;
 use phpOMS\Uri\HttpUri;
 use phpOMS\Utils\RnG\Text;
 use phpOMS\Utils\TestUtils;
@@ -27,6 +25,7 @@ use phpOMS\Utils\TestUtils;
  * @var \Modules\Contract\Controller\ApiController $module
  */
 /** @var \phpOMS\Application\ApplicationAbstract $app */
+/** @var \Modules\ContractManagement\Controller\ApiController $module */
 $module = $app->moduleManager->get('ContractManagement');
 TestUtils::setMember($module, 'app', $app);
 
@@ -40,10 +39,10 @@ $LOREM_COUNT = \count($LOREM) - 1;
 $ITEMS       = 10;
 $numbers     = [];
 
-$count = \count($LOREM);
+$count    = \count($LOREM);
 $interval = (int) \ceil($count / 2);
-$z = 0;
-$p = 0;
+$z        = 0;
+$p        = 0;
 
 // contract types (e.g. color, material etc.)
 foreach ($LOREM as $word) {
@@ -52,11 +51,11 @@ foreach ($LOREM as $word) {
 
     $request->header->account = \mt_rand(2, 5);
 
-    $request->setData('name', '_' . $word); // identifier of the type
     $request->setData('language', ISO639x1Enum::_EN);
     $request->setData('title', 'EN:' . $word);
 
     $module->apiContractTypeCreate($request, $response);
+    ++$apiCalls;
 
     $contractTypeId = $response->get('')['response']->getId();
     foreach ($variables['languages'] as $language) {
@@ -74,6 +73,7 @@ foreach ($LOREM as $word) {
         $request->setData('title', \strtoupper($language) . ':' . $LOREM[\mt_rand(0, $LOREM_COUNT)]);
 
         $module->apiContractTypeL11nCreate($request, $response);
+        ++$apiCalls;
     }
 
     ++$z;
@@ -85,10 +85,10 @@ foreach ($LOREM as $word) {
 
 echo $p < 2 ? '░' : '';
 
-$count = 100;
+$count    = 100;
 $interval = (int) \ceil($count / 8);
-$z = 0;
-$p = 0;
+$z        = 0;
+$p        = 0;
 
 for ($i = 0; $i < 100; ++$i) {
     $response = new HttpResponse();
@@ -116,7 +116,12 @@ for ($i = 0; $i < 100; ++$i) {
     $end->setTimestamp($start->getTimestamp() + \mt_rand(31536000 / 4, 31536000 * 2));
     $request->setData('end', $end->format('Y-m-d'));
 
+    if (\mt_rand(1, 100) < 51) {
+        $request->setData('account', \mt_rand(1, \count($variables['accounts']) - 1));
+    }
+
     $module->apiContractCreate($request, $response);
+    ++$apiCalls;
 
     $cId = $response->get('')['response']->getId();
 
@@ -141,6 +146,7 @@ for ($i = 0; $i < 100; ++$i) {
     ]);
 
     $module->apiContractDocumentCreate($request, $response);
+    ++$apiCalls;
 
     ++$z;
     if ($z % $interval === 0) {

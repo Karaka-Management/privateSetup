@@ -1,14 +1,14 @@
 <?php
 /**
- * Orange Management
+ * Karaka
  *
  * PHP Version 8.0
  *
- * @package   OrangeManagement
+ * @package   Karaka
  * @copyright Dennis Eichhorn
  * @license   OMS License 1.0
  * @version   1.0.0
- * @link      https://orange-management.org
+ * @link      https://karaka.app
  */
 declare(strict_types=1);
 
@@ -27,6 +27,7 @@ use phpOMS\Utils\TestUtils;
  */
 //region Groups
 /** @var \phpOMS\Application\ApplicationAbstract $app */
+/** @var \Modules\Admin\Controller\ApiController $module */
 $module = $app->moduleManager->get('Admin');
 TestUtils::setMember($module, 'app', $app);
 
@@ -427,6 +428,7 @@ foreach ($groups as $group) {
     $request->setData('name', $group['name']);
     $request->setData('status', GroupStatus::ACTIVE);
     $module->apiGroupCreate($request, $response);
+    ++$apiCalls;
 
     if (!empty($group['permissions'])) {
         $g = $response->get('')['response'];
@@ -449,6 +451,7 @@ foreach ($groups as $group) {
             $request->setData('permissiondelete', $p['permissiondelete']);
             $request->setData('permissionpermission', $p['permissionpermission']);
             $module->apiAddGroupPermission($request, $response);
+            ++$apiCalls;
         }
     }
 }

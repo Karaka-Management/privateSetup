@@ -56,7 +56,7 @@ return [
             'name2'  => 'Guest',
             'image'  => 't_guest.png',
             'status' => AccountStatus::ACTIVE,
-            'email'  => 't.guest@orange-management.email',
+            'email'  => 't.guest@karaka.email',
             'groups' => [],
         ],
         [
@@ -66,7 +66,7 @@ return [
             'name2'  => 'User',
             'image'  => 't_user.png',
             'status' => AccountStatus::ACTIVE,
-            'email'  => 't.user@orange-management.email',
+            'email'  => 't.user@karaka.email',
             'groups' => ['user'],
         ],
         [
@@ -76,7 +76,7 @@ return [
             'name2'  => 'Supplier',
             'image'  => 't_supplier.png',
             'status' => AccountStatus::ACTIVE,
-            'email'  => 't.supplier@orange-management.email',
+            'email'  => 't.supplier@karaka.email',
             'groups' => ['user'],
         ],
         [
@@ -86,7 +86,7 @@ return [
             'name2'  => 'Client',
             'image'  => 't_client.png',
             'status' => AccountStatus::ACTIVE,
-            'email'  => 't.client@orange-management.email',
+            'email'  => 't.client@karaka.email',
             'groups' => ['user'],
         ],
         [
@@ -96,7 +96,7 @@ return [
             'name2'  => 'Support',
             'image'  => 't_support.png',
             'status' => AccountStatus::ACTIVE,
-            'email'  => 't.support@orange-management.email',
+            'email'  => 't.support@karaka.email',
             'groups' => ['user', 'Suppoer', 'Employee', 'VKL'],
         ],
         [
@@ -106,7 +106,7 @@ return [
             'name2'  => 'Secretary',
             'image'  => 't_secretary.png',
             'status' => AccountStatus::ACTIVE,
-            'email'  => 't.secretary@orange-management.email',
+            'email'  => 't.secretary@karaka.email',
             'groups' => ['user', 'Secretariat', 'Employee'],
         ],
         [
@@ -116,7 +116,7 @@ return [
             'name2'  => 'Service',
             'image'  => 't_service.png',
             'status' => AccountStatus::ACTIVE,
-            'email'  => 't.service@orange-management.email',
+            'email'  => 't.service@karaka.email',
             'groups' => ['user', 'Service', 'Employee', 'VKL'],
         ],
         [
@@ -126,7 +126,7 @@ return [
             'name2'  => 'Finance',
             'image'  => 't_finance.png',
             'status' => AccountStatus::ACTIVE,
-            'email'  => 't.finance@orange-management.email',
+            'email'  => 't.finance@karaka.email',
             'groups' => ['user', 'Executive', 'Finance', 'Controlling', 'Employee', 'VKL'],
         ],
         [
@@ -136,7 +136,7 @@ return [
             'name2'  => 'Sales',
             'image'  => 't_sales.png',
             'status' => AccountStatus::ACTIVE,
-            'email'  => 't.sales@orange-management.email',
+            'email'  => 't.sales@karaka.email',
             'groups' => ['user', 'Executive', 'Sales', 'Employee', 'VKL'],
         ],
         [
@@ -146,7 +146,7 @@ return [
             'name2'  => 'Purchase',
             'image'  => 't_purchase.png',
             'status' => AccountStatus::ACTIVE,
-            'email'  => 't.purchase@orange-management.email',
+            'email'  => 't.purchase@karaka.email',
             'groups' => ['user', 'Executive', 'Purchasing', 'Employee'],
         ],
         [
@@ -156,7 +156,7 @@ return [
             'name2'  => 'Warehouse',
             'image'  => 't_warehouse.png',
             'status' => AccountStatus::ACTIVE,
-            'email'  => 't.warehouse@orange-management.email',
+            'email'  => 't.warehouse@karaka.email',
             'groups' => ['user', 'Warehouse', 'Employee'],
         ],
         [
@@ -166,7 +166,7 @@ return [
             'name2'  => 'Marketing',
             'image'  => 't_marketing.png',
             'status' => AccountStatus::ACTIVE,
-            'email'  => 't.marketing@orange-management.email',
+            'email'  => 't.marketing@karaka.email',
             'groups' => ['user', 'Executive', 'Marketing', 'Employee', 'VKL'],
         ],
         [
@@ -176,7 +176,7 @@ return [
             'name2'  => 'Production',
             'image'  => 't_production.png',
             'status' => AccountStatus::ACTIVE,
-            'email'  => 't.production@orange-management.email',
+            'email'  => 't.production@karaka.email',
             'groups' => ['user', 'Executive', 'Production', 'Employee'],
         ],
         [
@@ -186,7 +186,7 @@ return [
             'name2'  => 'Salesrep',
             'image'  => 't_salesrep.png',
             'status' => AccountStatus::ACTIVE,
-            'email'  => 't.salesrep@orange-management.email',
+            'email'  => 't.salesrep@karaka.email',
             'groups' => ['user', 'Sales', 'Employee'],
         ],
     ],

@@ -1,14 +1,14 @@
 <?php
 /**
- * Orange Management
+ * Karaka
  *
  * PHP Version 8.0
  *
- * @package   OrangeManagement
+ * @package   Karaka
  * @copyright Dennis Eichhorn
  * @license   OMS License 1.0
  * @version   1.0.0
- * @link      https://orange-management.org
+ * @link      https://karaka.app
  */
 declare(strict_types=1);
 
@@ -25,16 +25,17 @@ use phpOMS\Utils\TestUtils;
  */
 //region Editor
 /** @var \phpOMS\Application\ApplicationAbstract $app */
+/** @var \Modules\Editor\Controller\ApiController $module */
 $module = $app->moduleManager->get('Editor');
 TestUtils::setMember($module, 'app', $app);
 
 $EDITOR_DOCS = 500;
 $LOREM_COUNT = \count(Text::LOREM_IPSUM) - 1;
 
-$count = $EDITOR_DOCS;
+$count    = $EDITOR_DOCS;
 $interval = (int) \ceil($count / 10);
-$z = 0;
-$p = 0;
+$z        = 0;
+$p        = 0;
 
 for ($i = 0; $i < $EDITOR_DOCS; ++$i) {
     $response = new HttpResponse();
@@ -102,6 +103,7 @@ for ($i = 0; $i < $EDITOR_DOCS; ++$i) {
     //endregion
 
     $module->apiEditorCreate($request, $response);
+    ++$apiCalls;
 
     ++$z;
     if ($z % $interval === 0) {

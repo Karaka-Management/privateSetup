@@ -1,14 +1,14 @@
 <?php
 /**
- * Orange Management
+ * Karaka
  *
  * PHP Version 8.0
  *
- * @package   OrangeManagement
+ * @package   Karaka
  * @copyright Dennis Eichhorn
  * @license   OMS License 1.0
  * @version   1.0.0
- * @link      https://orange-management.org
+ * @link      https://karaka.app
  */
 declare(strict_types=1);
 
@@ -23,11 +23,10 @@ use phpOMS\Utils\TestUtils;
 
 /**
  * Setup news module
- *
- * @var \Modules\News\Controller\ApiController $module
  */
 //region News
 /** @var \phpOMS\Application\ApplicationAbstract $app */
+/** @var \Modules\News\Controller\ApiController $module */
 $module = $app->moduleManager->get('News');
 TestUtils::setMember($module, 'app', $app);
 
@@ -39,10 +38,10 @@ $NEWS_ARTICLES = 50;
 $FEATURED_PROB = 10;
 $LOREM_COUNT   = \count(Text::LOREM_IPSUM) - 1;
 
-$count = \count($variables['languages']);
+$count    = \count($variables['languages']);
 $interval = (int) \ceil($count / 10);
-$z = 0;
-$p = 0;
+$z        = 0;
+$p        = 0;
 
 foreach ($variables['languages'] as $language) {
     for ($i = 0; $i < $NEWS_ARTICLES; ++$i) {
@@ -118,9 +117,11 @@ foreach ($variables['languages'] as $language) {
         //endregion
 
         $module->apiNewsCreate($request, $response);
+        ++$apiCalls;
 
         //region comments
         $COMMENT_COUNT = \mt_rand(0, 7);
+        /** @var \Modules\Comments\Controller\ApiController $commentModule */
         $commentModule = $app->moduleManager->get('Comments');
         $commentList   = $response->get('')['response']->comments->getId();
 
@@ -178,6 +179,7 @@ foreach ($variables['languages'] as $language) {
             //endregion
 
             $commentModule->apiCommentCreate($request, $response);
+            ++$apiCalls;
         }
         //endregion
     }

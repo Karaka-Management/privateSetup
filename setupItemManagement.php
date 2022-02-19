@@ -1,14 +1,14 @@
 <?php
 /**
- * Orange Management
+ * Karaka
  *
  * PHP Version 8.0
  *
- * @package   OrangeManagement
+ * @package   Karaka
  * @copyright Dennis Eichhorn
  * @license   OMS License 1.0
  * @version   1.0.0
- * @link      https://orange-management.org
+ * @link      https://karaka.app
  */
 declare(strict_types=1);
 
@@ -24,11 +24,10 @@ use phpOMS\Utils\TestUtils;
 
 /**
  * Setup accounts
- *
- * @var \Modules\ItemManagement\Controller\ApiController $module
  */
 //region Accounts
 /** @var \phpOMS\Application\ApplicationAbstract $app */
+/** @var \Modules\ItemManagement\Controller\ApiController $module */
 $module = $app->moduleManager->get('ItemManagement');
 TestUtils::setMember($module, 'app', $app);
 
@@ -39,13 +38,13 @@ if (!\is_dir(__DIR__ . '/temp')) {
 $LOREM = \array_slice(Text::LOREM_IPSUM, 0, 50);
 
 $LOREM_COUNT = \count($LOREM) - 1;
-$ITEMS       = 10;
+$ITEMS       = 100;
 $numbers     = [];
 
-$count = \count($LOREM);
+$count    = \count($LOREM);
 $interval = (int) \ceil($count / 4);
-$z = 0;
-$p = 0;
+$z        = 0;
+$p        = 0;
 
 // item attribute types (e.g. color, material etc.)
 foreach ($LOREM as $word) {
@@ -59,6 +58,7 @@ foreach ($LOREM as $word) {
     $request->setData('title', 'EN:' . $word);
 
     $module->apiItemAttributeTypeCreate($request, $response);
+    ++$apiCalls;
 
     $attrTypeId = $response->get('')['response']->getId();
     foreach ($variables['languages'] as $language) {
@@ -76,6 +76,7 @@ foreach ($LOREM as $word) {
         $request->setData('title', \strtoupper($language) . ':' . $LOREM[\mt_rand(0, $LOREM_COUNT)]);
 
         $module->apiItemAttributeTypeL11nCreate($request, $response);
+        ++$apiCalls;
     }
 
     $type = AttributeValueType::getRandom();
@@ -107,6 +108,7 @@ foreach ($LOREM as $word) {
         $request->setData('value', $value);
 
         $module->apiItemAttributeValueCreate($request, $response);
+        ++$apiCalls;
 
         if ($type === AttributeValueType::_STRING) {
             foreach ($variables['languages'] as $language) {
@@ -121,6 +123,7 @@ foreach ($LOREM as $word) {
                 $request->setData('value', \strtoupper($language) . ':' . $LOREM[\mt_rand(0, $LOREM_COUNT)], true);
 
                 $module->apiItemAttributeValueCreate($request, $response);
+                ++$apiCalls;
             }
         }
     }
@@ -151,14 +154,15 @@ foreach ($LOREM2 as $word) {
     $request->setData('title', $word);
 
     $module->apiItemL11nTypeCreate($request, $response);
+    ++$apiCalls;
 }
 
 echo '░';
 
-$count = $ITEMS;
+$count    = $ITEMS;
 $interval = (int) \ceil($count / 5);
-$z = 0;
-$p = 0;
+$z        = 0;
+$p        = 0;
 
 // items
 for ($i = 0; $i < $ITEMS; ++$i) {
@@ -183,11 +187,11 @@ for ($i = 0; $i < $ITEMS; ++$i) {
     }
 
     $module->apiItemCreate($request, $response);
+    ++$apiCalls;
     $itemId = $response->get('')['response']->getId();
     //endregion
 
     //region item l11n
-    // @todo: shouldn't this be limited by LOREM2???? maybe not, attributes != l11n types
     for ($j = 0; $j < $L11N_TYPES; ++$j) {
         foreach ($variables['languages'] as $language) {
             $response = new HttpResponse();
@@ -201,6 +205,7 @@ for ($i = 0; $i < $ITEMS; ++$i) {
             $request->setData('language', $language, true);
 
             $module->apiItemL11nCreate($request, $response);
+            ++$apiCalls;
         }
     }
     //endregion
@@ -217,6 +222,7 @@ for ($i = 0; $i < $ITEMS; ++$i) {
         $request->setData('value', \mt_rand(($j - 1) * $LOREM_COUNT + 1, $j * $LOREM_COUNT));
 
         $module->apiItemAttributeCreate($request, $response);
+        ++$apiCalls;
     }
     //endregion
 
@@ -254,6 +260,7 @@ for ($i = 0; $i < $ITEMS; ++$i) {
     ]);
 
     $module->apiFileCreate($request, $response);
+    ++$apiCalls;
     //endregion
 
     //region item files
@@ -283,6 +290,7 @@ for ($i = 0; $i < $ITEMS; ++$i) {
         ]);
 
         $module->apiFileCreate($request, $response);
+        ++$apiCalls;
     }
     //endregion
 
@@ -304,6 +312,7 @@ for ($i = 0; $i < $ITEMS; ++$i) {
         $request->setData('plain', \preg_replace('/^.+\n/', '', $MARKDOWN));
 
         $module->apiNoteCreate($request, $response);
+        ++$apiCalls;
     }
     //endregion
 

@@ -1,23 +1,23 @@
 <?php
 /**
- * Orange Management
+ * Karaka
  *
  * PHP Version 8.0
  *
- * @package   OrangeManagement
+ * @package   Karaka
  * @copyright Dennis Eichhorn
  * @license   OMS License 1.0
  * @version   1.0.0
- * @link      https://orange-management.org
+ * @link      https://karaka.app
  */
 declare(strict_types=1);
 
+use Modules\Admin\Models\AccountMapper;
+use Modules\Support\Models\AttributeValueType;
 use Modules\Tasks\Models\TaskPriority;
 use Modules\Tasks\Models\TaskStatus;
-use Modules\Admin\Models\AccountMapper;
 use phpOMS\Localization\ISO3166TwoEnum;
 use phpOMS\Localization\ISO639x1Enum;
-use Modules\Support\Models\AttributeValueType;
 use phpOMS\Message\Http\HttpRequest;
 use phpOMS\Message\Http\HttpResponse;
 use phpOMS\Uri\HttpUri;
@@ -26,20 +26,19 @@ use phpOMS\Utils\TestUtils;
 
 /**
  * Create support
- *
- * @var \Modules\Support\Controller\ApiController $module
  */
 //region Support
 /** @var \phpOMS\Application\ApplicationAbstract $app */
+/** @var \Modules\Support\Controller\ApiController $module */
 $module = $app->moduleManager->get('Support');
 TestUtils::setMember($module, 'app', $app);
 
-$TICKET_COUNT = 250;
+$TICKET_COUNT      = 250;
 $LOREM_LONG_COUNT  = \count(Text::LOREM_IPSUM) - 1;
-$LANGUAGES    = \count($variables['languages']);
-$ACCOUNTS     = AccountMapper::count();
-$LOREM = \array_slice(Text::LOREM_IPSUM, 0, 5);
-$LOREM_COUNT  = \count($LOREM) - 1;
+$LANGUAGES         = \count($variables['languages']);
+$ACCOUNTS          = AccountMapper::count()->execute();
+$LOREM             = \array_slice(Text::LOREM_IPSUM, 0, 5);
+$LOREM_COUNT       = \count($LOREM) - 1;
 
 // Create apps (besides the default app)
 $response = new HttpResponse();
@@ -49,13 +48,14 @@ $request->header->account = \mt_rand(2, 5);
 $request->setData('name', Text::LOREM_IPSUM[\mt_rand(0, $LOREM_LONG_COUNT - 1)]);
 
 $module->apiSupportAppCreate($request, $response);
+++$apiCalls;
 
 echo '░';
 
-$count = \count($LOREM);
+$count    = \count($LOREM);
 $interval = (int) \ceil($count / 2);
-$z = 0;
-$p = 0;
+$z        = 0;
+$p        = 0;
 
 // ticket attribute types (e.g. product.)
 foreach ($LOREM as $word) {
@@ -69,6 +69,7 @@ foreach ($LOREM as $word) {
     $request->setData('title', 'EN:' . $word);
 
     $module->apiTicketAttributeTypeCreate($request, $response);
+    ++$apiCalls;
 
     $attrTypeId = $response->get('')['response']->getId();
     foreach ($variables['languages'] as $language) {
@@ -86,6 +87,7 @@ foreach ($LOREM as $word) {
         $request->setData('title', \strtoupper($language) . ':' . $LOREM[\mt_rand(0, $LOREM_COUNT)]);
 
         $module->apiTicketAttributeTypeL11nCreate($request, $response);
+        ++$apiCalls;
     }
 
     $type = AttributeValueType::getRandom();
@@ -118,6 +120,7 @@ foreach ($LOREM as $word) {
             $request->setData('value', $value);
 
             $module->apiTicketAttributeValueCreate($request, $response);
+            ++$apiCalls;
 
             if ($type === AttributeValueType::_STRING) {
                 foreach ($variables['languages'] as $language) {
@@ -132,6 +135,7 @@ foreach ($LOREM as $word) {
                     $request->setData('value', \strtoupper($language) . ':' . $LOREM[\mt_rand(0, $LOREM_COUNT)], true);
 
                     $module->apiTicketAttributeValueCreate($request, $response);
+                    ++$apiCalls;
                 }
             }
         }
@@ -147,10 +151,10 @@ foreach ($LOREM as $word) {
 echo \str_repeat('░', 2 - $p);
 
 // Create tickets
-$count = $TICKET_COUNT;
+$count    = $TICKET_COUNT;
 $interval = (int) \ceil($count / 7);
-$z = 0;
-$p = 0;
+$z        = 0;
+$p        = 0;
 
 for ($i = 0; $i < $TICKET_COUNT; ++$i) {
     $response = new HttpResponse();
@@ -187,6 +191,7 @@ for ($i = 0; $i < $TICKET_COUNT; ++$i) {
     }
 
     $module->apiTicketCreate($request, $response);
+    ++$apiCalls;
     $ticketId = $response->get('')['response']->getId();
 
     //region attributes
@@ -218,6 +223,7 @@ for ($i = 0; $i < $TICKET_COUNT; ++$i) {
         $request->setData('value', $value);
 
         $module->apiTicketAttributeValueCreate($request, $response);
+        ++$apiCalls;
         $valueId = $response->get('')['response']->getId();
 
         if ($type === AttributeValueType::_STRING) {
@@ -233,6 +239,7 @@ for ($i = 0; $i < $TICKET_COUNT; ++$i) {
                 $request->setData('value', \strtoupper($language) . ':' . $LOREM[\mt_rand(0, $LOREM_COUNT)], true);
 
                 $module->apiTicketAttributeValueCreate($request, $response);
+                ++$apiCalls;
             }
         }
 
@@ -250,6 +257,7 @@ for ($i = 0; $i < $TICKET_COUNT; ++$i) {
         $request->setData('value', $valueId);
 
         $module->apiTicketAttributeCreate($request, $response);
+        ++$apiCalls;
     }
     //endregion
 
@@ -321,6 +329,7 @@ for ($i = 0; $i < $TICKET_COUNT; ++$i) {
         // @todo handle cc
 
         $module->apiTicketElementCreate($request, $response);
+        ++$apiCalls;
     }
     //endregion
 

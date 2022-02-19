@@ -1,14 +1,14 @@
 <?php
 /**
- * Orange Management
+ * Karaka
  *
  * PHP Version 8.0
  *
- * @package   OrangeManagement
+ * @package   Karaka
  * @copyright Dennis Eichhorn
  * @license   OMS License 1.0
  * @version   1.0.0
- * @link      https://orange-management.org
+ * @link      https://karaka.app
  */
 declare(strict_types=1);
 
@@ -33,6 +33,7 @@ use phpOMS\Utils\TestUtils;
  */
 //region Accounts
 /** @var \phpOMS\Application\ApplicationAbstract $app */
+/** @var \Modules\ClientManagement\Controller\ApiController $module */
 $module = $app->moduleManager->get('ClientManagement');
 TestUtils::setMember($module, 'app', $app);
 
@@ -58,6 +59,7 @@ foreach ($LOREM as $word) {
     $request->setData('title', 'EN:' . $word);
 
     $module->apiClientAttributeTypeCreate($request, $response);
+    ++$apiCalls;
 
     $attrTypeId = $response->get('')['response']->getId();
     foreach ($variables['languages'] as $language) {
@@ -75,6 +77,7 @@ foreach ($LOREM as $word) {
         $request->setData('title', \strtoupper($language) . ':' . $LOREM[\mt_rand(0, $LOREM_COUNT)]);
 
         $module->apiClientAttributeTypeL11nCreate($request, $response);
+        ++$apiCalls;
     }
 
     $type = AttributeValueType::getRandom();
@@ -106,6 +109,7 @@ foreach ($LOREM as $word) {
         $request->setData('value', $value);
 
         $module->apiClientAttributeValueCreate($request, $response);
+        ++$apiCalls;
 
         if ($type === AttributeValueType::_STRING) {
             foreach ($variables['languages'] as $language) {
@@ -120,6 +124,7 @@ foreach ($LOREM as $word) {
                 $request->setData('value', \strtoupper($language) . ':' . $LOREM[\mt_rand(0, $LOREM_COUNT)], true);
 
                 $module->apiClientAttributeValueCreate($request, $response);
+                ++$apiCalls;
             }
         }
     }
@@ -127,10 +132,10 @@ foreach ($LOREM as $word) {
 
 echo '░';
 
-$count = $CUSTOMERS;
+$count    = $CUSTOMERS;
 $interval = (int) \ceil($count / 9);
-$z = 0;
-$p = 0;
+$z        = 0;
+$p        = 0;
 
 for ($i = 0; $i < $CUSTOMERS; ++$i) {
     $response = new HttpResponse();
@@ -164,6 +169,7 @@ for ($i = 0; $i < $CUSTOMERS; ++$i) {
     $request->setData('state', '');
 
     $module->apiClientCreate($request, $response);
+    ++$apiCalls;
 
     $cId = $response->get('')['response']->getId();
 
@@ -179,6 +185,7 @@ for ($i = 0; $i < $CUSTOMERS; ++$i) {
         $request->setData('value', \mt_rand(($j - 1) * $LOREM_COUNT + 1, $j * $LOREM_COUNT));
 
         $module->apiClientAttributeCreate($request, $response);
+        ++$apiCalls;
     }
     //endregion
 
@@ -189,7 +196,7 @@ for ($i = 0; $i < $CUSTOMERS; ++$i) {
         $request  = new HttpRequest(new HttpUri(''));
 
         $request->header->account = 2;
-        $request->setData('client', $cId);
+        $request->setData('account', $cId);
         $request->setData('type', $type = ContactType::getRandom());
         $request->setData('subtype', 0);
 
@@ -204,6 +211,7 @@ for ($i = 0; $i < $CUSTOMERS; ++$i) {
         }
 
         $module->apiContactElementCreate($request, $response);
+        ++$apiCalls;
     }
     //endregion
 
@@ -241,6 +249,7 @@ for ($i = 0; $i < $CUSTOMERS; ++$i) {
     ]);
 
     $module->apiFileCreate($request, $response);
+    ++$apiCalls;
     //endregion
 
     //region client files
@@ -270,6 +279,7 @@ for ($i = 0; $i < $CUSTOMERS; ++$i) {
         ]);
 
         $module->apiFileCreate($request, $response);
+        ++$apiCalls;
     }
     //endregion
 
@@ -291,6 +301,7 @@ for ($i = 0; $i < $CUSTOMERS; ++$i) {
         $request->setData('plain', \preg_replace('/^.+\n/', '', $MARKDOWN));
 
         $module->apiNoteCreate($request, $response);
+        ++$apiCalls;
     }
     //endregion
 

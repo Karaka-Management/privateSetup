@@ -23,10 +23,10 @@ $duration = (int) ($this->request->getData('duration') ?? 10);
 
 $spreadsheet = new Spreadsheet();
 
-$spreadsheet->getProperties()->setCreator('Orange Management')
-    ->setLastModifiedBy('Orange Management')
-    ->setTitle('Orange Management - Depreciation Demo')
-    ->setSubject('Orange Management - Depreciation Demo')
+$spreadsheet->getProperties()->setCreator('Karaka')
+    ->setLastModifiedBy('Karaka')
+    ->setTitle('Karaka - Depreciation Demo')
+    ->setSubject('Karaka - Depreciation Demo')
     ->setDescription('Demo')
     ->setKeywords('demo helper depreciation')
     ->setCategory('demo');

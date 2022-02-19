@@ -1,14 +1,14 @@
 <?php
 /**
- * Orange Management
+ * Karaka
  *
  * PHP Version 8.0
  *
- * @package   OrangeManagement
+ * @package   Karaka
  * @copyright Dennis Eichhorn
  * @license   OMS License 1.0
  * @version   1.0.0
- * @link      https://orange-management.org
+ * @link      https://karaka.app
  */
 declare(strict_types=1);
 
@@ -22,11 +22,10 @@ use phpOMS\Utils\TestUtils;
 
 /**
  * Create tasks
- *
- * @var \Modules\Tasks\Controller\ApiController $module
  */
 //region Tasks
 /** @var \phpOMS\Application\ApplicationAbstract $app */
+/** @var \Modules\Tasks\Controller\ApiController $module */
 $module = $app->moduleManager->get('Tasks');
 TestUtils::setMember($module, 'app', $app);
 
@@ -37,10 +36,10 @@ if (!\is_dir(__DIR__ . '/temp')) {
 $TASK_COUNT  = 250;
 $LOREM_COUNT = \count(Text::LOREM_IPSUM) - 1;
 
-$count = $TASK_COUNT;
+$count    = $TASK_COUNT;
 $interval = (int) \ceil($count / 10);
-$z = 0;
-$p = 0;
+$z        = 0;
+$p        = 0;
 
 for ($i = 0; $i < $TASK_COUNT; ++$i) {
     $response = new HttpResponse();
@@ -113,6 +112,7 @@ for ($i = 0; $i < $TASK_COUNT; ++$i) {
     //endregion
 
     $module->apiTaskCreate($request, $response);
+    ++$apiCalls;
     $id = $response->get('')['response']->getId();
 
     $completion = 0;
@@ -182,6 +182,7 @@ for ($i = 0; $i < $TASK_COUNT; ++$i) {
         // @todo handle cc
 
         $module->apiTaskElementCreate($request, $response);
+        ++$apiCalls;
     }
     //endregion
 

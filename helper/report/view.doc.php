@@ -196,7 +196,7 @@ $section->addListItem('File upload (e.g. excel, csv)', 1, $listFontStyleName, nu
 $section->addListItem('Database upload (e.g. sqlite)', 1, $listFontStyleName, null, $listParagraphStyleName);
 $section->addListItem('Database connection to local or remote database', 1, $listFontStyleName, null, $listParagraphStyleName);
 $section->addListItem('External APIs', 1, $listFontStyleName, null, $listParagraphStyleName);
-$section->addListItem('Internal APIs (everything from the Orange Management backend)', 1, $listFontStyleName, null, $listParagraphStyleName);
+$section->addListItem('Internal APIs (everything from the Karaka backend)', 1, $listFontStyleName, null, $listParagraphStyleName);
 
 $writer = IOFactory::createWriter($phpWord, 'Word2007');
 $writer->save('php://output');

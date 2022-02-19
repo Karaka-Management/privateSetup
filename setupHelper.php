@@ -1,14 +1,14 @@
 <?php
 /**
- * Orange Management
+ * Karaka
  *
  * PHP Version 8.0
  *
- * @package   OrangeManagement
+ * @package   Karaka
  * @copyright Dennis Eichhorn
  * @license   OMS License 1.0
  * @version   1.0.0
- * @link      https://orange-management.org
+ * @link      https://karaka.app
  */
 declare(strict_types=1);
 
@@ -33,10 +33,10 @@ if (!\is_dir(__DIR__ . '/temp')) {
 
 $helpers = \scandir(__DIR__ . '/helper');
 
-$count = \count($helpers);
+$count    = \count($helpers);
 $interval = (int) \ceil($count / 10);
-$z = 0;
-$p = 0;
+$z        = 0;
+$p        = 0;
 
 foreach ($helpers as $helper) {
     if (!\is_dir(__DIR__ . '/helper/' . $helper) || $helper === '..' || $helper === '.') {
@@ -96,6 +96,7 @@ foreach ($helpers as $helper) {
     }
 
     $module->apiTemplateCreate($request, $response);
+    ++$apiCalls;
 
     ++$z;
     if ($z % $interval === 0) {
