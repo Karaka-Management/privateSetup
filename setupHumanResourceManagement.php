@@ -48,7 +48,7 @@ foreach ($variables['accounts'] as $account) {
 
     $request->header->account = 2;
 
-    $request->setData('profiles', (string) $account['profile']);
+    $request->setData('profiles', (string) ($account['profile'] ?? \mt_rand(1, 10)));
     $module->apiEmployeeCreate($request, $response);
     ++$apiCalls;
 
@@ -76,8 +76,8 @@ foreach ($variables['accounts'] as $account) {
         $request->setData('start', $start->format('Y-m-d'));
         $request->setData('end', $i + 1 < $history ? $end->format('Y-m-d') : null);
         $request->setData('unit', 2);
-        $request->setData('department', $variables['departments'][\mt_rand(0, $DEPARTMENTS - 1)]['id']);
-        $request->setData('position', $variables['positions'][\mt_rand(0, $POSITIONS - 1)]['id']);
+        $request->setData('department', $variables['departments'][$index = \mt_rand(0, $DEPARTMENTS - 1)]['id'] ?? ($index + 1));
+        $request->setData('position', $variables['positions'][$index = \mt_rand(0, $POSITIONS - 1)]['id'] ?? ($index + 1));
         $module->apiEmployeeHistoryCreate($request, $response);
         ++$apiCalls;
 

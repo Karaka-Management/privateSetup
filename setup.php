@@ -34,6 +34,7 @@ use phpOMS\Account\AccountManager;
 use phpOMS\Account\PermissionType;
 use phpOMS\Application\ApplicationAbstract;
 use phpOMS\DataStorage\Database\DatabasePool;
+use phpOMS\DataStorage\Database\Mapper\DataMapperFactory;
 use phpOMS\DataStorage\Session\HttpSession;
 use phpOMS\Dispatcher\Dispatcher;
 use phpOMS\Event\EventManager;
@@ -44,8 +45,13 @@ use phpOMS\Message\Http\RequestMethod;
 use phpOMS\Module\ModuleManager;
 use phpOMS\Router\WebRouter;
 use phpOMS\System\File\Local\Directory;
+use phpOMS\System\SystemUtils;
 use phpOMS\Uri\HttpUri;
 use phpOMS\Utils\TestUtils;
+
+$ASYNC = ($argv[1] ?? '') === '-a';
+$MODULE_INDEDX = (int) ($argv[2] ?? 0);
+$syncModulesToInstall = $ASYNC ? 9 : null;
 
 //region Setup
 $config    = require_once __DIR__ . '/config.php';
@@ -116,57 +122,59 @@ function getDatabaseRows($con, string $dbname) : int
     return $rows;
 }
 
-Directory::delete(__DIR__ . '/../Modules/Media/Files');
-\mkdir(__DIR__ . '/../Modules/Media/Files', 0755);
+if (!$ASYNC || $MODULE_INDEDX < 1) {
+    Directory::delete(__DIR__ . '/../Modules/Media/Files');
+    \mkdir(__DIR__ . '/../Modules/Media/Files', 0755);
 
-// Reset database
-$con = new \PDO($config['db']['core']['masters']['admin']['db'] . ':host=' .
-    $config['db']['core']['masters']['admin']['host'],
-    $config['db']['core']['masters']['admin']['login'],
-    $config['db']['core']['masters']['admin']['password']
-);
-$con->exec('DROP DATABASE IF EXISTS ' . $config['db']['core']['masters']['admin']['database']);
-$con->exec('CREATE DATABASE IF NOT EXISTS ' . $config['db']['core']['masters']['admin']['database']);
+    // Reset database
+    $con = new \PDO($config['db']['core']['masters']['admin']['db'] . ':host=' .
+        $config['db']['core']['masters']['admin']['host'],
+        $config['db']['core']['masters']['admin']['login'],
+        $config['db']['core']['masters']['admin']['password']
+    );
+    $con->exec('DROP DATABASE IF EXISTS ' . $config['db']['core']['masters']['admin']['database']);
+    $con->exec('CREATE DATABASE IF NOT EXISTS ' . $config['db']['core']['masters']['admin']['database']);
 
-$response = new HttpResponse();
-$request  = new HttpRequest(new HttpUri(''));
-$request->setMethod(RequestMethod::POST);
+    $response = new HttpResponse();
+    $request  = new HttpRequest(new HttpUri(''));
+    $request->setMethod(RequestMethod::POST);
 
-$request->setData('dbhost', $config['db']['core']['masters']['admin']['host']);
-$request->setData('dbtype', $config['db']['core']['masters']['admin']['db']);
-$request->setData('dbport', $config['db']['core']['masters']['admin']['port']);
-$request->setData('dbprefix', $config['db']['core']['masters']['admin']['prefix']);
-$request->setData('dbname', $config['db']['core']['masters']['admin']['database']);
-$request->setData('schemauser', $config['db']['core']['masters']['admin']['login']);
-$request->setData('schemapassword', $config['db']['core']['masters']['admin']['password']);
-$request->setData('createuser', $config['db']['core']['masters']['admin']['login']);
-$request->setData('createpassword', $config['db']['core']['masters']['admin']['password']);
-$request->setData('selectuser', $config['db']['core']['masters']['admin']['login']);
-$request->setData('selectpassword', $config['db']['core']['masters']['admin']['password']);
-$request->setData('updateuser', $config['db']['core']['masters']['admin']['login']);
-$request->setData('updatepassword', $config['db']['core']['masters']['admin']['password']);
-$request->setData('deleteuser', $config['db']['core']['masters']['admin']['login']);
-$request->setData('deletepassword', $config['db']['core']['masters']['admin']['password']);
+    $request->setData('dbhost', $config['db']['core']['masters']['admin']['host']);
+    $request->setData('dbtype', $config['db']['core']['masters']['admin']['db']);
+    $request->setData('dbport', $config['db']['core']['masters']['admin']['port']);
+    $request->setData('dbprefix', $config['db']['core']['masters']['admin']['prefix']);
+    $request->setData('dbname', $config['db']['core']['masters']['admin']['database']);
+    $request->setData('schemauser', $config['db']['core']['masters']['admin']['login']);
+    $request->setData('schemapassword', $config['db']['core']['masters']['admin']['password']);
+    $request->setData('createuser', $config['db']['core']['masters']['admin']['login']);
+    $request->setData('createpassword', $config['db']['core']['masters']['admin']['password']);
+    $request->setData('selectuser', $config['db']['core']['masters']['admin']['login']);
+    $request->setData('selectpassword', $config['db']['core']['masters']['admin']['password']);
+    $request->setData('updateuser', $config['db']['core']['masters']['admin']['login']);
+    $request->setData('updatepassword', $config['db']['core']['masters']['admin']['password']);
+    $request->setData('deleteuser', $config['db']['core']['masters']['admin']['login']);
+    $request->setData('deletepassword', $config['db']['core']['masters']['admin']['password']);
 
-$request->setData('orgname', 'Karaka');
-$request->setData('adminname', 'admin');
-$request->setData('adminpassword', 'orange');
-$request->setData('adminemail', 'admin@oms.com');
-$request->setData('domain', '127.0.0.1');
-$request->setData('websubdir',  $config['page']['root']);
-$request->setData('defaultlang', 'en');
-$request->setData('defaultcountry', 'us');
+    $request->setData('orgname', 'Karaka');
+    $request->setData('adminname', 'admin');
+    $request->setData('adminpassword', 'orange');
+    $request->setData('adminemail', 'admin@oms.com');
+    $request->setData('domain', '127.0.0.1');
+    $request->setData('websubdir',  $config['page']['root']);
+    $request->setData('defaultlang', 'en');
+    $request->setData('defaultcountry', 'us');
 
-$request->setData(
-    'apps',
-    'Install/Application/Api, '
-    . 'Install/Application/Backend, '
-    . 'Install/Application/E404, '
-    . 'Install/Application/E500, '
-    . 'Install/Application/E503'
-);
+    $request->setData(
+        'apps',
+        'Install/Application/Api, '
+        . 'Install/Application/Backend, '
+        . 'Install/Application/E404, '
+        . 'Install/Application/E500, '
+        . 'Install/Application/E503'
+    );
 
-WebApplication::installRequest($request, $response);
+    WebApplication::installRequest($request, $response);
+}
 
 // Setup installer for api calls
 $app = new class() extends ApplicationAbstract
@@ -180,6 +188,10 @@ $app->dbPool->create('select', $config['db']['core']['masters']['select']);
 $app->dbPool->create('update', $config['db']['core']['masters']['update']);
 $app->dbPool->create('insert', $config['db']['core']['masters']['insert']);
 $app->dbPool->create('schema', $config['db']['core']['masters']['schema']);
+
+/** @var \phpOMS\DataStorage\Database\Connection\ConnectionAbstract $con */
+$con = $app->dbPool->get('admin');
+DataMapperFactory::db($con);
 
 $app->orgId          = 2;
 $app->appName        = 'Backend';
@@ -234,20 +246,22 @@ $app->router = new WebRouter();
  *
  * @var \Modules\Organization\Controller\ApiController $module
  */
-//region Unit
-$module = $app->moduleManager->get('Organization');
-TestUtils::setMember($module, 'app', $app);
+if (!$ASYNC || $MODULE_INDEDX < 1) {
+    //region Unit
+    $module = $app->moduleManager->get('Organization');
+    TestUtils::setMember($module, 'app', $app);
 
-$response = new HttpResponse();
-$request  = new HttpRequest(new HttpUri(''));
+    $response = new HttpResponse();
+    $request  = new HttpRequest(new HttpUri(''));
 
-$request->header->account = 1;
-$request->setData('name', 'Lima');
-$request->setData('parent', 1);
-$request->setData('status', 1);
-$request->setData('description', \file_get_contents(__DIR__ . '/lorem_ipsum/' . \mt_rand(0, 999) . '_3-6'));
-$module->apiUnitCreate($request, $response);
-//endregion
+    $request->header->account = 1;
+    $request->setData('name', 'Lima');
+    $request->setData('parent', 1);
+    $request->setData('status', 1);
+    $request->setData('description', \file_get_contents(__DIR__ . '/lorem_ipsum/' . \mt_rand(0, 999) . '_3-6'));
+    $module->apiUnitCreate($request, $response);
+    //endregion
+}
 
 /**
  * Change app settings
@@ -275,18 +289,20 @@ $tld    = \array_keys($configInstalled['app']['domains'])[0];
 $tldOrg     = 2;
 $defaultOrg = 2;
 
-$config = include __DIR__ . '/../Install/Templates/config.tpl.php';
-\file_put_contents(__DIR__ . '/../config.php', $config);
+if (!$ASYNC || $MODULE_INDEDX < 1) {
+    $config = include __DIR__ . '/../Install/Templates/config.tpl.php';
+    \file_put_contents(__DIR__ . '/../config.php', $config);
+}
 //endregion
 
 // Setup query for database size
 $dbSizeQuery = 'SELECT ROUND(SUM(data_length + index_length) / 1024 / 1024, 1) "size"  FROM information_schema.tables where table_schema = "' . $dbname . '";';
 $sizeOld     = 0.0;
-$sizeNew     = (float) $con->query($dbSizeQuery)->fetch()['size'];
+$sizeNew     = (float) $con->con->query($dbSizeQuery)->fetch()['size'];
 
 // Setup query for database row count
 $rowOld = 0;
-$rowNew = \getDatabaseRows($con, $dbname);
+$rowNew = \getDatabaseRows($con->con, $dbname);
 
 // Set base directory size
 $dirOld = 0;
@@ -331,32 +347,58 @@ $toInstall = [
     __DIR__ . '/setupSupplierManagement.php'      => 'SupplierManagement',
     __DIR__ . '/setupWarehouseManagement.php'     => 'WarehouseManagement',
     __DIR__ . '/setupBillingSuppliers.php'        => 'Billing Suppliers',
+    __DIR__ . '/setupBillingSuppliersUpload.php'  => 'Billing Suppliers Upload',
     __DIR__ . '/setupBillingClients.php'          => 'Billing Clients',
 ];
 
 $toInstallCount = \count($toInstall);
 
-echo "\n";
-FileLogger::startTimeLog('total');
+$syncToInstall = [];
+if ($ASYNC && $MODULE_INDEDX < ((int) $syncModulesToInstall)) {
+    $syncToInstall = $toInstall;
+} elseif ($ASYNC && $MODULE_INDEDX >= ((int) $syncModulesToInstall)) {
+    $syncToInstall = \array_slice($toInstall, $MODULE_INDEDX - 1, 1);
+} else {
+    $syncToInstall = $toInstall;
+}
 
-echo ' -----------------------------------------------------------------------------------------------------------------------' , "\n";
-echo '| ' , \sprintf('%-25s', 'Section')
-    , '| ' , \sprintf('%-11s', 'Progress')
-    , '| ' , \sprintf('%-9s', 'ExecTime')
-    , '| ' , \sprintf('%-9s', 'APICalls')
-    , '| ' , \sprintf('%-9s', 'DbSize')
-    , '| ' , \sprintf('%-9s', 'DbRows')
-    , '| ' , \sprintf('%-11s', 'DirSize')
-    , '| ' , \sprintf('%-9s', 'DirCount')
-    , '| ' , \sprintf('%-10s', 'Mem.')
-    , "|\n";
-echo '|==========================|============|==========|==========|==========|==========|============|==========|===========|' , "\n";
+if (!$ASYNC || $MODULE_INDEDX < ((int) $syncModulesToInstall)) {
+    echo "\n";
+    FileLogger::startTimeLog('total');
 
-$installCounter = 0;
-foreach ($toInstall as $path => $title) {
+    echo ' -----------------------------------------------------------------------------------------------------------------------' , "\n";
+    echo '| ' , \sprintf('%-25s', 'Section')
+        , '| ' , \sprintf('%-11s', 'Progress')
+        , '| ' , \sprintf('%-9s', 'ExecTime')
+        , '| ' , \sprintf('%-9s', 'APICalls')
+        , '| ' , \sprintf('%-9s', 'DbSize')
+        , '| ' , \sprintf('%-9s', 'DbRows')
+        , '| ' , \sprintf('%-11s', 'DirSize')
+        , '| ' , \sprintf('%-9s', 'DirCount')
+        , '| ' , \sprintf('%-10s', 'Mem.')
+        , "|\n";
+    echo '|==========================|============|==========|==========|==========|==========|============|==========|===========|' , "\n";
+}
+
+$installCounter = 0 + $MODULE_INDEDX;
+foreach ($syncToInstall as $path => $title) {
     ++$installCounter;
 
+    if ($ASYNC && $MODULE_INDEDX === 0 && $installCounter > ((int) $syncModulesToInstall)) {
+        SystemUtils::runProc(
+            'php',
+            __DIR__ . '/setup.php -a ' . $installCounter,
+            true
+        );
+
+        continue;
+    }
+
     \gc_collect_cycles();
+
+    if ($ASYNC) {
+        \ob_start();
+    }
 
     echo '| ' , \sprintf('%-25s', $title) , '| ';
 
@@ -369,8 +411,8 @@ foreach ($toInstall as $path => $title) {
     $time = \round(FileLogger::endTimeLog('section'), 2);
     $time = $time > 60.0 ? \round($time / 60, 2) . 'm' : $time . 's';
 
-    $dbSize = \round(($sizeNew = (float) $con->query($dbSizeQuery)->fetch()['size']) - $sizeOld, 2) . 'MB';
-    $dbRow  = ($rowNew = \getDatabaseRows($con, $dbname)) - $rowOld;
+    $dbSize = \round(($sizeNew = (float) $con->con->query($dbSizeQuery)->fetch()['size']) - $sizeOld, 2) . 'MB';
+    $dbRow  = ($rowNew = \getDatabaseRows($con->con, $dbname)) - $rowOld;
 
     $dirSize  = \round(($dirNew = \dirSize()) - $dirOld, 2) . 'MB';
     $dirCount = ($dirCountNew = \dirCount()) - $dirCountOld;
@@ -384,23 +426,29 @@ foreach ($toInstall as $path => $title) {
         , '| ' , \sprintf('%-10s', \round(\memory_get_usage() / 1048576, 2) . 'MB')
         , "|\n";
 
-    echo $installCounter < $toInstallCount
+    echo $installCounter < $toInstallCount || $ASYNC
         ? '|--------------------------|------------|----------|----------|----------|----------|------------|----------|-----------|' . "\n"
         : '|==========================|============|==========|==========|==========|==========|============|==========|===========|' . "\n";
+
+    if ($ASYNC) {
+        \ob_end_flush();
+    }
 }
 
-$time     = \round(FileLogger::endTimeLog('total') / 60, 2) . 'm';
-$dbSize   = $con->query($dbSizeQuery)->fetch()['size'] . 'MB';
-$dbRow    = \getDatabaseRows($con, $dbname);
-$dirSize  = \round(\dirSize(), 2) . 'MB';
-$dirCount = \dirCount();
+if (!$ASYNC) {
+    $time     = \round(FileLogger::endTimeLog('total') / 60, 2) . 'm';
+    $dbSize   = $con->con->query($dbSizeQuery)->fetch()['size'] . 'MB';
+    $dbRow    = \getDatabaseRows($con->con, $dbname);
+    $dirSize  = \round(\dirSize(), 2) . 'MB';
+    $dirCount = \dirCount();
 
-echo '| ' , \sprintf('%-38s', 'Total')
-    , '| ' , \sprintf('%-9s', $time)
-    , '| ' , \sprintf('%-9s', $apiCalls)
-    , '| ' , \sprintf('%-9s', $dbSize)
-    , '| ' , \sprintf('%-9s', $dbRow)
-    , '| ' , \sprintf('%-11s', $dirSize)
-    , '| ' , \sprintf('%-9s', $dirCount)
-    , '| ' , \sprintf('%-10s', \round(\memory_get_peak_usage() / 1048576, 2) . 'MB') . "|\n";
-echo ' -----------------------------------------------------------------------------------------------------------------------' , "\n\n";
+    echo '| ' , \sprintf('%-38s', 'Total')
+        , '| ' , \sprintf('%-9s', $time)
+        , '| ' , \sprintf('%-9s', $apiCalls)
+        , '| ' , \sprintf('%-9s', $dbSize)
+        , '| ' , \sprintf('%-9s', $dbRow)
+        , '| ' , \sprintf('%-11s', $dirSize)
+        , '| ' , \sprintf('%-9s', $dirCount)
+        , '| ' , \sprintf('%-10s', \round(\memory_get_peak_usage() / 1048576, 2) . 'MB') . "|\n";
+    echo ' -----------------------------------------------------------------------------------------------------------------------' , "\n\n";
+}

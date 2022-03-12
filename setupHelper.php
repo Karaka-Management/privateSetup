@@ -16,6 +16,7 @@ use phpOMS\Message\Http\HttpRequest;
 use phpOMS\Message\Http\HttpResponse;
 use phpOMS\Uri\HttpUri;
 use phpOMS\Utils\TestUtils;
+use phpOMS\Utils\RnG\Text;
 
 /**
  * Setup Helper module
@@ -30,6 +31,8 @@ TestUtils::setMember($module, 'app', $app);
 if (!\is_dir(__DIR__ . '/temp')) {
     \mkdir(__DIR__ . '/temp');
 }
+
+$LOREM_COUNT = \count(Text::LOREM_IPSUM) - 1;
 
 $helpers = \scandir(__DIR__ . '/helper');
 

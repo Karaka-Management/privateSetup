@@ -162,7 +162,7 @@ foreach ($variables['languages'] as $language) {
                     'size'     => \filesize(__DIR__ . '/temp/' . $file),
                 ];
             } else {
-                $mFiles[] = $variables['mFiles'][\mt_rand(0, \count($variables['mFiles']) - 1)];
+                $mFiles[] = \mt_rand(1, 9);
             }
         }
 

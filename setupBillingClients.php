@@ -12,6 +12,7 @@
  */
 declare(strict_types=1);
 
+use Modules\Billing\Models\BillTransferType;
 use Modules\Billing\Models\BillTypeMapper;
 use Modules\ClientManagement\Models\ClientMapper;
 use Modules\ItemManagement\Models\ItemMapper;
@@ -36,7 +37,14 @@ TestUtils::setMember($module, 'app', $app);
 // create invoice types
 
 $BILL_TYPES       = BillTypeMapper::getAll()->execute();
-$BILL_TYPES_COUNT = \count($BILL_TYPES) / 2;
+$SALES_BILL_TYPES = [];
+
+foreach ($BILL_TYPES as $type) {
+    if ($type->transferType === BillTransferType::SALES) {
+        $SALES_BILL_TYPES[] = $type->getId();
+    }
+}
+
 $ITEM_COUNT       = ItemMapper::count()->execute();
 $LOREM_COUNT      = \count(Text::LOREM_IPSUM) - 1;
 $CUSTOMER_COUNT   = ClientMapper::count()->execute();
@@ -58,7 +66,7 @@ for ($i = 0; $i < $INVOICES; ++$i) {
     $request->header->account = $aId = \mt_rand(2, 5);
     $request->setData('client', \mt_rand(1, $CUSTOMER_COUNT));
     $request->setData('address', null);
-    $request->setData('type', $type = \mt_rand(1, $BILL_TYPES_COUNT));
+    $request->setData('type', $type = $SALES_BILL_TYPES[\mt_rand(0, \count($SALES_BILL_TYPES) - 1)]);
     $request->setData('status', null); // null = system settings, value = individual input
     $request->setData('performancedate', DateTime::generateDateTime(new \DateTime('2015-01-01'), new \DateTime('now'))->format('Y-m-d H:i:s'));
     $request->setData('sales_referral', null); // who these sales belong to
@@ -150,6 +158,11 @@ for ($i = 0; $i < $INVOICES; ++$i) {
     //region files
     $files = \scandir(__DIR__ . '/media/types');
 
+    $response = new HttpResponse();
+    $request  = new HttpRequest(new HttpUri(''));
+
+    $request->header->account = \mt_rand(2, 5);
+
     $fileCounter = 0;
     $toUpload    = [];
     $mFiles      = [];
@@ -171,7 +184,7 @@ for ($i = 0; $i < $INVOICES; ++$i) {
                 'size'     => \filesize(__DIR__ . '/temp/' . $file),
             ];
         } else {
-            $mFiles[] = $variables['mFiles'][\mt_rand(0, \count($variables['mFiles']) - 1)];
+            $mFiles[] = \mt_rand(1, 9);
         }
     }
 
@@ -183,6 +196,11 @@ for ($i = 0; $i < $INVOICES; ++$i) {
         $request->setData('media', \json_encode(\array_unique($mFiles)));
     }
 
+    if (empty($toUpload) && empty($mFiles)) {
+        continue;
+    }
+
+    $request->setData('bill', $bId);
     $module->apiMediaAddToBill($request, $response);
     ++$apiCalls;
     //endregion
@@ -194,6 +212,7 @@ for ($i = 0; $i < $INVOICES; ++$i) {
     }
 }
 
+unset($SALES_BILL_TYPES);
 unset($BILL_TYPES);
 
 echo \str_repeat('░', 10 - $p);
