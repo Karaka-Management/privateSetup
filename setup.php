@@ -335,6 +335,7 @@ $toInstall = [
     __DIR__ . '/setupQA.php'                      => 'QA',
     __DIR__ . '/setupEditor.php'                  => 'Editor',
     __DIR__ . '/setupNews.php'                    => 'News',
+    __DIR__ . '/setupWorkflow.php'                => 'Workflow',
     __DIR__ . '/setupHelper.php'                  => 'Helper',
     __DIR__ . '/setupCMS.php'                     => 'CMS',
     __DIR__ . '/setupHumanResourceManagement.php' => 'HumanResourceManagement',
@@ -451,4 +452,7 @@ if (!$ASYNC) {
         , '| ' , \sprintf('%-9s', $dirCount)
         , '| ' , \sprintf('%-10s', \round(\memory_get_peak_usage() / 1048576, 2) . 'MB') . "|\n";
     echo ' -----------------------------------------------------------------------------------------------------------------------' , "\n\n";
+} else {
+    echo '| Running async. install scripts ...                                                                                    |' . "\n";
+    echo '|--------------------------|------------|----------|----------|----------|----------|------------|----------|-----------|' . "\n";
 }

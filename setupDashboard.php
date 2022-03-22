@@ -32,30 +32,6 @@ $response = new HttpResponse();
 $request  = new HttpRequest(new HttpUri(''));
 
 $request->header->account = 1;
-$request->setData('title', 'TestBoard');
-$module->apiBoardCreate($request, $response);
-++$apiCalls;
-
-$request->setData('board', 1);
-$request->setData('order', 1, true);
-$request->setData('module', 'News', true);
-$module->apiComponentCreate($request, $response);
-++$apiCalls;
-
-$request->setData('order', 2, true);
-$request->setData('module', 'Tasks', true);
-$module->apiComponentCreate($request, $response);
-++$apiCalls;
-
-$request->setData('order', 3, true);
-$request->setData('module', 'Messages', true);
-$module->apiComponentCreate($request, $response);
-++$apiCalls;
-
-$request->setData('order', 4, true);
-$request->setData('module', 'Calendar', true);
-$module->apiComponentCreate($request, $response);
-++$apiCalls;
 
 echo '░░░░░░░░░░';
 //endregion

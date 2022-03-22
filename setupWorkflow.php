@@ -19,13 +19,13 @@ use phpOMS\Utils\TestUtils;
 use phpOMS\Utils\RnG\Text;
 
 /**
- * Setup Helper module
+ * Setup Workflow module
  *
  * @var \Modules\Media\Controller\ApiController $module
  */
-//region Helper
-/** @var \Modules\Helper\Controller\ApiController $module */
-$module = $app->moduleManager->get('Helper');
+//region Workflow
+/** @var \Modules\Workflow\Controller\ApiController $module */
+$module = $app->moduleManager->get('Workflow');
 TestUtils::setMember($module, 'app', $app);
 
 if (!\is_dir(__DIR__ . '/temp')) {
@@ -34,15 +34,15 @@ if (!\is_dir(__DIR__ . '/temp')) {
 
 $LOREM_COUNT = \count(Text::LOREM_IPSUM) - 1;
 
-$helpers = \scandir(__DIR__ . '/helper');
+$workflows = \scandir(__DIR__ . '/workflow');
 
-$count    = \count($helpers);
+$count    = \count($workflows);
 $interval = (int) \ceil($count / 10);
 $z        = 0;
 $p        = 0;
 
-foreach ($helpers as $helper) {
-    if (!\is_dir(__DIR__ . '/helper/' . $helper) || $helper === '..' || $helper === '.') {
+foreach ($workflows as $workflow) {
+    if (!\is_dir(__DIR__ . '/workflow/' . $workflow) || $workflow === '..' || $workflow === '.') {
         ++$z;
         if ($z % $interval === 0) {
             echo '░';
@@ -56,18 +56,18 @@ foreach ($helpers as $helper) {
     $request  = new HttpRequest(new HttpUri(''));
 
     $request->header->account = 2;
-    $request->setData('name', \str_replace('_', ' ', \ucfirst($helper)));
-    $request->setData('standalone', true);
+    $request->setData('name', \str_replace('_', ' ', \ucfirst($workflow)));
+    $request->setData('', '');
 
     $files = [];
 
-    $helperFiles = \scandir(__DIR__ . '/helper/' . $helper);
-    foreach ($helperFiles as $filePath) {
-        if (!\is_file(__DIR__ . '/helper/' . $helper . '/' . $filePath) || $filePath === '..' || $filePath === '.') {
+    $workflowFiles = \scandir(__DIR__ . '/workflow/' . $workflow);
+    foreach ($workflowFiles as $filePath) {
+        if (!\is_file(__DIR__ . '/workflow/' . $workflow . '/' . $filePath) || $filePath === '..' || $filePath === '.') {
             continue;
         }
 
-        \copy(__DIR__ . '/helper/' . $helper . '/' . $filePath, __DIR__ . '/temp/' . $filePath);
+        \copy(__DIR__ . '/workflow/' . $workflow . '/' . $filePath, __DIR__ . '/temp/' . $filePath);
 
         $files[] = [
             'error'    => \UPLOAD_ERR_OK,
@@ -79,24 +79,6 @@ foreach ($helpers as $helper) {
     }
 
     TestUtils::setMember($request, 'files', $files);
-
-    // tags
-    $tags      = [];
-    $TAG_COUNT = \mt_rand(1, 3);
-    $added     = [];
-
-    for ($j = 0; $j < $TAG_COUNT; ++$j) {
-        $tagId = \mt_rand(1, $LOREM_COUNT - 1);
-
-        if (!\in_array($tagId, $added)) {
-            $added[] = $tagId;
-            $tags[]  = ['id' => $tagId];
-        }
-    }
-
-    if (!empty($tags)) {
-        $request->setData('tags', \json_encode($tags));
-    }
 
     $module->apiTemplateCreate($request, $response);
     ++$apiCalls;
