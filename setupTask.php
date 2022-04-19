@@ -2,7 +2,7 @@
 /**
  * Karaka
  *
- * PHP Version 8.0
+ * PHP Version 8.1
  *
  * @package   Karaka
  * @copyright Dennis Eichhorn
@@ -47,10 +47,14 @@ for ($i = 0; $i < $TASK_COUNT; ++$i) {
 
     $MARKDOWN = \file_get_contents(__DIR__ . '/lorem_ipsum/' . \mt_rand(0, 999) . '_3-6');
 
-    $request->header->account = \mt_rand(1, 5);
+    $request->header->account = ($to = \mt_rand(1, 5));
     $request->setData('title', \trim(\strtok($MARKDOWN, "\n"), ' #'));
     $request->setData('plain', \preg_replace('/^.+\n/', '', $MARKDOWN));
-    $request->setData('forward', \mt_rand(2, 5));
+
+    if (($forward = \mt_rand(1, 5)) !== $to) {
+        $request->setData('forward', $forward);
+        $to = $forward;
+    }
 
     ($DUE_DATE = new \DateTime())->setTimestamp(\time() + \mt_rand(-100000000, 100000000));
     $request->setData('due', $DUE_DATE->format('Y-m-d H:i:s'));
@@ -123,9 +127,14 @@ for ($i = 0; $i < $TASK_COUNT; ++$i) {
         $response = new HttpResponse();
         $request  = new HttpRequest(new HttpUri(''));
 
-        $request->header->account = \mt_rand(2, 5);
+        $request->header->account = \mt_rand(1, 5);
         $request->setData('task', $id);
         $request->setData('status', TaskStatus::getRandom());
+
+        if (($forward = \mt_rand(1, 5)) !== $to) {
+            $request->setData('to', $forward);
+            $to = $forward;
+        }
 
         $content = \mt_rand(1, 100);
         if ($content <= 80) {
@@ -177,9 +186,6 @@ for ($i = 0; $i < $TASK_COUNT; ++$i) {
         if (\mt_rand(0, 100) < 21) {
             $request->setData('completion', $completion = \mt_rand($completion, 100));
         }
-
-        // @todo handle to
-        // @todo handle cc
 
         $module->apiTaskElementCreate($request, $response);
         ++$apiCalls;

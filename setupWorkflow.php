@@ -2,7 +2,7 @@
 /**
  * Karaka
  *
- * PHP Version 8.0
+ * PHP Version 8.1
  *
  * @package   Karaka
  * @copyright Dennis Eichhorn
@@ -80,7 +80,7 @@ foreach ($workflows as $workflow) {
 
     TestUtils::setMember($request, 'files', $files);
 
-    $module->apiTemplateCreate($request, $response);
+    $module->apiWorkflowTemplateCreate($request, $response);
     ++$apiCalls;
 
     ++$z;
@@ -89,6 +89,15 @@ foreach ($workflows as $workflow) {
         ++$p;
     }
 }
+
+$response = new HttpResponse();
+$request  = new HttpRequest(new HttpUri(''));
+
+$request->header->account = 1;
+$request->setData('template', 1);
+
+$module->apiWorkflowInstanceCreate($request, $response);
+++$apiCalls;
 
 echo \str_repeat('░', 10 - $p);
 //endregion

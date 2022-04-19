@@ -1,0 +1,47 @@
+{
+    "workflow_{workflow_id}_instance": {
+        "name": "workflow_{workflow_id}_instance",
+        "fields": {
+            "workflow_{workflow_id}_instance_id": {
+                "name": "workflow_{workflow_id}_instance_id",
+                "type": "INT",
+                "null": false,
+                "primary": true,
+                "autoincrement": true
+            },
+            "workflow_{workflow_id}_instance_title": {
+                "name": "workflow_{workflow_id}_instance_title",
+                "type": "VARCHAR(254)",
+                "null": false
+            },
+            "workflow_{workflow_id}_instance_template": {
+                "name": "workflow_{workflow_id}_instance_template",
+                "type": "INT",
+                "default": null,
+                "null": true,
+                "foreignTable": "workflow_template",
+                "foreignKey": "workflow_template_id"
+            },
+            "workflow_{workflow_id}_instance_created_by": {
+                "name": "workflow_{workflow_id}_instance_created_by",
+                "type": "INT",
+                "null": false,
+                "foreignTable": "account",
+                "foreignKey": "account_id"
+            },
+            "workflow_{workflow_id}_instance_created_at": {
+                "name": "workflow_{workflow_id}_instance_created_at",
+                "type": "DATETIME",
+                "null": false
+            },
+            "workflow_{workflow_id}_instance_application": {
+                "name": "workflow_{workflow_id}_instance_application",
+                "type": "INT",
+                "null": true,
+                "default": null,
+                "foreignTable": "app",
+                "foreignKey": "app_id"
+            }
+        }
+    }
+}

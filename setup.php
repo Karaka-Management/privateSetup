@@ -2,7 +2,7 @@
 /**
  * Karaka
  *
- * PHP Version 8.0
+ * PHP Version 8.1
  *
  * @package   Karaka
  * @copyright Dennis Eichhorn
@@ -325,6 +325,8 @@ $toInstall = [
     __DIR__ . '/setupOrganization.php'            => 'Organization',
     __DIR__ . '/setupAccounts.php'                => 'Account',
     __DIR__ . '/setupExchange.php'                => 'Exchange',
+    __DIR__ . '/setupJob.php'                     => 'Job',
+    __DIR__ . '/setupWorkflow.php'                => 'Workflow',
     __DIR__ . '/setupTag.php'                     => 'Tag',
     __DIR__ . '/setupMedia.php'                   => 'Media',
     __DIR__ . '/setupTask.php'                    => 'Task',
@@ -335,7 +337,6 @@ $toInstall = [
     __DIR__ . '/setupQA.php'                      => 'QA',
     __DIR__ . '/setupEditor.php'                  => 'Editor',
     __DIR__ . '/setupNews.php'                    => 'News',
-    __DIR__ . '/setupWorkflow.php'                => 'Workflow',
     __DIR__ . '/setupHelper.php'                  => 'Helper',
     __DIR__ . '/setupCMS.php'                     => 'CMS',
     __DIR__ . '/setupHumanResourceManagement.php' => 'HumanResourceManagement',
