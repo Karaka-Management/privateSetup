@@ -51,6 +51,7 @@ $interval = (int) \ceil($count / 10);
 $z        = 0;
 $p        = 0;
 
+/** @var \Modules\Admin\Models\Group[] $groups */
 $groups = GroupMapper::getAll()->execute();
 foreach ($accounts as $key=> $account) {
     $response = new HttpResponse();

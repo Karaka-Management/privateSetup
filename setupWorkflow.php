@@ -90,14 +90,29 @@ foreach ($workflows as $workflow) {
     }
 }
 
+//region Workflow-New Article
+/*
 $response = new HttpResponse();
 $request  = new HttpRequest(new HttpUri(''));
 
 $request->header->account = 1;
 $request->setData('template', 1);
-
+$request->setData('title', 123456);
 $module->apiWorkflowInstanceCreate($request, $response);
 ++$apiCalls;
+*/
+//endregion
+
+//region Workflow-New Bill
+$response = new HttpResponse();
+$request  = new HttpRequest(new HttpUri(''));
+
+$request->header->account = 1;
+$request->setData('template', 2);
+$request->setData('title', 42100024);
+$module->apiWorkflowInstanceCreate($request, $response);
+++$apiCalls;
+//endregion
 
 echo \str_repeat('░', 10 - $p);
 //endregion

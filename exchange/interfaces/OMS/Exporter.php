@@ -192,6 +192,7 @@ final class Exporter extends ExporterAbstract
                     \RecursiveIteratorIterator::SELF_FIRST
                 );
 
+                /** @var \DirectoryIterator $iterator */
                 foreach ($iterator as $item) {
                     if ($item->isDir() || !StringUtils::endsWith($item->getFilename(), '.tpl.php')) {
                         continue;

@@ -36,6 +36,7 @@ TestUtils::setMember($module, 'app', $app);
 
 // create invoice types
 
+/** @var \Modules\Billing\Models\BillType[] $BILL_TYPES */
 $BILL_TYPES       = BillTypeMapper::getAll()->execute();
 $SALES_BILL_TYPES = [];
 
