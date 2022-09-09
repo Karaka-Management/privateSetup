@@ -30,9 +30,9 @@ $dispatch = $this->getData('dispatch') ?? [];
     <meta name="msapplication-navbutton-color" content="#262626">
     <meta name="apple-mobile-web-app-status-bar-style" content="#262626">
     <meta name="description" content="<?= $this->getHtml(':meta', '0', '0'); ?>">
-    <?= $head->render(); ?>
-
     <base href="<?= UriFactory::build('{/base}'); ?>/">
+
+    <?= $head->render(); ?>
 
     <link rel="manifest" href="<?= UriFactory::build('Web/{APPNAME}/manifest.json'); ?>">
     <link rel="shortcut icon" href="<?= UriFactory::build('Web/{APPNAME}/img/favicon.ico'); ?>" type="image/x-icon">

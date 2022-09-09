@@ -18,7 +18,7 @@ use phpOMS\Uri\UriFactory;
 
 <header>
     <div class="floater">
-       <img src="<?= UriFactory::build('Web/Demo/img/logo.png'); ?>">
+       <img src="<?= UriFactory::build('Web/{APPNAME}/img/logo.png'); ?>">
         <h1>Demo Application</h1>
         <h2>Simple application example for the CMS module.</h2>
 

@@ -145,7 +145,7 @@ final class Application
         $this->app->appSettings    = new CoreSettings();
         $this->app->eventManager   = new EventManager($this->app->dispatcher);
         $this->app->accountManager = new AccountManager($this->app->sessionManager);
-        $this->app->l11nServer     = LocalizationMapper::get(1);
+        $this->app->l11nServer     = LocalizationMapper::get()->where('id', 1)->execute();
         $this->app->orgId          = $this->getApplicationOrganization($request, $this->config['app']);
 
         $aid = Auth::authenticate($this->app->sessionManager);
@@ -357,15 +357,17 @@ final class Application
      */
     private function initResponseHead(Head $head, HttpRequest $request, HttpResponse $response) : void
     {
-        /* Load assets */
-        $head->addAsset(AssetType::CSS, 'Resources/fonts/fontawesome/css/font-awesome.min.css');
-        $head->addAsset(AssetType::CSS, 'Resources/fonts/Roboto/roboto.css');
+       /* Load assets */
+       $head->addAsset(AssetType::CSS, 'Resources/fonts/fontawesome/css/font-awesome.min.css?v=1.0.0');
+       $head->addAsset(AssetType::CSS, 'Resources/fonts/linearicons/css/style.css?v=1.0.0');
+       $head->addAsset(AssetType::CSS, 'Resources/fonts/lineicons/css/lineicons.css?v=1.0.0');
+       $head->addAsset(AssetType::CSS, 'Resources/fonts/Roboto/roboto.css?v=1.0.0');
 
-        // Framework
-        $head->addAsset(AssetType::JS, 'jsOMS/Utils/oLib.js');
-        $head->addAsset(AssetType::JS, 'jsOMS/UnhandledException.js');
-        $head->addAsset(AssetType::JS, 'Web/{APPNAME}/js/demo.js', ['type' => 'module']);
-        $head->addAsset(AssetType::JSLATE, 'Modules/Navigation/Controller.js', ['type' => 'module']);
+       // Framework
+       $head->addAsset(AssetType::JS, 'jsOMS/Utils/oLib.js?v=1.0.0');
+       $head->addAsset(AssetType::JS, 'jsOMS/UnhandledException.js?v=1.0.0');
+       $head->addAsset(AssetType::JS, 'Web/Test/js/demo.js?v=1.0.0', ['type' => 'module']);
+       $head->addAsset(AssetType::JSLATE, 'Modules/Navigation/Controller.js?v=1.0.0', ['type' => 'module']);
 
         $script = '';
         $response->header->set(
