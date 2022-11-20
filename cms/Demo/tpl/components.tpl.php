@@ -19,7 +19,7 @@ use phpOMS\Uri\UriFactory;
 <div class="content">
     <div class="floater">
         <h1>CMS</h1>
-        <p>The content and the components of an application can be modified in the CMS module. In order to test this you can <a href="<?= UriFactory::build('{/prefix}/backend/cms/application/list'); ?>">login</a> to the backend, navigate to the CMS module and modify this application.</p>
+        <p>The content and the components of an application can be modified in the CMS module. In order to test this you can <a href="<?= UriFactory::build('backend/cms/application/list'); ?>">login</a> to the backend, navigate to the CMS module and modify this application.</p>
         <h2>Content</h2>
         <p>Depending on the type of application you can have many different types of content. For example you might have multiple pages where every page displays specific types of content (e.g. single page content, posts, lists etc.). With the CMS contents you can create different types of content and load them on the specific pages. Generally, contant can be created by writing markdown (incl. custom markdown elements which may reference interfaces to other modules).</p>
 

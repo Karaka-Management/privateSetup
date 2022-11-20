@@ -3,7 +3,7 @@
 use phpOMS\Router\RouteVerb;
 
 return [
-    '^(\/[a-zA-Z]*\/*|\/)$' => [
+    '^(\/*)(\?.*)*$' => [
         [
             'dest' => '\Web\{APPNAME}\Controller\AppController:viewFront',
             'verb' => RouteVerb::GET,

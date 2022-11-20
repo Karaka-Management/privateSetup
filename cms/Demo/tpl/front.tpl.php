@@ -29,7 +29,7 @@ use phpOMS\Uri\UriFactory;
 <div class="content">
     <div class="floater">
         <h1>Introduction</h1>
-        <p>This is a simple demo application with the purpose of introducing some of the features the CMS module provides and how to use them. The content and implementation of this application can be inspected and modified in the backend. Feel free to <a href="<?= UriFactory::build('{/prefix}/backend/cms/application/list'); ?>">login</a> as admin in the backend and check out the CMS module.</p>
+        <p>This is a simple demo application with the purpose of introducing some of the features the CMS module provides and how to use them. The content and implementation of this application can be inspected and modified in the backend. Feel free to <a href="<?= UriFactory::build('backend/cms/application/list'); ?>">login</a> as admin in the backend and check out the CMS module.</p>
 
         <p>In this demo application you will learn in particular how to:</p>
 

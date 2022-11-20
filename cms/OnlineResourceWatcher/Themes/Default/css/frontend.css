@@ -1,0 +1,194 @@
+.front-block {
+    display: flex;
+    flex-direction: row;
+    margin-top: 5rem;
+}
+
+.front-block-img {
+    flex: 0;
+    min-width: 200px;
+    margin-right: 3rem;
+}
+
+.front-block:nth-child(2n) .front-block-img {
+    order: 2;
+    margin-right: 0;
+    margin-left: 3rem;
+}
+
+.front-block-img img {
+    width: 100%;
+    max-height: 200px;
+}
+
+.front-block-text {
+    flex: 1;
+}
+
+#pricing {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 3px 0;
+}
+
+#pricing th,
+#pricing td:not(:first-child) {
+    text-align: center;
+}
+
+#pricing th:first-child {
+    width: 25%;
+}
+
+#pricing td,
+#pricing th {
+    height: 1rem;
+    padding: 1rem;
+}
+
+#pricing tr:nth-child(2n+1) td {
+    background: rgb(240, 240, 240);
+}
+
+.feature-list {
+    display: flex;
+    flex-direction: row;
+}
+
+.feature {
+    flex: 1;
+    margin-top: 1rem;
+}
+
+.feature+.feature {
+    margin-left: 2rem;
+}
+
+.feature-list h2 {
+    font-size: 1.3rem;
+    font-weight: 300;
+    margin: 1rem 0 2rem 0;
+}
+
+#login-form {
+    margin: 0 auto;
+    max-width: 400px;
+}
+
+#login-container form {
+    margin-bottom: 10%;
+}
+
+#login-container form label {
+    text-shadow: none;
+    cursor: pointer;
+}
+
+#login-container form select,
+#login-container form input[type=text],
+#login-container form input[type=email],
+#login-container form input[type=password] {
+    margin-bottom: .5rem;
+    background: rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--input-border);
+    text-shadow: none;
+    box-shadow: none;
+    width: 100%;
+    transition: border 500ms ease-out;
+    outline: none;
+    box-sizing: border-box;
+    line-height: 1rem;
+}
+
+.inputWithIcon {
+    position: relative;
+}
+
+.inputWithIcon .frontIcon {
+    color: var(--input-icon-color);
+    font-size: 1rem;
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding: .65rem;
+}
+
+.inputWithIcon .endIcon {
+    color: var(--input-icon-color);
+    font-size: 1rem;
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: .65rem;
+}
+
+.inputWithIcon input[type="text"],
+.inputWithIcon input[type="email"],
+.inputWithIcon input[type="password"] {
+    padding-left: 2.5rem;
+}
+
+#login-container form input[type=text]:active,
+#login-container form input[type=text]:focus,
+#login-container form input[type=email]:active,
+#login-container form input[type=email]:focus,
+#login-container form input[type=password]:active,
+#login-container form input[type=password]:focus {
+    border: 1px solid var(--input-border-active);
+}
+
+#login-container form input[type=text]:active~.frontIcon,
+#login-container form input[type=text]:focus~.frontIcon,
+#login-container form input[type=email]:active~.frontIcon,
+#login-container form input[type=email]:focus~.frontIcon,
+#login-container form input[type=password]:active~.frontIcon,
+#login-container form input[type=password]:focus~.frontIcon,
+#login-container form input[type=text]:active~.endIcon,
+#login-container form input[type=text]:focus~.endIcon,
+#login-container form input[type=email]:active~.endIcon,
+#login-container form input[type=email]:focus~.endIcon,
+#login-container form input[type=password]:active~.endIcon,
+#login-container form input[type=password]:focus~.endIcon {
+    color: var(--input-icon-color-active);
+}
+
+#login-container form input[type=text]~.endIcon,
+#login-container form input[type=text]~.endIcon,
+#login-container form input[type=email]~.endIcon,
+#login-container form input[type=email]~.endIcon,
+#login-container form input[type=password]~.endIcon,
+#login-container form input[type=password]~.endIcon {
+    cursor: pointer;
+}
+
+#login-container form input[type=submit] {
+    width: 100%;
+    background-color: var(--button-main-background);
+    border: none;
+    text-shadow: none;
+    box-shadow: none;
+    color: var(--button-main-color);
+    cursor: pointer;
+    transition: background-color 500ms ease-out;
+}
+
+#login-container form input[type=submit]:hover,
+#login-container form input[type=submit]:focus {
+    background-color: var(--button-main-background-active);
+    border: none;
+    text-shadow: none;
+    box-shadow: none;
+}
+
+/* Only this part below is different from the login page */
+#below-form {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+#below-form a {
+    padding-bottom: .5rem;
+    cursor: pointer;
+    transition: border-bottom 100ms ease-out;
+}

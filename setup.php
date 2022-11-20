@@ -122,6 +122,17 @@ function getDatabaseRows($con, string $dbname) : int
     return $rows;
 }
 
+// Check writing permissions
+if (\exec('whoami') !== 'www-data'
+    || !\is_writable(__DIR__ . '/../Modules')
+    || !\is_writable(__DIR__ . '/../Modules/Media/Files')
+    || !\is_writable(__DIR__ . '/../Web')
+) {
+    echo "Not sufficient permissions or not running as www-data.\n";
+
+    exit(-1);
+}
+
 if (!$ASYNC || $MODULE_INDEDX < 1) {
     Directory::delete(__DIR__ . '/../Modules/Media/Files');
     \mkdir(__DIR__ . '/../Modules/Media/Files', 0755);
@@ -324,11 +335,13 @@ $toInstall = [
     __DIR__ . '/setupGroups.php'                  => 'Group',
     __DIR__ . '/setupOrganization.php'            => 'Organization',
     __DIR__ . '/setupAccounts.php'                => 'Account',
+    __DIR__ . '/setupTag.php'                     => 'Tag',
+    __DIR__ . '/setupMedia.php'                   => 'Media',
+    __DIR__ . '/setupOnlineResourceWatcher.php'   => 'OnlineResourceWatcher',
+    __DIR__ . '/setupCMS.php'                     => 'CMS',
     __DIR__ . '/setupExchange.php'                => 'Exchange',
     __DIR__ . '/setupJob.php'                     => 'Job',
     __DIR__ . '/setupWorkflow.php'                => 'Workflow',
-    __DIR__ . '/setupTag.php'                     => 'Tag',
-    __DIR__ . '/setupMedia.php'                   => 'Media',
     __DIR__ . '/setupTask.php'                    => 'Task',
     __DIR__ . '/setupSurveys.php'                 => 'Surveys',
     __DIR__ . '/setupDashboard.php'               => 'Dashboard',
@@ -338,7 +351,6 @@ $toInstall = [
     __DIR__ . '/setupEditor.php'                  => 'Editor',
     __DIR__ . '/setupNews.php'                    => 'News',
     __DIR__ . '/setupHelper.php'                  => 'Helper',
-    __DIR__ . '/setupCMS.php'                     => 'CMS',
     __DIR__ . '/setupHumanResourceManagement.php' => 'HumanResourceManagement',
     __DIR__ . '/setupKnowledgebase.php'           => 'Knowledgebase',
     __DIR__ . '/setupSupport.php'                 => 'Support',
