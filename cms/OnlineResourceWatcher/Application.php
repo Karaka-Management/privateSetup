@@ -220,6 +220,11 @@ final class Application
             $this->initResponseHeadFrontend($head, $request, $response);
             $this->createDefaultPageViewFrontend($request, $response, $pageView);
 
+            $this->app->loadLanguageFromPath(
+                $response->getLanguage(),
+                __DIR__ . '/lang/frontend.' . $response->getLanguage() . '.lang.php'
+            );
+
             return $this->app->dispatcher->dispatch(
                 ['dest' => '\Web\{APPNAME}\Controller\FrontendController:signinView'],
                 $request, $response);

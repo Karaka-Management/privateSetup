@@ -21,7 +21,7 @@ use phpOMS\Uri\UriFactory;
 $audits = $this->getData('audits') ?? [];
 
 $tableView            = $this->getData('tableView');
-$tableView->id        = 'auditList';
+$tableView->id        = 'organizationUserList';
 $tableView->baseUri   = '{/prefix}admin/audit/list';
 $tableView->setObjects($audits);
 

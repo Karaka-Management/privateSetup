@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Web\{APPNAME}\Controller;
 
 use Modules\Auditor\Models\AuditMapper;
+use Modules\OnlineResourceWatcher\Models\ResourceMapper;
+use Modules\Profile\Models\ProfileMapper;
 use phpOMS\Contract\RenderableInterface;
 use phpOMS\DataStorage\Database\Query\OrderType;
 use phpOMS\Message\Http\RequestStatusCode;
@@ -175,13 +177,13 @@ final class BackendController extends ModuleAbstract
 
             $member = \prev($split);
 
-            if (!empty($request->getData('auditlist-f-' . $member . '-f1'))) {
+            if (!empty($request->getData('organizationUserList-f-' . $member . '-f1'))) {
                 $filterField[$member] = [
                     'type'   => $type,
-                    'value1' => $request->getData('auditlist-f-' . $member . '-f1'),
-                    'logic1' => $request->getData('auditlist-f-' . $member . '-o1'),
-                    'value2' => $request->getData('auditlist-f-' . $member . '-f2'),
-                    'logic2' => $request->getData('auditlist-f-' . $member . '-o2'),
+                    'value1' => $request->getData('organizationUserList-f-' . $member . '-f1'),
+                    'logic1' => $request->getData('organizationUserList-f-' . $member . '-o1'),
+                    'value2' => $request->getData('organizationUserList-f-' . $member . '-f2'),
+                    'logic2' => $request->getData('organizationUserList-f-' . $member . '-o2'),
                 ];
             }
         }
@@ -189,8 +191,12 @@ final class BackendController extends ModuleAbstract
         $pageLimit = 25;
         $view->addData('pageLimit', $pageLimit);
 
-        $mapper = AuditMapper::getAll()->with('createdBy');
-        $list   = AuditMapper::find(
+        $mapper = ProfileMapper::getAll()
+            ->with('account')
+            ->leftJoin('account/id', ResourceMapper::class, 'owner')
+            ->execute();
+
+        $list   = ProfileMapper::find(
             search: $request->getData('search'),
             mapper: $mapper,
             id: (int) ($request->getData('id') ?? 0),
@@ -203,10 +209,10 @@ final class BackendController extends ModuleAbstract
             filters: $filterField
         );
 
-        $view->setData('audits', $list['data']);
+        $view->setData('users', $list['data']);
 
         $tableView         = new TableView($this->app->l11nManager, $request, $response);
-        $tableView->module = 'Auditor';
+        $tableView->module = 'OnlineResourceWatcher';
         $tableView->theme  = 'Backend';
         $tableView->setTitleTemplate('/Web/{APPNAME}/Templates/table-title');
         $tableView->setColumnHeaderElementTemplate('/Web/{APPNAME}/Templates/header-element-table');
