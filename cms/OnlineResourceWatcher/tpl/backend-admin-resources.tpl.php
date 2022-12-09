@@ -16,14 +16,14 @@ use phpOMS\Uri\UriFactory;
 
 /**
  * @var \phpOMS\Views\View            $this
- * @var \Modules\Audit\Models\Audit[] $audits
+ * @var \Modules\Audit\Models\Audit[] $resources
  */
-$audits = $this->getData('audits') ?? [];
+$resources = $this->getData('resources') ?? [];
 
 $tableView            = $this->getData('tableView');
-$tableView->id        = 'auditList';
+$tableView->id        = 'resourceList';
 $tableView->baseUri   = '{/prefix}admin/audit/list';
-$tableView->setObjects($audits);
+$tableView->setObjects($resources);
 
 $previous = $tableView->getPreviousLink(
     $this->request,
@@ -60,7 +60,7 @@ $next = $tableView->getNextLink(
                         'text'
                     ); ?>
                     <td><?= $tableView->renderHeaderElement(
-                        'user_no',
+                        'user_org',
                         $this->getHtml('User', '0', '0'),
                         'number'
                     ); ?>
@@ -85,17 +85,18 @@ $next = $tableView->getNextLink(
                         'date'
                     ); ?>
                 <tbody>
-                <?php $count = 0;
-                foreach ($audits as $key => $audit) : ++$count;
-                    $url = UriFactory::build('{/prefix}admin/audit/single?id=' . $audit->getId()); ?>
+                <?php
+                $count = 0;
+                foreach ($resources as $key => $resource) : ++$count;
+                    $url = UriFactory::build('{/prefix}{/app}/user/resource?id=' . $resource->getId()); ?>
                     <tr tabindex="0" data-href="<?= $url; ?>">
-                        <td>
-                        <td>
-                        <td>
-                        <td>
-                        <td>
-                        <td>
-                        <td>
+                        <td><a href="<?= $url; ?>"><?= $this->printHtml((string) $resource->getId()); ?></a>
+                        <td><a href="<?= $url; ?>"><?= $this->printHtml($resource->title); ?></a>
+                        <td><a class="content" href="<?= UriFactory::build('profile/single?{?}&for=' . $resource->organization->getId()); ?>"><?= $this->printHtml($this->renderUserName('%3$s %2$s %1$s', [$resource->organization->name1, $resource->organization->name2, $resource->organization->name3, $resource->organization->login ?? ''])); ?></a>
+                        <td><a class="content" href="<?= UriFactory::build('profile/single?{?}&for=' . $resource->owner->getId()); ?>"><?= $this->printHtml($this->renderUserName('%3$s %2$s %1$s', [$resource->owner->name1, $resource->owner->name2, $resource->owner->name3, $resource->owner->login ?? ''])); ?></a>
+                        <td><a href="<?= $url; ?>"><?= $this->printHtml((string) $resource->status); ?></a>
+                        <td><a href="<?= $url; ?>"><?= $this->printHtml(($resource->checkedAt?->format('Y-m-d H:i')) ?? ''); ?></a>
+                        <td><a href="<?= $url; ?>"><?= $this->printHtml($resource->createdAt->format('Y-m-d H:i')); ?></a>
                 <?php endforeach; ?>
                 <?php if ($count === 0) : ?>
                     <tr><td colspan="8" class="empty"><?= $this->getHtml('Empty', '0', '0'); ?>

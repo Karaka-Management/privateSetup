@@ -36,9 +36,21 @@ $RESOURCES = 50;
 $LOREM_COUNT   = \count(Text::LOREM_IPSUM) - 1;
 
 $count    = $ACCOUNTS;
-$interval = (int) \ceil($count / 20);
+$interval = (int) \ceil($count / 5);
 $z        = 0;
 $p        = 0;
+
+$URLS = [
+    'https://jingga.app',
+    'https://google.com',
+    'https://twitter.com',
+    'https://facebook.com',
+    'https://reddit.com',
+    'https://twitch.tv',
+    'https://linkedin.com',
+];
+
+$URLS_LENGTH = \count($URLS);
 
 for ($i = 0; $i < $ACCOUNTS; ++$i) {
     for ($j = \mt_rand(0, $RESOURCES); $j < $RESOURCES; ++$j) {
@@ -49,7 +61,7 @@ for ($i = 0; $i < $ACCOUNTS; ++$i) {
 
         $request->header->account = \mt_rand(2, 5);
         $request->setData('title', \trim(\strtok($MARKDOWN, "\n"), ' #'));
-        $request->setData('path', 'https://jingga.app');
+        $request->setData('uri', $URLS[\mt_rand(0, $URLS_LENGTH - 1)]);
 
         $module->apiResourceCreate($request, $response);
         ++$apiCalls;
