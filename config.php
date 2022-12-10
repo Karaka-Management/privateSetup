@@ -110,7 +110,7 @@ return [
         ],
     ],
     'language' => [
-        'en',
+        'en', 'de',
     ],
     'apis' => [
     ],

@@ -166,10 +166,10 @@ if (!$ASYNC || $MODULE_INDEDX < 1) {
     $request->setData('deleteuser', $config['db']['core']['masters']['admin']['login']);
     $request->setData('deletepassword', $config['db']['core']['masters']['admin']['password']);
 
-    $request->setData('orgname', 'Karaka');
+    $request->setData('orgname', 'Jingga');
     $request->setData('adminname', 'admin');
     $request->setData('adminpassword', 'orange');
-    $request->setData('adminemail', 'admin@oms.com');
+    $request->setData('adminemail', 'admin@jingga.app');
     $request->setData('domain', '127.0.0.1');
     $request->setData('websubdir',  $config['page']['root']);
     $request->setData('defaultlang', 'en');
@@ -204,7 +204,7 @@ $app->dbPool->create('schema', $config['db']['core']['masters']['schema']);
 $con = $app->dbPool->get('admin');
 DataMapperFactory::db($con);
 
-$app->orgId          = 2;
+$app->orgId          = 1;
 $app->appName        = 'Backend';
 $app->accountManager = new AccountManager(new HttpSession());
 $app->l11nServer     = LocalizationMapper::get()->where('id', 1)->execute();
@@ -218,7 +218,7 @@ $account = new Account();
 TestUtils::setMember($account, 'id', 1);
 
 $permission = new AccountPermission();
-$permission->setUnit(2);
+$permission->setUnit(1);
 $permission->setApp('backend');
 $permission->setPermission(
     PermissionType::READ
@@ -232,47 +232,8 @@ $account->addPermission($permission);
 
 $app->accountManager->add($account);
 
-$account2 = new Account();
-TestUtils::setMember($account2, 'id', 2);
-
-$permission = new AccountPermission();
-$permission->setUnit(2);
-$permission->setApp('backend');
-$permission->setPermission(
-    PermissionType::READ
-    | PermissionType::CREATE
-    | PermissionType::MODIFY
-    | PermissionType::DELETE
-    | PermissionType::PERMISSION
-);
-
-$account2->addPermission($permission);
-
-$app->accountManager->add($account2);
 $app->router = new WebRouter();
 //endregion
-
-/**
- * Setup additional units
- *
- * @var \Modules\Organization\Controller\ApiController $module
- */
-if (!$ASYNC || $MODULE_INDEDX < 1) {
-    //region Unit
-    $module = $app->moduleManager->get('Organization');
-    TestUtils::setMember($module, 'app', $app);
-
-    $response = new HttpResponse();
-    $request  = new HttpRequest(new HttpUri(''));
-
-    $request->header->account = 1;
-    $request->setData('name', 'Lima');
-    $request->setData('parent', 1);
-    $request->setData('status', 1);
-    $request->setData('description', \file_get_contents(__DIR__ . '/lorem_ipsum/' . \mt_rand(0, 999) . '_3-6'));
-    $module->apiUnitCreate($request, $response);
-    //endregion
-}
 
 /**
  * Change app settings
@@ -297,8 +258,8 @@ $schema = ['login' => $configInstalled['db']['core']['masters']['schema']['login
 $subdir = $configInstalled['page']['root'];
 $tld    = \array_keys($configInstalled['app']['domains'])[0];
 
-$tldOrg     = 2;
-$defaultOrg = 2;
+$tldOrg     = 1;
+$defaultOrg = 1;
 
 if (!$ASYNC || $MODULE_INDEDX < 1) {
     $config = include __DIR__ . '/../Install/Templates/config.tpl.php';
@@ -329,40 +290,12 @@ $apiCalls = 0;
 
 // Install scripts for the different module demos
 $toInstall = [
-    __DIR__ . '/setupDemoTemplates.php'           => 'Template',
     __DIR__ . '/setupModules.php'                 => 'Module',
-    __DIR__ . '/setupMonitoring.php'              => 'Monitoring',
     __DIR__ . '/setupGroups.php'                  => 'Group',
     __DIR__ . '/setupOrganization.php'            => 'Organization',
     __DIR__ . '/setupAccounts.php'                => 'Account',
-    __DIR__ . '/setupTag.php'                     => 'Tag',
-    __DIR__ . '/setupMedia.php'                   => 'Media',
     __DIR__ . '/setupOnlineResourceWatcher.php'   => 'OnlineResourceWatcher',
     __DIR__ . '/setupCMS.php'                     => 'CMS',
-    __DIR__ . '/setupExchange.php'                => 'Exchange',
-    __DIR__ . '/setupJob.php'                     => 'Job',
-    __DIR__ . '/setupWorkflow.php'                => 'Workflow',
-    __DIR__ . '/setupTask.php'                    => 'Task',
-    __DIR__ . '/setupSurveys.php'                 => 'Surveys',
-    __DIR__ . '/setupDashboard.php'               => 'Dashboard',
-    __DIR__ . '/setupContractManagement.php'      => 'ContractManagement',
-    __DIR__ . '/setupKanban.php'                  => 'Kanban',
-    __DIR__ . '/setupQA.php'                      => 'QA',
-    __DIR__ . '/setupEditor.php'                  => 'Editor',
-    __DIR__ . '/setupNews.php'                    => 'News',
-    __DIR__ . '/setupHelper.php'                  => 'Helper',
-    __DIR__ . '/setupHumanResourceManagement.php' => 'HumanResourceManagement',
-    __DIR__ . '/setupKnowledgebase.php'           => 'Knowledgebase',
-    __DIR__ . '/setupSupport.php'                 => 'Support',
-    __DIR__ . '/setupDatabaseEditor.php'          => 'DatabaseEditor',
-    __DIR__ . '/setupCalendar.php'                => 'Calendar',
-    __DIR__ . '/setupItemManagement.php'          => 'ItemManagement',
-    __DIR__ . '/setupClientManagement.php'        => 'ClientManagement',
-    __DIR__ . '/setupSupplierManagement.php'      => 'SupplierManagement',
-    __DIR__ . '/setupWarehouseManagement.php'     => 'WarehouseManagement',
-    __DIR__ . '/setupBillingSuppliers.php'        => 'Billing Suppliers',
-    __DIR__ . '/setupBillingSuppliersUpload.php'  => 'Billing Suppliers Upload',
-    __DIR__ . '/setupBillingClients.php'          => 'Billing Clients',
 ];
 
 $toInstallCount = \count($toInstall);

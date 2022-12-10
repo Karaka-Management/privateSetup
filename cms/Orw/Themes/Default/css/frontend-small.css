@@ -1,0 +1,239 @@
+:root {
+    --main-background: rgb(246, 246, 246);
+    --main-background-highlight: #9936db;
+    --input-border: rgba(218, 218, 218, 0.4);
+    --input-border-active: rgb(129, 123, 254);
+    --input-color: rgba(0, 0, 0, 0.7);
+    --input-color-active: rgba(0, 0, 0, 0.8);
+    --input-background: rgba(255, 255, 255);
+    --input-background-active: rgba(255, 255, 255);
+    --input-icon-color: rgb(108, 99, 255);
+    --input-icon-color-active: rgb(129, 123, 254);
+    --button-main-background: rgb(108, 99, 255);
+    --button-main-background-active: rgb(129, 123, 254);
+    --button-main-color: rgba(255, 255, 255, .9);
+    --text-on-background-color: rgba(255, 255, 255, 0.7);
+    --text-on-background-color-2: rgba(255, 255, 255, 0.85);
+    --nav-category-background: #343a40;
+    --nav-category-background-highlight: rgb(108, 99, 255);
+    --nav-category-background-hover: #dcd9ec;
+    --nav-sub-background: #ebeff3;
+    --nav-sub-background-highlight: rgb(160, 56, 228);
+    --nav-sub-background-hover: rgb(42, 43, 48);
+    --nav-content-hover: rgb(108, 99, 255);
+    --font-family: 'Roboto', sans-serif;
+    --button-colored-background: rgb(108, 99, 255);
+    --button-colored-background-hover: rgb(129, 123, 254);
+    --table-caption-background: rgb(255, 255, 255);
+    --table-head-background: #e6ecf1;
+    --table-row-background: rgb(255, 255, 255);
+    --table-row-background-alt: rgb(255, 255, 255);
+    --table-row-background-hover: #d4eeff;
+    --link-color: #af36db;
+    --link-hover: #9c36db;
+    --badge-size: .55rem;
+    --badge-color: rgb(255, 255, 255);
+    --badge-background: rgb(108, 99, 255);
+    --box-border: rgba(72, 71, 114, 0.3);
+    --box-highlight: rgb(108, 99, 255);
+    --color-blue: rgb(108, 99, 255);
+    --color-red: #e74c3c;
+    --color-green: #2ecc71;
+    --color-yellow: #ffde5b;
+    --header-background: rgb(255, 255, 255);
+}
+
+html,
+body {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    max-height: 100%;
+    font-weight: 100;
+    font-family: 'Roboto', sans-serif;
+}
+
+body {
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+}
+
+body>header,
+body>footer {
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    min-height: 20rem;
+    display: flex;
+    color: #fff;
+}
+
+body>header {
+    align-items: flex-start;
+    background-image: url(Web/{APPNAME}/img/top.svg);
+}
+
+body>header .floater,
+body>footer .floater {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+#header-splash {
+    text-align: center;
+    margin-top: -200px;
+}
+
+#header-splash img {
+    max-width: 400px;
+    max-height: 250px;
+}
+
+#toplogo {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+#toplogo span {
+    font-size: 1.5rem;
+    margin-left: 1rem;
+    font-weight: 400;
+}
+
+body>footer {
+    align-items: flex-end;
+    background-image: url(Web/{APPNAME}/img/bottom.svg);
+    padding-bottom: 1rem;
+}
+
+body>footer .floater {
+    align-items: flex-start;
+}
+
+#copyright {
+    flex: 1;
+}
+
+main {
+    flex: 1;
+    line-height: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+main h1 {
+    font-size: 2rem;
+    font-weight: 100;
+    margin: 1rem 0 2rem 0;
+}
+
+main a {
+    color: var(--button-main-background);
+}
+
+main a:hover,
+main a:focus {
+    color: var(--button-main-background-active);
+}
+
+nav {
+    font-size: 0.8em;
+    display: flex;
+    flex-direction: row;
+    user-select: none;
+    padding: 2rem;
+}
+
+nav li {
+    display: inline-block;
+    font-weight: 400;
+}
+
+#topnav {
+    margin-right: .5rem;
+}
+
+#topnav a,
+#toplogin a {
+    border: 2px solid rgba(255, 255, 255, 0);
+    border-radius: 3rem;
+    padding: .5rem 1rem .5rem 1rem;
+}
+
+#topnav a:hover,
+#signinButton:hover {
+    border: 2px solid rgba(255, 255, 255, 0.25);
+}
+
+#toplogin {
+    border-left: 1px solid rgba(255, 255, 255, 0.25);
+    padding-left: .5rem;
+}
+
+#signupButton {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+#signupButton:hover {
+    border: 2px solid rgba(255, 255, 255, 0);
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.floater {
+    width: 95%;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.portlet {
+    background: #fff;
+    border-radius: 1rem;
+}
+
+.portlet-head {
+    color: #000;
+    font-weight: 400;
+}
+
+.portlet-body {
+    color: rgba(0, 0, 0, 0.5);
+}
+
+@media only screen and (max-width: 1024px) {
+
+    body>header,
+    body>footer {
+        min-height: 14rem;
+    }
+
+    #header-splash {
+        margin-top: -150px;
+    }
+}
+
+@media only screen and (max-width: 650px) {
+    #toplogo {
+        display: none;
+    }
+
+    nav {
+        flex-direction: column;
+        padding: 1rem 0 0 0;
+    }
+
+    #toplogin {
+        margin-top: 2rem;
+        border: none;
+        padding: 0;
+    }
+
+    body>header,
+    body>footer {
+        background-size: cover;
+    }
+
+    #header-splash {
+        margin-top: -100px;
+    }
+}

@@ -44,12 +44,14 @@ $accounts = $variables['accounts'];
 $profileModule = $app->moduleManager->get('Profile');
 TestUtils::setMember($profileModule, 'app', $app);
 
-$LOREM_COUNT = \count(Text::LOREM_IPSUM) - 1;
-
 $count    = \count($accounts);
 $interval = (int) \ceil($count / 10);
 $z        = 0;
 $p        = 0;
+
+if (!\is_dir(__DIR__ . '/temp')) {
+    \mkdir(__DIR__ . '/temp');
+}
 
 /** @var \Modules\Admin\Models\Group[] $groups */
 $groups = GroupMapper::getAll()->execute();
@@ -95,30 +97,14 @@ foreach ($accounts as $key=> $account) {
         $response = new HttpResponse();
         $request  = new HttpRequest(new HttpUri(''));
 
-        if (!\is_dir(__DIR__ . '/temp')) {
-            \mkdir(__DIR__ . '/temp');
-        }
-
-        $image                 = \imagecreate(256, 256);
-        $image_backgroundColor = \imagecolorallocate($image, 54, 151, 219);
-        $image_textColor       = \imagecolorallocate($image, 52, 58, 64);
-
-        \imagefill($image, 0, 0, $image_backgroundColor);
-        \imagettftext(
-            $image, 100, 0, 128 - 83, 128 + 50,
-            $image_textColor,
-            __DIR__ . '/files/SpaceMono-Bold.ttf',
-            \strtoupper($account['name1'][0] . $account['name2'][0])
-        );
-        \imagepng($image, __DIR__ . '/temp/' . $account['image']);
-        \imagedestroy($image);
-
         $request->header->account = $a->getId();
         $request->setData('name', 'Profile Image');
 
+        \copy(__DIR__ . '/accounts/' . $account['image'], __DIR__ . '/temp/' . $account['image']);
+
         TestUtils::setMember($request, 'files', [
             'file1' => [
-                'name'     => 'Profile Image.png',
+                'name'     => $account['image'],
                 'type'     => MimeType::M_PNG,
                 'tmp_name' => __DIR__ . '/temp/' . $account['image'],
                 'error'    => \UPLOAD_ERR_OK,
@@ -127,54 +113,6 @@ foreach ($accounts as $key=> $account) {
         ]);
 
         $profileModule->apiSettingsAccountImageSet($request, $response);
-        ++$apiCalls;
-    }
-    //endregion
-
-    //region address
-    $count = \mt_rand(0, 2);
-    for ($i = 0; $i < $count; ++$i) {
-        $response = new HttpResponse();
-        $request  = new HttpRequest(new HttpUri(''));
-
-        $request->header->account = $a->getId();
-        $request->setData('account', $a->getId());
-        $request->setData('type', AddressType::getRandom());
-        $request->setData('name', '');
-        $request->setData('addition', '');
-        $request->setData('address', \ucfirst(Text::LOREM_IPSUM[\mt_rand(0, $LOREM_COUNT)]) . ' ' . \ucfirst(Text::LOREM_IPSUM[\mt_rand(0, $LOREM_COUNT)]) . ' ' . \mt_rand(1, 1000));
-        $request->setData('postal', \str_pad((string) \mt_rand(1000, 99999), 5, '0', \STR_PAD_LEFT));
-        $request->setData('city', \ucfirst(Text::LOREM_IPSUM[\mt_rand(0, $LOREM_COUNT)]));
-        $request->setData('country', ISO3166TwoEnum::getRandom());
-        $request->setData('state', '');
-
-        $profileModule->apiAddressCreate($request, $response);
-        ++$apiCalls;
-    }
-    //endregion
-
-    //region contact elements
-    $count = \mt_rand(0, 4);
-    for ($i = 0; $i < $count; ++$i) {
-        $response = new HttpResponse();
-        $request  = new HttpRequest(new HttpUri(''));
-
-        $request->header->account = $a->getId();
-        $request->setData('account', $a->getId());
-        $request->setData('type', $type = ContactType::getRandom());
-        $request->setData('subtype', 0);
-
-        if ($type === ContactType::PHONE) {
-            $request->setData('content', Phone::generatePhone());
-        } elseif ($type === ContactType::EMAIL) {
-            $request->setData('content', Email::generateEmail());
-        } elseif ($type === ContactType::FAX) {
-            $request->setData('content', Phone::generatePhone());
-        } elseif ($type === ContactType::WEBSITE) {
-            $request->setData('content', 'https://' . Text::LOREM_IPSUM[\mt_rand(0, $LOREM_COUNT)] . '.com');
-        }
-
-        $profileModule->apiContactElementCreate($request, $response);
         ++$apiCalls;
     }
     //endregion

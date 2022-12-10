@@ -33,7 +33,6 @@ if (!\is_dir(__DIR__ . '/temp')) {
 
 $ACCOUNTS  = 10;
 $RESOURCES = 50;
-$LOREM_COUNT   = \count(Text::LOREM_IPSUM) - 1;
 
 $count    = $ACCOUNTS;
 $interval = (int) \ceil($count / 5);
@@ -57,10 +56,8 @@ for ($i = 0; $i < $ACCOUNTS; ++$i) {
         $response = new HttpResponse();
         $request  = new HttpRequest(new HttpUri(''));
 
-        $MARKDOWN = \file_get_contents(__DIR__ . '/lorem_ipsum/' . \mt_rand(0, 999) . '_1-1');
-
-        $request->header->account = \mt_rand(2, 5);
-        $request->setData('title', \trim(\strtok($MARKDOWN, "\n"), ' #'));
+        $request->header->account = 1;
+        $request->setData('title', 'Test Title');
         $request->setData('uri', $URLS[\mt_rand(0, $URLS_LENGTH - 1)]);
 
         $module->apiResourceCreate($request, $response);

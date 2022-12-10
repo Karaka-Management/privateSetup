@@ -28,22 +28,22 @@ use phpOMS\Utils\TestUtils;
 $module = $app->moduleManager->get('CMS');
 TestUtils::setMember($module, 'app', $app);
 
-/* Demo Website */
-Zip::pack([__DIR__ . '/cms/Demo' => '/'], __DIR__ . '/temp/Demo.zip');
+/* Frontend */
+Zip::pack([__DIR__ . '/cms/Frontend' => '/'], __DIR__ . '/temp/Frontend.zip');
 
 $response = new HttpResponse();
 $request  = new HttpRequest(new HttpUri(''));
 
-$request->header->account = 2;
-$request->setData('name', 'Demo');
+$request->header->account = 1;
+$request->setData('name', 'Frontend');
 
 $files = [
     [
         'error'    => \UPLOAD_ERR_OK,
         'type'     => 'zip',
-        'name'     => 'Demo.zip',
-        'tmp_name' => __DIR__ . '/temp/Demo.zip',
-        'size'     => \filesize(__DIR__ . '/temp/Demo.zip'),
+        'name'     => 'Frontend.zip',
+        'tmp_name' => __DIR__ . '/temp/Frontend.zip',
+        'size'     => \filesize(__DIR__ . '/temp/Frontend.zip'),
     ],
 ];
 
@@ -52,28 +52,28 @@ TestUtils::setMember($request, 'files', $files);
 $module->apiApplicationInstall($request, $response);
 ++$apiCalls;
 
-if (\is_file(__DIR__ . '/temp/Demo.zip')) {
-	\unlink(__DIR__ . '/temp/Demo.zip');
+if (\is_file(__DIR__ . '/temp/Frontend.zip')) {
+    \unlink(__DIR__ . '/temp/Frontend.zip');
 }
 
 echo '░░░░░';
 
-/* OnlineResourceWatcher */
-Zip::pack([__DIR__ . '/cms/OnlineResourceWatcher' => '/'], __DIR__ . '/temp/OnlineResourceWatcher.zip');
+/* ORW */
+Zip::pack([__DIR__ . '/cms/Orw' => '/'], __DIR__ . '/temp/Orw.zip');
 
 $response = new HttpResponse();
 $request  = new HttpRequest(new HttpUri(''));
 
-$request->header->account = 2;
-$request->setData('name', 'OnlineResourceWatcher');
+$request->header->account = 1;
+$request->setData('name', 'Orw');
 
 $files = [
     [
         'error'    => \UPLOAD_ERR_OK,
         'type'     => 'zip',
-        'name'     => 'OnlineResourceWatcher.zip',
-        'tmp_name' => __DIR__ . '/temp/OnlineResourceWatcher.zip',
-        'size'     => \filesize(__DIR__ . '/temp/OnlineResourceWatcher.zip'),
+        'name'     => 'Orw.zip',
+        'tmp_name' => __DIR__ . '/temp/Orw.zip',
+        'size'     => \filesize(__DIR__ . '/temp/Orw.zip'),
     ],
 ];
 
@@ -82,9 +82,26 @@ TestUtils::setMember($request, 'files', $files);
 $module->apiApplicationInstall($request, $response);
 ++$apiCalls;
 
-if (\is_file(__DIR__ . '/temp/OnlineResourceWatcher.zip')) {
-    \unlink(__DIR__ . '/temp/OnlineResourceWatcher.zip');
+if (\is_file(__DIR__ . '/temp/Orw.zip')) {
+    \unlink(__DIR__ . '/temp/Orw.zip');
 }
 
 echo '░░░░░';
 //endregion
+
+$module = $app->moduleManager->get('Admin');
+TestUtils::setMember($module, 'app', $app);
+
+$response = new HttpResponse();
+$request  = new HttpRequest(new HttpUri(''));
+
+$request->header->account = 1;
+$request->setData('settings', \json_encode([
+    ['path' => 'app/default/app', 'value' => 'Frontend'],
+    ['path' => 'app/default/id', 'value' => 'frontend'],
+    ['path' => 'app/domains/127.0.0.1/app', 'value' => 'Frontend'],
+    ['path' => 'app/domains/127.0.0.1/id', 'value' => 'frontend'],
+]));
+
+$module->apiAppConfigSet($request, $response);
+++$apiCalls;

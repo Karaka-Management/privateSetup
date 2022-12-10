@@ -1,0 +1,27 @@
+{
+    "name": {
+        "id": 1999200000,
+        "internal": "{APPNAME}",
+        "external": "{APPNAME}"
+    },
+    "category": "Web",
+    "version": "1.0.0",
+    "requirements": {
+        "phpOMS": "1.0.0",
+        "phpOMS-db": "1.0.0"
+    },
+    "creator": {
+        "name": "Karaka",
+        "website": "jingga.app"
+    },
+    "description": "The backend application.",
+    "directory": "{APPNAME}",
+    "dependencies": {
+        "Admin": "*",
+        "Media": "*",
+        "Sales": "*",
+        "ClientManagement": "*",
+        "ItemManagement": "*",
+        "Billing": "*"
+    }
+}
