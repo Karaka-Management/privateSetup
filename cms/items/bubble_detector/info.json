@@ -1,0 +1,39 @@
+{
+    "name": {
+        "en": "",
+        "de": ""
+    },
+    "price": {
+        "EUR": "199.90"
+    },
+    "primary_image": "",
+    "keywords": {
+        "en": "",
+        "de": ""
+    },
+    "shipping": {
+        "download": {
+            "costs": "0.0"
+        }
+    },
+    "payment_models": [
+        "pay-per-use"
+    ],
+    "details": {
+        "os": {
+            "windows": {
+                "min": "10",
+                "max": "10"
+            }
+        },
+        "dependencies": {
+            "opencv": {
+                "min": "",
+                "max": ""
+            }
+        },
+        "first_available": "",
+        "version": ""
+    },
+    "qa": {}
+}

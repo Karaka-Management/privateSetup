@@ -10,7 +10,7 @@ Our pages and different services are available from the following urls:
 
 | URL                                                                | Type         |
 |--------------------------------------------------------------------|--------------|
-| [karaka.app](https://karaka.app)             | Normal URL   |
+| [karaka.app](https://jingga.app)             | Normal URL   |
 | [karaka.net](https://karaka.net)             | Normal URL   |
 | [karaka.business](https://karaka.business)   | Normal URL   |
 | [karaka.solutions](https://karaka.solutions) | Normal URL   |
@@ -20,7 +20,7 @@ Our pages and different services are available from the following urls:
 | [karaka.shop](https://karaka.shop)           | Shop URL     |
 | [karaka.support](https://karaka.support)     | Support URL  |
 | [karaka.email](https://karaka.email)         | Email URL    |
-| [karaka.app](https://karaka.app)             | Demo app URL |
+| [karaka.app](https://jingga.app)             | Demo app URL |
 | [karaka.live](https://karaka.live)           | Video URL    |
 | [karaka.dev](https://karaka.dev)             | Dev URL      |
 

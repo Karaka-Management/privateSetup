@@ -103,7 +103,7 @@
                 <div class="floater">
                     <span class="box">
                         <h1>Getting Started</h1>
-                        <h2>The setup of the Jingga application is very simple and can be done within a couple of minutes. In order to test the software feel free to check our <a href="https://karaka.app">demo</a> application. </h2>
+                        <h2>The setup of the Jingga application is very simple and can be done within a couple of minutes. In order to test the software feel free to check our <a href="https://jingga.app">demo</a> application. </h2>
                     </span>
                     <div class="flex section">
                         <div class="box">
