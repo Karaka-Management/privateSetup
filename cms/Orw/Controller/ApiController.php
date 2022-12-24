@@ -25,7 +25,7 @@ class ApiController
         $this->app = $app;
     }
 
-	public function apiLogin(RequestAbstract $request, ResponseAbstract $response, mixed $data = null) : void
+    public function apiLogin(RequestAbstract $request, ResponseAbstract $response, mixed $data = null) : void
     {
         $response->header->set('Content-Type', MimeType::M_JSON . '; charset=utf-8', true);
 

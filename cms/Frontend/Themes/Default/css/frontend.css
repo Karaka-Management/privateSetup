@@ -1,0 +1,126 @@
+
+label {
+    display: block;
+    margin-bottom: 1rem;
+}
+
+label:not(:first-child) {
+    margin-top: 2rem;
+}
+
+input[type=email] {
+    width: 100%;
+    max-width: 500px;
+}
+
+textarea {
+    width: 100%;
+    height: 250px;
+}
+
+input[type=submit] {
+    margin-top: 1rem;
+}
+
+#career {
+    background: var(--block2-background);
+}
+
+#career .flex {
+    justify-content: center;
+    flex-flow: row wrap;
+    margin: -.5rem 0 -.5rem -.5rem;
+}
+
+#career .flex > div {
+    flex: 1 1 calc(25% - .5rem);
+    margin: .5rem 0 .5rem .5rem;
+    min-width: 250px;
+}
+
+#solutions .flex {
+    display: flex;
+    justify-content: center;
+}
+
+#solutions .block:nth-child(2n + 1) {
+    background: var(--block2-background);
+}
+
+#solutions .box2:not(:first-child) {
+    margin-left: 50px;
+}
+
+#solutions .box2 h1 {
+    margin-top: 1rem;
+    font-size: 1rem;
+    font-weight: 300;
+}
+
+#solutions .box2 p {
+    color: rgba(0, 0, 0, 0.95);
+    font-weight: 300;
+}
+
+#solutions .block > h1, .block .floater > h1 {
+    margin-bottom: 1rem;
+}
+
+#solutions .flex.section {
+    justify-content: center;
+    flex-flow: row wrap;
+    margin: -.5rem 0 -.5rem -2rem;
+}
+
+#solutions .flex.section > div {
+    flex: 1 1 calc(25% - 2rem);
+    margin: .5rem 0 .5rem 2rem;
+    min-width: 250px;
+}
+
+#upcoming {
+    background: var(--footer-background);
+    align-items: center;
+    text-align: center;
+    height: 65%;
+}
+
+#upcoming h1 {
+    font-weight: 100;
+    font-size: 4rem;
+    color: rgba(255, 255, 255, 0.95);
+}
+
+#imprint h2 {
+    text-align: left;
+    margin: 1rem 0 0 0;
+    padding: 0;
+}
+
+#imprint p {
+    margin: 0;
+    padding: 0;
+}
+
+#services .flex .box:nth-child(2n) {
+    text-align: left;
+    margin-left: 4rem;
+}
+
+#services .flex .box:nth-child(2n + 1) img {
+    float: right;
+}
+
+@media only screen and (max-width: 600px) {
+    #services .flex .box:nth-child(2n) {
+        margin-left: 0;
+    }
+
+    #services .block:nth-child(2n) .flex .box:nth-child(1) {
+        display: none;
+    }
+
+    #services .block:nth-child(2n + 1) .flex .box:nth-child(2) {
+        display: none;
+    }
+}

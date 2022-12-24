@@ -22,10 +22,11 @@
             <div>
                 <h1>Other Pages</h1>
                 <ul>
+                    <li><a href="/contact">Contact</a>
+                    <li><a href="/blog">Blog</a>
                     <!--<li><a href="/dev">Dev</a>
                     <li><a href="/live">Live</a>
                     <li><a href="/career">Career</a>-->
-                    <li><a href="/contact">Contact</a>
                 </ul>
             </div>
             <div>

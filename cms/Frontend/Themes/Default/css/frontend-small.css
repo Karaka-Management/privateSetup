@@ -78,7 +78,7 @@ button, input[type=submit], .button {
 }
 
 button.large, input[type=submit].large, .button.large {
-    padding: .9rem 1rem .9rem 1rem;
+    padding: 1.5rem 1rem 1.5rem 1rem;
     min-width: 15rem;
     font-size: 1.3rem;
 }
@@ -258,6 +258,19 @@ main {
 
 .section {
     margin-top: 2rem;
+}
+
+.block1 {
+    background: var(--block1-background);
+    color: #fff;
+}
+
+.block2 {
+    background: var(--block2-background);
+}
+
+.block3 {
+    background: var(--block3-background);
 }
 
 .box1 {

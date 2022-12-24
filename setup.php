@@ -49,8 +49,8 @@ use phpOMS\System\SystemUtils;
 use phpOMS\Uri\HttpUri;
 use phpOMS\Utils\TestUtils;
 
-$ASYNC = ($argv[1] ?? '') === '-a';
-$MODULE_INDEDX = (int) ($argv[2] ?? 0);
+$ASYNC                = ($argv[1] ?? '') === '-a';
+$MODULE_INDEDX        = (int) ($argv[2] ?? 0);
 $syncModulesToInstall = $ASYNC ? 9 : null;
 
 //region Setup
@@ -285,7 +285,7 @@ $dirCountOld = 0;
 $dirCountNew = \dirCount();
 
 // Set simulated API call counter
-$apiOld = 0;
+$apiOld   = 0;
 $apiCalls = 0;
 
 // Install scripts for the different module demos
@@ -351,7 +351,7 @@ foreach ($syncToInstall as $path => $title) {
 
     FileLogger::startTimeLog('section');
 
-    $sizeOld  = $sizeNew; $rowOld = $rowNew; $dirOld = $dirNew; $dirCountOld = $dirCountNew; $apiOld = $apiCalls;
+    $sizeOld = $sizeNew; $rowOld = $rowNew; $dirOld = $dirNew; $dirCountOld = $dirCountNew; $apiOld = $apiCalls;
 
     include $path;
 

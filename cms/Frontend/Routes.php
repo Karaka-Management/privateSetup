@@ -41,4 +41,22 @@ return [
             'verb' => RouteVerb::GET,
         ],
     ],
+    '.*?/imprint'        => [
+        [
+            'dest' => '\Web\{APPNAME}\Controller\FrontendController:imprintView',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
+    '.*?/privacy'        => [
+        [
+            'dest' => '\Web\{APPNAME}\Controller\FrontendController:privacyView',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
+    '.*?/terms'        => [
+        [
+            'dest' => '\Web\{APPNAME}\Controller\FrontendController:termsView',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
 ];

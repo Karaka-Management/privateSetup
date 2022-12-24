@@ -8,7 +8,7 @@
                 <li><a href="/solutions">Solutions</a></li>
                 <li><a href="/services">Services</a></li>
                 <li><a href="/shop">Shop</a></li>
-                <li><a href="/info">Info</a></li>
+                <li><a href="/branches">Info</a></li>
                 <li><a href="https://demo.jingga.app">Demo</a></li>
             </ul>
         </nav>

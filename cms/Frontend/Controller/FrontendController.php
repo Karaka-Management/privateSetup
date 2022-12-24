@@ -42,20 +42,14 @@ final class FrontendController extends ModuleAbstract
 
     public function solutionsView(RequestAbstract $request, ResponseAbstract $response, $data = null): RenderableInterface
     {
-        $head = $response->get('Content')->getData('head');
-        $head->addAsset(AssetType::CSS, 'Web/{APPNAME}/css/solutions.css?v=1.0.0');
-
         $view = new View($this->app->l11nManager, $request, $response);
-		$view->setTemplate('/Web/{APPNAME}/tpl/solutions');
+        $view->setTemplate('/Web/{APPNAME}/tpl/solutions');
 
         return $view;
     }
 
     public function servicesView(RequestAbstract $request, ResponseAbstract $response, $data = null): RenderableInterface
     {
-        $head = $response->get('Content')->getData('head');
-        $head->addAsset(AssetType::CSS, 'Web/{APPNAME}/css/solutions.css?v=1.0.0');
-
         $view = new View($this->app->l11nManager, $request, $response);
         $view->setTemplate('/Web/{APPNAME}/tpl/services');
 
@@ -75,9 +69,6 @@ final class FrontendController extends ModuleAbstract
 
     public function infoView(RequestAbstract $request, ResponseAbstract $response, $data = null): RenderableInterface
     {
-        $head = $response->get('Content')->getData('head');
-        $head->addAsset(AssetType::CSS, 'Web/{APPNAME}/css/info.css?v=1.0.0');
-
         $view = new View($this->app->l11nManager, $request, $response);
         $view->setTemplate('/Web/{APPNAME}/tpl/info');
 
@@ -86,11 +77,32 @@ final class FrontendController extends ModuleAbstract
 
     public function contactView(RequestAbstract $request, ResponseAbstract $response, $data = null): RenderableInterface
     {
-        $head = $response->get('Content')->getData('head');
-        $head->addAsset(AssetType::CSS, 'Web/{APPNAME}/css/contact.css?v=1.0.0');
-
         $view = new View($this->app->l11nManager, $request, $response);
         $view->setTemplate('/Web/{APPNAME}/tpl/contact');
+
+        return $view;
+    }
+
+    public function imprintView(RequestAbstract $request, ResponseAbstract $response, $data = null): RenderableInterface
+    {
+        $view = new View($this->app->l11nManager, $request, $response);
+        $view->setTemplate('/Web/{APPNAME}/tpl/markdown');
+
+        return $view;
+    }
+
+    public function privacyView(RequestAbstract $request, ResponseAbstract $response, $data = null): RenderableInterface
+    {
+        $view = new View($this->app->l11nManager, $request, $response);
+        $view->setTemplate('/Web/{APPNAME}/tpl/markdown');
+
+        return $view;
+    }
+
+    public function termsView(RequestAbstract $request, ResponseAbstract $response, $data = null): RenderableInterface
+    {
+        $view = new View($this->app->l11nManager, $request, $response);
+        $view->setTemplate('/Web/{APPNAME}/tpl/markdown');
 
         return $view;
     }

@@ -16,6 +16,7 @@ namespace Web\{APPNAME};
 
 use Model\CoreSettings;
 use Modules\Admin\Models\AccountMapper;
+use Modules\Admin\Models\AppMapper;
 use Modules\Admin\Models\LocalizationMapper;
 use Modules\Admin\Models\NullAccount as ModelsNullAccount;
 use phpOMS\Account\Account;
@@ -113,6 +114,11 @@ final class Application
         /** @var \phpOMS\DataStorage\Database\Connection\ConnectionAbstract $con */
         $con = $this->app->dbPool->get();
         DataMapperFactory::db($con);
+
+        $this->app->appId = AppMapper::get()
+            ->where('name', $this->app->appName)
+            ->execute()
+            ->getId();
 
         $this->app->cachePool      = new CachePool();
         $this->app->appSettings    = new CoreSettings();

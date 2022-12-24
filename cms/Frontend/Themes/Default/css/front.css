@@ -102,11 +102,6 @@ body > header .img:after {
     margin: 0 0 1.5rem 0;
 }
 
-.block1 {
-    background: var(--block1-background);
-    color: #fff;
-}
-
 .block1 .box {
     flex: 2;
 }

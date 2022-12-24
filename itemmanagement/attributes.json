@@ -1,0 +1,77 @@
+[
+	{
+		"name": "resource_watching",
+		"l11n": {
+			"en": "Watch online resources",
+			"de": "Verfolge Online Medien"
+		},
+		"value_type": "int",
+        "is_custom_allowed": false,
+        "validation_pattern": "",
+        "is_required": false,
+        "default_value": "",
+		"values": []
+	},
+	{
+		"name": "resource_sharing",
+		"l11n": {
+			"en": "Share resources with users",
+			"de": "Teile Resources mit Nutzern"
+		},
+		"value_type": "int",
+        "is_custom_allowed": false,
+        "validation_pattern": "",
+        "is_required": false,
+        "default_value": "",
+		"values": []
+	},
+	{
+		"name": "resource_size",
+		"l11n": {
+			"en": "Size limit",
+			"de": "Dateilimit"
+		},
+		"value_type": "int",
+        "is_custom_allowed": false,
+        "validation_pattern": "",
+        "is_required": false,
+        "default_value": "",
+		"values": []
+	},
+	{
+		"name": "resource_check_interval",
+		"l11n": {
+			"en": "Check interval",
+			"de": "Pruefinterval"
+		},
+		"value_type": "int",
+        "is_custom_allowed": false,
+        "validation_pattern": "",
+        "is_required": false,
+        "default_value": "",
+		"values": [
+			{
+                "value": 1
+            },
+            {
+                "value": 12
+            },
+            {
+                "value": 24
+            }
+		]
+	},
+	{
+		"name": "email_notification",
+		"l11n": {
+			"en": "Email notification",
+			"de": "Email Benachrichtigung"
+		},
+		"value_type": "int",
+        "is_custom_allowed": false,
+        "validation_pattern": "",
+        "is_required": false,
+        "default_value": "",
+		"values": []
+	}
+]

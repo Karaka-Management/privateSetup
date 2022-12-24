@@ -49,8 +49,8 @@ foreach ($toInstall as $install) {
 
     ++$c;
     if ($c % $interval === 0) {
-    	echo '░';
-    	++$p;
+        echo '░';
+        ++$p;
     }
 }
 

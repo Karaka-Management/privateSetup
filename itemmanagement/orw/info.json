@@ -1,0 +1,230 @@
+{
+    "l11ns": {
+        "name1": {
+            "en": "Online Resource Watcher",
+            "de": "Online Resource Watcher"
+        },
+    },
+    "primary_image": "",
+    "keywords": {
+        "en": "",
+        "de": ""
+    },
+    "shipping": {
+        "download": {
+            "costs": "0.0"
+        }
+    },
+    "payment": [
+        {
+            "model": "subscription",
+            "interval": "monhtly",
+            "methods": [
+                "cc"
+            ],
+            "term": "advance",
+            "price": {}
+        }
+    ],
+    "attributes": [
+        {
+            "type": "resource_watching",
+            "value": 1,
+            "custom": true
+        },
+        {
+            "type": "resource_sharing",
+            "value": 1,
+            "custom": true
+        },
+        {
+            "type": "email_notification",
+            "value": false,
+            "custom": true
+        },
+        {
+            "type": "resource_size",
+            "value": 10,
+            "custom": true
+        },
+        {
+            "type": "resource_check_interval",
+            "value": "24",
+            "custom": true
+        },
+        {
+            "type": "it_plattform",
+            "value": "cloud",
+            "custom": false
+        }
+    ],
+    "qa": {},
+    "variants": [
+        {
+            "l11ns": {
+                "name1": {
+                    "en": "Online Resource Watcher",
+                    "de": "Online Resource Watcher"
+                },
+                "name2": {
+                    "en": "Free",
+                    "de": "Kostenlos"
+                },
+            },
+            "payment": [
+                {
+                    "price": [
+                        {
+                            "currency": "EUR",
+                            "value": "0"
+                        }
+                    ]
+                }
+            ],
+            "attributes": [
+                {
+                    "type": "resource_watching",
+                    "value": 1
+                },
+                {
+                    "type": "resource_sharing",
+                    "value": 1
+                },
+                {
+                    "type": "email_notification",
+                    "value": false
+                },
+                {
+                    "type": "resource_size",
+                    "value": 10
+                },
+                {
+                    "type": "resource_checks",
+                    "value": "24"
+                },
+                {
+                    "type": "plattform",
+                    "value": "cloud"
+                }
+            ]
+        },
+        {
+            "l11ns": {
+                "name1": {
+                    "en": "Online Resource Watcher",
+                    "de": "Online Resource Watcher"
+                },
+                "name2": {
+                    "en": "Tier 1",
+                    "de": "Level 1"
+                },
+            },
+            "payment": [
+                {
+                    "price": [
+                        {
+                            "currency": "EUR",
+                            "value": "4.99"
+                        }
+                    ]
+                }
+            ],
+            "attributes": [
+                {
+                    "type": "resource_watching",
+                    "value": 1
+                },
+                {
+                    "type": "resource_sharing",
+                    "value": 1
+                },
+                {
+                    "type": "email_notification",
+                    "value": false
+                },
+                {
+                    "type": "resource_size",
+                    "value": 10
+                },
+                {
+                    "type": "resource_checks",
+                    "value": "24"
+                },
+                {
+                    "type": "plattform",
+                    "value": "cloud"
+                }
+            ]
+        },
+        {
+            "l11ns": {
+                "name1": {
+                    "en": "Online Resource Watcher",
+                    "de": "Online Resource Watcher"
+                },
+                "name2": {
+                    "en": "Tier 2",
+                    "de": "Level 2"
+                },
+            },
+            "payment": [
+                {
+                    "price": [
+                        {
+                            "currency": "EUR",
+                            "value": "9.99"
+                        }
+                    ]
+                }
+            ],
+        },
+        {
+            "l11ns": {
+                "name1": {
+                    "en": "Online Resource Watcher",
+                    "de": "Online Resource Watcher"
+                },
+                "name2": {
+                    "en": "Tier 3",
+                    "de": "Level 3"
+                },
+            },
+            "payment": [
+                {
+                    "price": [
+                        {
+                            "currency": "EUR",
+                            "value": "49.99"
+                        }
+                    ]
+                }
+            ],
+            "attributes": [
+                {
+                    "type": "resource_watching",
+                    "value": 1
+                },
+                {
+                    "type": "resource_sharing",
+                    "value": 1
+                },
+                {
+                    "type": "email_notification",
+                    "value": false
+                },
+                {
+                    "type": "resource_size",
+                    "value": 10
+                },
+                {
+                    "type": "resource_checks",
+                    "value": "24"
+                },
+                {
+                    "type": "plattform",
+                    "value": "cloud"
+                }
+            ]
+        }
+    ]
+}
